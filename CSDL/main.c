@@ -85,7 +85,7 @@ bool loadMedia(void)
         printf("Failed to load TileSpritesheet texture image!\n");
         success = false;
     }
-    Tilemap_init(&tilemap, &tilemapSpriteSheet, "map.txt");
+    Tilemap_init(&tilemap, &tilemapSpriteSheet, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt");
 
     if (!Entity_setTexture(&player, renderer, "StarfishSpriteSheet.png"))
     {
@@ -277,7 +277,7 @@ void gameloop(void){
         SDL_SetRenderDrawColor(renderer, 0xFF, 0x11, 0, 0xFF);
         SDL_RenderFillRectF(renderer, &headbut);
         
-        Tilemap_render(&tilemap, renderer);
+        Tilemap_render(&tilemap, renderer, cameraOffsetX, cameraOffsetY);
         
         Entity_render(&testObject, renderer, &player.clip[0], -1, NULL,  SDL_FLIP_NONE, cameraOffsetX, cameraOffsetY);
        

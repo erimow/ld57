@@ -20,14 +20,20 @@ void Tilemap_init(Tilemap* tm, Texture* text, char* fileName){
     Tilemap_populate(tm, fileName);
 }
 void Tilemap_free(Tilemap* tm){
-    Texture_free(tm->spriteSheet);
-    free(tm->tiles);
+    if (tm->tiles != NULL){
+        free(tm->tiles);
+        tm->tiles=NULL;
+    }
+    if (tm->spriteSheet!=NULL){
+        Texture_free(tm->spriteSheet);
+        tm->spriteSheet=NULL;
+    }
+    
 }
 void Tilemap_populate(Tilemap* tm, char* fileName){
-    FILE *file;
-    file = fopen(fileName, "r");
+    FILE *file = fopen(fileName, "r");
     if (file == NULL) {
-        perror("Failed to open file\n");
+        perror("Failed to open file");
         return;
        }
 
@@ -64,7 +70,8 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
        fclose(file);
     
     Tile* tiles = NULL;
-    tiles = malloc(sizeof(Tile));
+    int capacity = 10;
+    tiles = malloc(sizeof(Tile)*capacity);
     int tileAmount = 0;
     for (int i = 0; i < totalBytesRead+1; i++)
     {
@@ -73,15 +80,18 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
             Tile_init(&tiles[tileAmount], i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth), 4);
             printf("tile:%d->x:%d, y:%d\n", i, i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth));
             tileAmount++;
-            Tile* newTiles = realloc(tiles, (sizeof(Tile)*tileAmount)+1);
-            if (newTiles==NULL)
-            {
-                printf("Could not allocate new memory to tiles in Tilemap_populate\n");
-                free(tiles);
-                free(content);
-                return;
+            if (tileAmount>=capacity){
+                capacity*=2;
+                Tile* newTiles = realloc(tiles, (sizeof(Tile)*tileAmount)*capacity);
+                if (newTiles==NULL)
+                {
+                    printf("Could not allocate new memory to tiles in Tilemap_populate\n");
+                    free(tiles);
+                    free(content);
+                    return;
+                }
+                tiles=newTiles;
             }
-            tiles=newTiles;
         }
     }
     Tile* newTiles = realloc(tiles, (sizeof(Tile)*tileAmount));
@@ -92,14 +102,14 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
         free(content);
         return;
     }
-    tm->tiles=tiles;
+    tm->tiles=newTiles;
     tm->tileAmount=tileAmount;
     free(content);
 }
 
-void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer){
+void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset){
     int tilesize = TILE_SIZE;
     for (int i = 0; i< tm->tileAmount; i++){
-        Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->tiles[i].spriteId*tilesize, 0, tilesize, tilesize}), &((SDL_FRect){tm->tiles[i].xGridPos*tilesize, -(tm->tiles[i].yGridPos-tm->mapHeight)*tilesize, tilesize, tilesize}), 0.0, NULL, SDL_FLIP_NONE);
+        Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->tiles[i].spriteId*tilesize, 0, tilesize, tilesize}), &((SDL_FRect){(tm->tiles[i].xGridPos*tilesize)-xOffset, -((tm->tiles[i].yGridPos-tm->mapHeight)*tilesize)-yOffset, tilesize, tilesize}), 0.0, NULL, SDL_FLIP_NONE);
     }
 }

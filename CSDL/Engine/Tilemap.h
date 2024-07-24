@@ -32,6 +32,6 @@ void Tile_free(Tile* tile);
 void Tilemap_init(Tilemap* tm, Texture* text, char* fileName);
 void Tilemap_free(Tilemap* tm);
 void Tilemap_populate(Tilemap* tm, char* file);
-void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer);
+void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset);
 
 #endif /* Tilemap_h */
