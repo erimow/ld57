@@ -72,9 +72,9 @@ bool loadMedia(void)
     Texture_init(&tilemapSpriteSheet);
     Timer_init(&fps);
     Timer_init(&capTimer);
-    Button_init(&butt, 0, 0, 125, 75);
+    Button_init(&butt, 10, 10, 25, 25);
     //Entity_init(&player, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 100, 100, 10);  //Normal entity init
-    Entity_initPhysics(&player, SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2-50, 100, 100, 0.8f, 12.0f, 0.3f, .95f, 8.0f, 3);
+    Entity_initPhysics(&player, SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2-50, 100, 100, 0.8f, 15.0f, 0.3f, .95f, 8.0f, 3);
     Entity_initPhysics(&testObject, 300, -1000, 100, 100, .8f, 12.0f, 0.3f, .95f, 8.0f, 1);
     Entity_init(&fish, 300, 300, 100, 100, 0.0, 2);
     
@@ -85,7 +85,7 @@ bool loadMedia(void)
         printf("Failed to load TileSpritesheet texture image!\n");
         success = false;
     }
-    Tilemap_init(&tilemap, &tilemapSpriteSheet, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt");
+    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.125f, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "S", 1);
 
     if (!Entity_setTexture(&player, renderer, "StarfishSpriteSheet.png"))
     {
@@ -159,12 +159,12 @@ void gameloop(void){
     
     
     //Scene Objects
-    int sceneObjectAmount = 5;
-    SDL_FRect sceneObjects[sceneObjectAmount];
-    SDL_FRect boxA = {800, 500, 100, 100}; sceneObjects[0]=boxA;
-    SDL_FRect groundA = {0, 700, SCREEN_WIDTH, 25}; sceneObjects[1] = groundA;
-    SDL_FRect objA = {600, 500, 50, 125}; sceneObjects[2] = objA;
-    SDL_FRect headbutA = {200, 375, 300, 75}; sceneObjects[3] = headbutA;
+//    int sceneObjectAmount = 5;
+//    SDL_FRect sceneObjects[sceneObjectAmount];
+//    SDL_FRect boxA = {800, 500, 100, 100}; sceneObjects[0]=boxA;
+//    SDL_FRect groundA = {0, 700, SCREEN_WIDTH, 25}; sceneObjects[1] = groundA;
+//    SDL_FRect objA = {600, 500, 50, 125}; sceneObjects[2] = objA;
+//    SDL_FRect headbutA = {200, 375, 300, 75}; sceneObjects[3] = headbutA;
     
     
     //player stuff
@@ -213,25 +213,21 @@ void gameloop(void){
         bool checkForLanding = false;
         if (player.onGround==0)
             checkForLanding = true;
-        Entity_move(&player, sceneObjects, sceneObjectAmount);
+        Entity_move(&player, tilemap.colliders, tilemap.tileAmount);
         if (player.onGround == 1 && checkForLanding){
             Mix_PlayChannel(-1, soundEffect, 0);
             playerRotation += player.xVel/2;
         }
         else if (player.onGround == 1)
             playerRotation += player.xVel/2;
-        Entity_move(&testObject, sceneObjects, 4);
+//        Entity_move(&testObject, sceneObjects, 4);
+        
+        
         Camera_followEntity(&camera, &player);
         Camera_getObjectOffset(&camera, &cameraOffsetX, &cameraOffsetY);
         
-        sceneObjects[4] = testObject.collider;
+//        sceneObjects[4] = testObject.collider;
 
-        
-        
-        SDL_FRect box = {800-cameraOffsetX, 500-cameraOffsetY, 100, 100};
-        SDL_FRect ground = {0-cameraOffsetX, 700-cameraOffsetY, SCREEN_WIDTH, 25};
-        SDL_FRect obj = {600-cameraOffsetX, 500-cameraOffsetY, 50, 125};
-        SDL_FRect headbut = {200-cameraOffsetX, 375-cameraOffsetY, 300, 75};
         
         
         //player rotation stuff
@@ -268,14 +264,6 @@ void gameloop(void){
         // OBJECT RENDERING
         //Texture_render(&test, renderer, NULL, &imageLoc, 0.0, NULL, SDL_FLIP_NONE);
         BackgroundEntity_update(&bgFish, renderer, cameraOffsetX, cameraOffsetY, frameCount, 30);
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0x11, 0, 0xFF);
-        SDL_RenderFillRectF(renderer, &box);
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0x11, 0, 0xFF);
-        SDL_RenderFillRectF(renderer, &obj);
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0x11, 0, 0xFF);
-        SDL_RenderFillRectF(renderer, &ground);
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0x11, 0, 0xFF);
-        SDL_RenderFillRectF(renderer, &headbut);
         
         Tilemap_render(&tilemap, renderer, cameraOffsetX, cameraOffsetY);
         

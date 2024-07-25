@@ -102,7 +102,7 @@ void Entity_setRotation(Entity* entity, double rotation){
 void Entity_setBaseVelocity(Entity* entity, float newVelocity){
     entity->entityVelocity = newVelocity;
 }
-void Entity_move(Entity* entity, SDL_FRect object[], int size){
+void Entity_move(Entity* entity, SDL_FRect* colliders, int size){
     if (entity->isPhysics)
     {
         entity->xVel += ((entity->right*entity->entityVelocity) - (entity->left * entity->entityVelocity));
@@ -125,31 +125,31 @@ void Entity_move(Entity* entity, SDL_FRect object[], int size){
     entity->xPos += entity->xVel;
     entity->collider.x=entity->xPos;
     for (int i = 0; i<size; i++)
-        if (Entity_checkCollision(entity, object[i]))
+        if (Entity_checkCollision(entity, colliders[i]))
         {
 //            entity->xPos -= entity->xVel;
             if (entity->xVel<0)
-                entity->xPos = object[i].x+object[i].w;
+                entity->xPos = colliders[i].x+colliders[i].w;
             else if (entity->xVel>0)
-                entity->xPos = object[i].x-entity->width;
+                entity->xPos = colliders[i].x-entity->width;
             entity->xVel = 0;
             entity->collider.x=entity->xPos;
         }
     entity->yPos += entity->yVel;
     entity->collider.y=entity->yPos;
     for (int i = 0; i<size; i++)
-        if (Entity_checkCollision(entity, object[i]))
+        if (Entity_checkCollision(entity, colliders[i]))
         {
             //for phyisics | stuff
             //             V
             if (entity->yVel>0)
             {
-                entity->yPos = object[i].y-entity->height;
+                entity->yPos = colliders[i].y-entity->height;
                 entity->onGround=1;
             }
             else if (entity->yVel<0)
             {
-                entity->yPos = object[i].y+object[i].h;
+                entity->yPos = colliders[i].y+colliders[i].h;
             }
             
             //entity->yPos -= entity->yVel;
