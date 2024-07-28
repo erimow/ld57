@@ -85,7 +85,7 @@ bool loadMedia(void)
         printf("Failed to load TileSpritesheet texture image!\n");
         success = false;
     }
-    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.125f, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "S", 1);
+    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.125f, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "SP", 2);
 
     if (!Entity_setTexture(&player, renderer, "StarfishSpriteSheet.png"))
     {
@@ -151,6 +151,8 @@ void gameloop(void){
     SDL_Color fpsCol = {0,0,0,255};
     Texture_setColor(&player.spriteSheet, 10, 255, 10);
     
+    Uint8 tileSize = TILE_SIZE;
+    
     Uint8 currentPlayerSprite=0;
     
     //Camera_setCameraOffset(&camera, 0, -200);
@@ -159,12 +161,7 @@ void gameloop(void){
     
     
     //Scene Objects
-//    int sceneObjectAmount = 5;
-//    SDL_FRect sceneObjects[sceneObjectAmount];
-//    SDL_FRect boxA = {800, 500, 100, 100}; sceneObjects[0]=boxA;
-//    SDL_FRect groundA = {0, 700, SCREEN_WIDTH, 25}; sceneObjects[1] = groundA;
-//    SDL_FRect objA = {600, 500, 50, 125}; sceneObjects[2] = objA;
-//    SDL_FRect headbutA = {200, 375, 300, 75}; sceneObjects[3] = headbutA;
+
     
     
     //player stuff
@@ -213,14 +210,16 @@ void gameloop(void){
         bool checkForLanding = false;
         if (player.onGround==0)
             checkForLanding = true;
-        Entity_move(&player, tilemap.colliders, tilemap.tileAmount);
+        Uint8 colliderAmount = 0;
+        Entity_move(&player, Tilemap_getCollidersAroundEntity(&tilemap, &player, &colliderAmount), colliderAmount);
         if (player.onGround == 1 && checkForLanding){
             Mix_PlayChannel(-1, soundEffect, 0);
             playerRotation += player.xVel/2;
+            printf("Player xGridPos: %d, Player yGridPos: %d\n", (int)((player.xPos/tileSize)/tilemap.scale), (int)(tilemap.mapHeight-((player.yPos/tileSize)/tilemap.scale)));
         }
         else if (player.onGround == 1)
             playerRotation += player.xVel/2;
-//        Entity_move(&testObject, sceneObjects, 4);
+        //Entity_move(&testObject, Tilemap_getCollidersAroundEntity(&tilemap, &testObject, &colliderAmount), colliderAmount);
         
         
         Camera_followEntity(&camera, &player);

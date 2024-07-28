@@ -99,6 +99,7 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
         
         if (Tilemap_isTileParseable(tm, tile, &spriteYId))//If a tile object
         {
+            //----------------------------------------------------------------------------
             SDL_RendererFlip fl = SDL_FLIP_NONE;
             double angle = 0.0;
             bool tileLeft = false, tileUp = false, tileRight = false, tileDown = false;
@@ -138,7 +139,7 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
                 //fl = SDL_FLIP_HORIZONTAL;
             } else if (tileRight && tileDown && !(tileLeft || tileUp)) {
                 spriteXId = 2;
-                angle = 270.0;
+                fl = SDL_FLIP_HORIZONTAL;
                 //fl = SDL_FLIP_HORIZONTAL;
             } else if (tileLeft && tileRight && tileUp && !tileDown) {
                 spriteXId = 3;
@@ -155,6 +156,8 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
             } else if (tileLeft && tileRight && tileUp && tileDown) {
                 spriteXId = 0; // Assuming a different sprite for all tiles present
             }
+            //---------------------------------------------------------------------------
+            
                      
             Tile_init(&tiles[tileAmount], i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth), spriteXId, spriteYId, tileSize, tm->mapHeight, tm->scale, angle, fl);
             printf("tile:%d->x:%d, y:%d\n", i, i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth));
@@ -206,6 +209,30 @@ SDL_FRect* Tilemap_getColliders(Tilemap* tm){
     }
     return colliders;
 }
+
+SDL_FRect* Tilemap_getCollidersAroundEntity(Tilemap* tm, Entity* entity, Uint8* colliderAmount){
+    SDL_FRect* rects = malloc(sizeof(SDL_FRect)*9);
+    if (!rects){printf("getCollidersAroundEntity memory not initialized propery.\n"); return NULL;}
+    Uint8 tileSize = TILE_SIZE;
+    SDL_Point EntityGridPos = {(int)(((entity->xPos+(entity->width/2))/tileSize)/tm->scale), (int)(tm->mapHeight-(((entity->yPos+(entity->height/2))/tileSize)/tm->scale))};
+    Uint8 rectCount = 0;
+    for (int i = 0; i<tm->tileAmount; i++)
+    {
+        if (tm->tiles[i].xGridPos < EntityGridPos.x-1 || tm->tiles[i].xGridPos > EntityGridPos.x +1 || tm->tiles[i].yGridPos > EntityGridPos.y +2 || tm->tiles[i].yGridPos < EntityGridPos.y ){/*do nothing*/}
+        else{
+            rects[rectCount++] = tm->colliders[i];
+        }
+    }
+    SDL_FRect* newRect = realloc(rects, sizeof(SDL_FRect)*rectCount);
+    if (newRect == NULL) {
+        free(rects);
+        printf("getCollidersAroundEntity memory not initialized propery.\n");
+        return NULL;
+    }
+    *colliderAmount=rectCount;
+    printf("colliderAmount= %d\nnewRect pointer: %p\n", rectCount, newRect);
+    return newRect;
+} //CONSIDER A GRID/CHUNK SYSTEM. THIS IS JUST SLOWER...
 
 bool Tilemap_isTileParseable(Tilemap* tm, char tileToParse, int* tileId){
     *tileId = 0;

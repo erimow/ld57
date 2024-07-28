@@ -158,6 +158,8 @@ void Entity_move(Entity* entity, SDL_FRect* colliders, int size){
             entity->collider.y=entity->yPos;
         }
     //printf("onGround: %d\n", entity->onGround);
+    if (colliders!=NULL)
+        free(colliders);
 }
 void Entity_handleEvent(Entity* entity, SDL_Event* e){
     if (e->type == SDL_KEYDOWN && e->key.repeat == 0)
