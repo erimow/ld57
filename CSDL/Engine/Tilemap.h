@@ -13,6 +13,7 @@
 #include "Texture.h"
 #include <SDL2/SDL.h>
 #include "Entity.h"
+#include <math.h>
 
 
 
@@ -26,20 +27,21 @@ typedef struct{
 
 typedef struct{
     Texture* spriteSheet;
-    Tile* tiles;
+    Tile** tiles;
+    Uint8* tilesInGrid;
     char* tileTypesForParse;
     int numTileTypesForParse;
     SDL_FRect* colliders;
     int tileAmount;
-    int tileAmountPerGrid;
-    int gridAmount;
+    int tilesPerGrid;
+    int gridAmount, gridWidth, gridHeight;
     int mapWidth, mapHeight;
     float scale;
 }Tilemap;
 
-void Tile_init(Tile** tile, int xGridPos, int yGridPos, int spriteXId, int spriteYId, int tileSize, int mapHeight, float scale, double rotation, SDL_RendererFlip flip);
+void Tile_init(Tile* tile, int xGridPos, int yGridPos, int spriteXId, int spriteYId, int tileSize, int mapHeight, float scale, double rotation, SDL_RendererFlip flip);
 void Tile_free(Tile* tile);
-void Tilemap_init(Tilemap* tm, Texture* text, float scale, char* fileName, char* tileTypes, int numTileTypes);
+void Tilemap_init(Tilemap* tm, Texture* text, float scale, int tilesPerGrid, char* fileName, char* tileTypes, int numTileTypes);
 void Tilemap_free(Tilemap* tm);
 void Tilemap_populate(Tilemap* tm, char* file);
 void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset);

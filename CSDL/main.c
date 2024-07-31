@@ -85,7 +85,7 @@ bool loadMedia(void)
         printf("Failed to load TileSpritesheet texture image!\n");
         success = false;
     }
-    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.125f, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "SP", 2);
+    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.75, 16, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "SP", 2);
 
     if (!Entity_setTexture(&player, renderer, "StarfishSpriteSheet.png"))
     {
@@ -151,12 +151,13 @@ void gameloop(void){
     SDL_Color fpsCol = {0,0,0,255};
     Texture_setColor(&player.spriteSheet, 10, 255, 10);
     
-    Uint8 tileSize = TILE_SIZE;
+//    Uint8 tileSize = TILE_SIZE;
     
     Uint8 currentPlayerSprite=0;
     
     //Camera_setCameraOffset(&camera, 0, -200);
     float cameraOffsetX, cameraOffsetY;
+    
     
     
     
@@ -215,7 +216,7 @@ void gameloop(void){
         if (player.onGround == 1 && checkForLanding){
             Mix_PlayChannel(-1, soundEffect, 0);
             playerRotation += player.xVel/2;
-            printf("Player xGridPos: %d, Player yGridPos: %d\n", (int)((player.xPos/tileSize)/tilemap.scale), (int)(tilemap.mapHeight-((player.yPos/tileSize)/tilemap.scale)));
+            //printf("Player xGridPos: %d, Player yGridPos: %d\n", (int)((player.xPos/tileSize)/tilemap.scale), (int)(tilemap.mapHeight-((player.yPos/tileSize)/tilemap.scale)));
         }
         else if (player.onGround == 1)
             playerRotation += player.xVel/2;
@@ -383,7 +384,6 @@ bool init(void){
 
 void quit(void)
 {
-    Tilemap_free(&tilemap);
     
     Texture_free(&fontTexture);
     //Texture_free(&test);
@@ -401,6 +401,7 @@ void quit(void)
     soundEffect = NULL;
     gameMusic = NULL;
     Button_free(&butt);
+    Tilemap_free(&tilemap);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     window = NULL;

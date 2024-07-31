@@ -19,15 +19,23 @@ void Tile_init(Tile* tile, int xGridPos, int yGridPos, int spriteXId, int sprite
 void Tile_free(Tile* tile){
     
 }
-void Tilemap_init(Tilemap* tm, Texture* text, float scale, char* fileName, char* tileTypes, int numTileTypes){
+void Tilemap_init(Tilemap* tm, Texture* text, float scale, int tilesPerGrid, char* fileName, char* tileTypes, int numTileTypes){
     tm->tileTypesForParse = tileTypes;
     tm->numTileTypesForParse = numTileTypes;
     tm->spriteSheet=text;
     tm->scale = scale;
+    tm->tilesPerGrid = tilesPerGrid;
     Tilemap_populate(tm, fileName);
-    tm->colliders = Tilemap_getColliders(tm);
+//    tm->colliders = Tilemap_getColliders(tm);
 }
 void Tilemap_free(Tilemap* tm){
+    for (int i = 0; i < tm->gridAmount; i++)
+    {
+        if (tm->tiles[i] != NULL){
+            free(tm->tiles[i]);
+            tm->tiles[i]=NULL;
+        }
+    }
     if (tm->tiles != NULL){
         free(tm->tiles);
         tm->tiles=NULL;
@@ -86,9 +94,26 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
        fclose(file);
     
     int tileSize = TILE_SIZE;
-    Tile* tiles = NULL;
-    int capacity = 10;
-    tiles = malloc(sizeof(Tile)*capacity);
+    tm->gridWidth = ((int)((tm->mapWidth%(int)sqrt(tm->tilesPerGrid)) == 0)) ? (int)((tm->mapWidth/sqrt(tm->tilesPerGrid))) : (int)((tm->mapWidth/sqrt(tm->tilesPerGrid))+1);
+    tm->gridHeight = ((int)((tm->mapHeight%(int)sqrt(tm->tilesPerGrid)) == 0)) ? ((int)((tm->mapHeight/sqrt(tm->tilesPerGrid)))) : ((int)((tm->mapHeight/sqrt(tm->tilesPerGrid))+1));
+    tm->gridAmount =  tm->gridWidth*tm->gridHeight;
+    printf("Grid Amount = %d\n", tm->gridAmount);
+    Tile** tiles = NULL;
+    tiles = malloc(sizeof(Tile*)*tm->gridAmount);
+    if (tiles == NULL){printf("tiles could not be allocatied\n");}
+    Uint8* tilesInGrid = malloc(sizeof(Uint8)*tm->gridAmount);
+    if (tilesInGrid == NULL)
+        printf("tilesInGrid not malloced\n");
+    
+
+    for (int i = 0; i < tm->gridAmount; i++){
+        tiles[i] = malloc(sizeof(Tile)*tm->tilesPerGrid);
+        if (tiles[i]==NULL)
+        {
+            printf("tiles[%d] is NULL!\n", i);
+        }
+        tilesInGrid[i] = 0;
+    }
     int tileAmount = 0;
     
     int spriteYId = 0; //Gets back tileId from the function call below
@@ -158,43 +183,51 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
             }
             //---------------------------------------------------------------------------
             
-                     
-            Tile_init(&tiles[tileAmount], i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth), spriteXId, spriteYId, tileSize, tm->mapHeight, tm->scale, angle, fl);
+            int index = ((int)((i/tm->mapWidth)/sqrt(tm->tilesPerGrid))*(int)((tm->mapWidth/sqrt(tm->tilesPerGrid))+1)) + (int)((i%tm->mapWidth)/sqrt(tm->tilesPerGrid));
+            Tile_init(&tiles[index][tilesInGrid[index]++], i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth), spriteXId, spriteYId, tileSize, tm->mapHeight, tm->scale, angle, fl);
             printf("tile:%d->x:%d, y:%d\n", i, i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth));
+            printf("Grid index-> [%d], [%d]\n", index, tilesInGrid[index]-1);
             tileAmount++;
-            if (tileAmount>=capacity){
-                capacity*=2;
-                Tile* newTiles = realloc(tiles, (sizeof(Tile)*tileAmount)*capacity);
-                if (newTiles==NULL)
-                {
-                    printf("Could not allocate new memory to tiles in Tilemap_populate\n");
-                    free(tiles);
-                    free(content);
-                    return;
-                }
-                tiles=newTiles;
-            }
+//            if (tileAmount>=capacity){
+//                capacity*=2;
+//                Tile** newTiles = realloc(tiles, (sizeof(Tile*)*tileAmount)*capacity);
+//                if (newTiles==NULL)
+//                {
+//                    printf("Could not allocate new memory to tiles in Tilemap_populate\n");
+//                    free(tiles);
+//                    free(content);
+//                    return;
+//                }
+//                tiles=newTiles;
+//            }
         }
     }
-    Tile* newTiles = realloc(tiles, (sizeof(Tile)*tileAmount));
-    if (newTiles==NULL)
+    //Tile* newTiles = realloc(tiles, (sizeof(Tile)*tileAmount));
+//    if (newTiles==NULL)
+//    {
+//        printf("Could not allocate new memory to tiles in Tilemap_populate p.2\n");
+//        free(tiles);
+//        free(content);
+//        return;
+//    }
+    for (int i =0; i < tm->gridAmount; i++)
     {
-        printf("Could not allocate new memory to tiles in Tilemap_populate p.2\n");
-        free(tiles);
-        free(content);
-        return;
+        printf("grid[%d] -> %d tiles\n", i, tilesInGrid[i]);
     }
-    tm->tiles=newTiles;
+    tm->tilesInGrid = tilesInGrid;
+    tm->tiles=tiles;
     tm->tileAmount=tileAmount;
     free(content);
 }
 
 void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset){
     int tilesize = TILE_SIZE;
-    for (int i = 0; i< tm->tileAmount; i++){
-        SDL_FRect pos = tm->tiles[i].pos;
-        pos.x = pos.x-xOffset; pos.y=pos.y-yOffset;
-        Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->tiles[i].spriteXId*tilesize, tm->tiles[i].spriteYId*tilesize, tilesize, tilesize}), &pos, tm->tiles[i].rotation, NULL, tm->tiles[i].flip); //Fix how it renders tiles
+    for (int i = 0; i<tm->gridAmount; i++){
+        for (int l = 0; l<tm->tilesInGrid[i]; l++){
+            SDL_FRect pos = tm->tiles[i][l].pos;
+            pos.x = pos.x-xOffset; pos.y=pos.y-yOffset;
+            Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->tiles[i][l].spriteXId*tilesize, tm->tiles[i][l].spriteYId*tilesize, tilesize, tilesize}), &pos, tm->tiles[i][l].rotation, NULL, tm->tiles[i][l].flip);
+        }
     }
 }
 
@@ -204,8 +237,10 @@ SDL_FRect* Tilemap_getColliders(Tilemap* tm){
         perror("Could not allocate memory for colliders in tm");
         return NULL;
     }
-    for (int i = 0; i<tm->tileAmount; i++){
-        colliders[i]=tm->tiles[i].pos;
+    for (int i = 0; i<tm->gridAmount; i++){
+        for (int l = 0; l<tm->tilesInGrid[i]; l++){
+            colliders[i]=tm->tiles[i][l].pos;
+        }
     }
     return colliders;
 }
@@ -214,25 +249,67 @@ SDL_FRect* Tilemap_getCollidersAroundEntity(Tilemap* tm, Entity* entity, Uint8* 
     SDL_FRect* rects = malloc(sizeof(SDL_FRect)*9);
     if (!rects){printf("getCollidersAroundEntity memory not initialized propery.\n"); return NULL;}
     Uint8 tileSize = TILE_SIZE;
-    SDL_Point EntityGridPos = {(int)(((entity->xPos+(entity->width/2))/tileSize)/tm->scale), (int)(tm->mapHeight-(((entity->yPos+(entity->height/2))/tileSize)/tm->scale))};
+    SDL_Point EntityTilePos = {(int)(((entity->xPos+(entity->width/2))/(tileSize)/tm->scale)), (int)((((entity->yPos+(entity->height/2))/tileSize)/tm->scale))};
+    SDL_Point EntityGridPos = {(int)((EntityTilePos.x)/sqrt(tm->tilesPerGrid)), (int)((EntityTilePos.y)/sqrt(tm->tilesPerGrid))};
+    int entityGridIndex = ((EntityGridPos.y* tm->gridWidth) + EntityGridPos.x);
     Uint8 rectCount = 0;
-    for (int i = 0; i<tm->tileAmount; i++)
-    {
-        if (tm->tiles[i].xGridPos < EntityGridPos.x-1 || tm->tiles[i].xGridPos > EntityGridPos.x +1 || tm->tiles[i].yGridPos > EntityGridPos.y +2 || tm->tiles[i].yGridPos < EntityGridPos.y ){/*do nothing*/}
-        else{
-            rects[rectCount++] = tm->colliders[i];
-        }
+    //printf("PLAYER[%d]: X = %d, Y = %d\n",entityGridIndex, EntityGridPos.x, EntityGridPos.y);
+    
+    //FINDING POSITION IN GRID
+    Uint8 entityPosInGrid =  0;//1 = TL, 2 = TR, 3 = BL, 4 = BR
+    if(EntityTilePos.x%(int)sqrt(tm->tilesPerGrid) < (sqrt(tm->tilesPerGrid)/2))
+        if (EntityTilePos.y%(int)sqrt(tm->tilesPerGrid) < (sqrt(tm->tilesPerGrid)/2))
+            entityPosInGrid = 1;
+        else
+            entityPosInGrid = 3;
+    else
+        if (EntityTilePos.y%(int)sqrt(tm->tilesPerGrid) < (sqrt(tm->tilesPerGrid)/2))
+            entityPosInGrid = 2;
+        else
+            entityPosInGrid = 4;
+    printf("Grid section -> %d\n", entityPosInGrid);
+    
+    //GRID CHECKING
+    for (int l = 0; l<5; l++){
+        int ind = -1;
+        if (l==0) ind = entityGridIndex;
+        else if ( l==1 && (tm->gridWidth) != 0)
+            ind = entityGridIndex-1;
+        else if (l==2 && ((entityGridIndex-(tm->gridWidth) >= 0)))
+            ind = entityGridIndex-(tm->gridWidth);
+        else if ( l==3 && (entityGridIndex%(int)(tm->gridWidth) != (tm->gridWidth-1)))
+            ind = entityGridIndex+1;
+        else if (l==4 && ((entityGridIndex+(tm->gridWidth) <= tm->gridAmount)))
+            ind = entityGridIndex+tm->gridWidth;
+            
+
+        
+        if (ind!=-1 && ind < tm->gridAmount)
+            for (int i = 0; i<tm->tilesInGrid[ind]; i++){
+                printf("checking grid[%d] - playergrid[%d] - playerx: %d, playery: %d || tilex: %d, tiley: %d\n", ind, entityGridIndex, (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale))), (int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale))), tm->tiles[ind][i].xGridPos, tm->tiles[ind][i].yGridPos);
+            
+                if (!(tm->tiles[ind][i].xGridPos < (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale)))-1 || tm->tiles[ind][i].xGridPos > (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale)))+1 || tm->tiles[ind][i].yGridPos < tm->mapHeight-(int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale)))-1 || tm->tiles[ind][i].yGridPos > tm->mapHeight-(int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale)))+1))
+                {
+                    rects[rectCount++] = tm->tiles[ind][i].pos;
+                    tm->tiles[ind][i].spriteYId=1;
+                }
+            }
+        
     }
-    SDL_FRect* newRect = realloc(rects, sizeof(SDL_FRect)*rectCount);
-    if (newRect == NULL) {
-        free(rects);
-        printf("getCollidersAroundEntity memory not initialized propery.\n");
-        return NULL;
+    
+    if (rectCount<9){
+        SDL_FRect* newRect = realloc(rects, sizeof(SDL_FRect)*rectCount);
+        if (newRect == NULL) {
+            free(rects);
+            printf("getCollidersAroundEntity memory not initialized propery.\n");
+            return NULL;
+        }
+        rects = newRect;
     }
     *colliderAmount=rectCount;
-    printf("colliderAmount= %d\nnewRect pointer: %p\n", rectCount, newRect);
-    return newRect;
-} //CONSIDER A GRID/CHUNK SYSTEM. THIS IS JUST SLOWER...
+    printf("colliderAmount= %d\nnewRect pointer: %p\n", rectCount, rects);
+    return rects;
+} //THINK OF AN ALGORITHM TO GRAB GRIDS AROUND PLAYER
 
 bool Tilemap_isTileParseable(Tilemap* tm, char tileToParse, int* tileId){
     *tileId = 0;
