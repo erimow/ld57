@@ -267,28 +267,80 @@ SDL_FRect* Tilemap_getCollidersAroundEntity(Tilemap* tm, Entity* entity, Uint8* 
             entityPosInGrid = 2;
         else
             entityPosInGrid = 4;
-    printf("Grid section -> %d\n", entityPosInGrid);
+    //printf("Grid section -> %d\n", entityPosInGrid);
     
+
     //GRID CHECKING
-    for (int l = 0; l<5; l++){
+    bool isGridLeft = false, isGridRight = false, isGridUp = false, isGridDown = false;
+    if (((entityGridIndex%tm->gridWidth) != 0)) //left
+        isGridLeft=true;
+    if ((entityGridIndex%(int)(tm->gridWidth) != (tm->gridWidth-1))) //right
+        isGridRight=true;
+    if (((entityGridIndex-(tm->gridWidth) >= 0))) //up
+        isGridUp=true;
+    if (((entityGridIndex+(tm->gridWidth) <= tm->gridAmount))) //down
+        isGridDown=true;
+    
+    for (int l = 0; l<4; l++){
         int ind = -1;
         if (l==0) ind = entityGridIndex;
-        else if ( l==1 && (tm->gridWidth) != 0)
-            ind = entityGridIndex-1;
-        else if (l==2 && ((entityGridIndex-(tm->gridWidth) >= 0)))
-            ind = entityGridIndex-(tm->gridWidth);
-        else if ( l==3 && (entityGridIndex%(int)(tm->gridWidth) != (tm->gridWidth-1)))
-            ind = entityGridIndex+1;
-        else if (l==4 && ((entityGridIndex+(tm->gridWidth) <= tm->gridAmount)))
-            ind = entityGridIndex+tm->gridWidth;
+        else if (l==1){ //left or right
+            switch (entityPosInGrid) {
+                case 1:
+                case 3:
+                    if(isGridLeft)
+                        ind = entityGridIndex-1;
+                    break;
+                case 2:
+                case 4:
+                    if(isGridRight)
+                        ind = entityGridIndex+1;
+                    break;
+            }
+        }
+        else if (l==2){
+            switch (entityPosInGrid) {
+                case 1:
+                case 2:
+                    if(isGridUp)
+                        ind = entityGridIndex-tm->gridWidth;
+                    break;
+                    
+                case 3:
+                case 4:
+                    if(isGridDown)
+                        ind = entityGridIndex+tm->gridWidth;
+                    break;
+            }
             
-
+        }
+        else if (l==3){
+            switch (entityPosInGrid) {
+                case 1:
+                    if (isGridUp && isGridLeft)
+                        ind = (entityGridIndex-tm->gridWidth)-1;
+                    break;
+                case 2:
+                    if (isGridUp && isGridRight)
+                        ind = (entityGridIndex-tm->gridWidth)+1;
+                    break;
+                case 3:
+                    if (isGridDown && isGridLeft)
+                        ind = (entityGridIndex+tm->gridWidth)-1;
+                    break;
+                case 4:
+                    if(isGridDown && isGridRight)
+                        ind = (entityGridIndex+tm->gridWidth)+1;
+                    break;
+            }
+        }
+        
         
         if (ind!=-1 && ind < tm->gridAmount)
             for (int i = 0; i<tm->tilesInGrid[ind]; i++){
                 printf("checking grid[%d] - playergrid[%d] - playerx: %d, playery: %d || tilex: %d, tiley: %d\n", ind, entityGridIndex, (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale))), (int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale))), tm->tiles[ind][i].xGridPos, tm->tiles[ind][i].yGridPos);
             
-                if (!(tm->tiles[ind][i].xGridPos < (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale)))-1 || tm->tiles[ind][i].xGridPos > (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale)))+1 || tm->tiles[ind][i].yGridPos < tm->mapHeight-(int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale)))-1 || tm->tiles[ind][i].yGridPos > tm->mapHeight-(int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale)))+1))
+                if (!(tm->tiles[ind][i].xGridPos < EntityTilePos.x-1 || tm->tiles[ind][i].xGridPos > EntityTilePos.x+1 || tm->tiles[ind][i].yGridPos < (tm->mapHeight-EntityTilePos.y)-1 || tm->tiles[ind][i].yGridPos > (tm->mapHeight-EntityTilePos.y)+1))
                 {
                     rects[rectCount++] = tm->tiles[ind][i].pos;
                     tm->tiles[ind][i].spriteYId=1;
@@ -307,9 +359,9 @@ SDL_FRect* Tilemap_getCollidersAroundEntity(Tilemap* tm, Entity* entity, Uint8* 
         rects = newRect;
     }
     *colliderAmount=rectCount;
-    printf("colliderAmount= %d\nnewRect pointer: %p\n", rectCount, rects);
+    //printf("colliderAmount= %d\nnewRect pointer: %p\n", rectCount, rects);
     return rects;
-} //THINK OF AN ALGORITHM TO GRAB GRIDS AROUND PLAYER
+}
 
 bool Tilemap_isTileParseable(Tilemap* tm, char tileToParse, int* tileId){
     *tileId = 0;
