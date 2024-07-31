@@ -27,6 +27,7 @@
 const int ticksPerFrame = 1000.0f/TARGET_FPS;
 SDL_Window * window = NULL; //freed
 SDL_Renderer* renderer = NULL; //freed
+const int tilemap_tilesPerGrid = TILES_PER_GRID;
 
 /* Textures/Fonts */
 TTF_Font * gFont = NULL; //freed
@@ -85,7 +86,7 @@ bool loadMedia(void)
         printf("Failed to load TileSpritesheet texture image!\n");
         success = false;
     }
-    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.75, 16, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "SP", 2);
+    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.75, tilemap_tilesPerGrid, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "SP", 2);
 
     if (!Entity_setTexture(&player, renderer, "StarfishSpriteSheet.png"))
     {

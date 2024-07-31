@@ -24,7 +24,7 @@ void Tilemap_init(Tilemap* tm, Texture* text, float scale, int tilesPerGrid, cha
     tm->numTileTypesForParse = numTileTypes;
     tm->spriteSheet=text;
     tm->scale = scale;
-    tm->tilesPerGrid = tilesPerGrid;
+    tm->tilesPerGrid = tilesPerGrid; //MUST BE A PERFECT SQUARE VALUE ie 9->(3x3) 16->(4x4) etc
     Tilemap_populate(tm, fileName);
 //    tm->colliders = Tilemap_getColliders(tm);
 }
@@ -97,7 +97,7 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
     tm->gridWidth = ((int)((tm->mapWidth%(int)sqrt(tm->tilesPerGrid)) == 0)) ? (int)((tm->mapWidth/sqrt(tm->tilesPerGrid))) : (int)((tm->mapWidth/sqrt(tm->tilesPerGrid))+1);
     tm->gridHeight = ((int)((tm->mapHeight%(int)sqrt(tm->tilesPerGrid)) == 0)) ? ((int)((tm->mapHeight/sqrt(tm->tilesPerGrid)))) : ((int)((tm->mapHeight/sqrt(tm->tilesPerGrid))+1));
     tm->gridAmount =  tm->gridWidth*tm->gridHeight;
-    printf("Grid Amount = %d\n", tm->gridAmount);
+    printf("TilesPerGrid = %d\nGrid Amount = %d\nGrid width = %d, Grid height = %d\n", tm->tilesPerGrid, tm->gridAmount, tm->gridWidth, tm->gridHeight);
     Tile** tiles = NULL;
     tiles = malloc(sizeof(Tile*)*tm->gridAmount);
     if (tiles == NULL){printf("tiles could not be allocatied\n");}
@@ -185,34 +185,26 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
             
             int index = ((int)((i/tm->mapWidth)/sqrt(tm->tilesPerGrid))*(int)((tm->mapWidth/sqrt(tm->tilesPerGrid))+1)) + (int)((i%tm->mapWidth)/sqrt(tm->tilesPerGrid));
             Tile_init(&tiles[index][tilesInGrid[index]++], i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth), spriteXId, spriteYId, tileSize, tm->mapHeight, tm->scale, angle, fl);
-            printf("tile:%d->x:%d, y:%d\n", i, i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth));
-            printf("Grid index-> [%d], [%d]\n", index, tilesInGrid[index]-1);
+            //printf("tile:%d->x:%d, y:%d\n", i, i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth));
+            //printf("Grid index-> [%d], [%d]\n", index, tilesInGrid[index]-1);
             tileAmount++;
-//            if (tileAmount>=capacity){
-//                capacity*=2;
-//                Tile** newTiles = realloc(tiles, (sizeof(Tile*)*tileAmount)*capacity);
-//                if (newTiles==NULL)
-//                {
-//                    printf("Could not allocate new memory to tiles in Tilemap_populate\n");
-//                    free(tiles);
-//                    free(content);
-//                    return;
-//                }
-//                tiles=newTiles;
-//            }
+
         }
     }
-    //Tile* newTiles = realloc(tiles, (sizeof(Tile)*tileAmount));
-//    if (newTiles==NULL)
-//    {
-//        printf("Could not allocate new memory to tiles in Tilemap_populate p.2\n");
-//        free(tiles);
-//        free(content);
-//        return;
-//    }
+
     for (int i =0; i < tm->gridAmount; i++)
     {
         printf("grid[%d] -> %d tiles\n", i, tilesInGrid[i]);
+        
+        Tile* newTile = realloc(tiles[i], sizeof(Tile)*tilesInGrid[i]);
+        if (newTile == NULL && tilesInGrid[i]!=0)
+        {
+            printf("Could not allocate memory to tile[%d] in Tilemap_populate p.2\n", i);
+            free(tiles);
+            free(content);
+            return;
+        }
+        tiles[i]=newTile;
     }
     tm->tilesInGrid = tilesInGrid;
     tm->tiles=tiles;
@@ -338,12 +330,12 @@ SDL_FRect* Tilemap_getCollidersAroundEntity(Tilemap* tm, Entity* entity, Uint8* 
         
         if (ind!=-1 && ind < tm->gridAmount)
             for (int i = 0; i<tm->tilesInGrid[ind]; i++){
-                printf("checking grid[%d] - playergrid[%d] - playerx: %d, playery: %d || tilex: %d, tiley: %d\n", ind, entityGridIndex, (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale))), (int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale))), tm->tiles[ind][i].xGridPos, tm->tiles[ind][i].yGridPos);
+                //printf("checking grid[%d] - playergrid[%d] - playerx: %d, playery: %d || tilex: %d, tiley: %d\n", ind, entityGridIndex, (int)((((entity->xPos+(entity->width/2))/(tileSize)/tm->scale))), (int)(((((entity->yPos+(entity->height/2))/tileSize)/tm->scale))), tm->tiles[ind][i].xGridPos, tm->tiles[ind][i].yGridPos);
             
                 if (!(tm->tiles[ind][i].xGridPos < EntityTilePos.x-1 || tm->tiles[ind][i].xGridPos > EntityTilePos.x+1 || tm->tiles[ind][i].yGridPos < (tm->mapHeight-EntityTilePos.y)-1 || tm->tiles[ind][i].yGridPos > (tm->mapHeight-EntityTilePos.y)+1))
                 {
                     rects[rectCount++] = tm->tiles[ind][i].pos;
-                    tm->tiles[ind][i].spriteYId=1;
+                    //tm->tiles[ind][i].spriteYId=1; For collision testing
                 }
             }
         
