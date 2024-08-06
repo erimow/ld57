@@ -4,7 +4,7 @@ Building alongside a starfish underwater metroidvania
 Tilemaps
 -Can create gridbased levels with a .txt file
 -Full collision system for use with entities
--Working on efficiently rendering (currently renders the whole map
+-Efficiently renders only grids on screen
 
 Entities
 -Can create physics or non-physics entities
