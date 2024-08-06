@@ -39,7 +39,6 @@
 		034C3B342C4B1E8800913D57 /* StarfishRightRoll.png in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B322C4B1E8800913D57 /* StarfishRightRoll.png */; };
 		03F0613B2C506C0000375EAF /* TileSpritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F0613A2C506C0000375EAF /* TileSpritesheet.png */; };
 		03F0613E2C50704700375EAF /* Tilemap.c in Sources */ = {isa = PBXBuildFile; fileRef = 03F0613D2C50704700375EAF /* Tilemap.c */; };
-		03F061452C50F00C00375EAF /* File in Resources */ = {isa = PBXBuildFile; fileRef = 03F061442C50F00C00375EAF /* File */; };
 		03F0614B2C50F13300375EAF /* map.txt in Resources */ = {isa = PBXBuildFile; fileRef = 03F0614A2C50F13200375EAF /* map.txt */; };
 /* End PBXBuildFile section */
 
@@ -99,7 +98,6 @@
 		03F0613A2C506C0000375EAF /* TileSpritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TileSpritesheet.png; sourceTree = "<group>"; };
 		03F0613C2C50704700375EAF /* Tilemap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tilemap.h; sourceTree = "<group>"; };
 		03F0613D2C50704700375EAF /* Tilemap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Tilemap.c; sourceTree = "<group>"; };
-		03F061442C50F00C00375EAF /* File */ = {isa = PBXFileReference; lastKnownFileType = text; path = File; sourceTree = "<group>"; };
 		03F0614A2C50F13200375EAF /* map.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = map.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -223,7 +221,6 @@
 		03F061412C50EEFB00375EAF /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				03F061442C50F00C00375EAF /* File */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -295,7 +292,6 @@
 				034C3B1E2C47A52A00913D57 /* game - music 1.wav in Resources */,
 				0307D6932C4CEF830096CEEF /* StarfishSpriteSheet.png in Resources */,
 				03F0614B2C50F13300375EAF /* map.txt in Resources */,
-				03F061452C50F00C00375EAF /* File in Resources */,
 				0307D6962C4F2F700096CEEF /* BackgroundFishSpriteSheet.png in Resources */,
 				034C3B1C2C47A52A00913D57 /* beat.wav in Resources */,
 				032362C12C474BC100AD351B /* Assets.xcassets in Resources */,

@@ -152,18 +152,15 @@ void gameloop(void){
     SDL_Color fpsCol = {0,0,0,255};
     Texture_setColor(&player.spriteSheet, 10, 255, 10);
     
+    float cameraOffsetOffsetx = 0, cameraOffsetOffsety = 0;
+    float camMoveSpeed = 100;
+    
 //    Uint8 tileSize = TILE_SIZE;
     
     Uint8 currentPlayerSprite=0;
     
     //Camera_setCameraOffset(&camera, 0, -200);
     float cameraOffsetX, cameraOffsetY;
-    
-    
-    
-    
-    //Scene Objects
-
     
     
     //player stuff
@@ -185,8 +182,23 @@ void gameloop(void){
             {
                 quit = true;
             }
+            if (e.type == SDL_KEYDOWN){
+                if (e.key.keysym.sym == SDLK_i){
+                    cameraOffsetOffsety-=camMoveSpeed;
+                }
+                if (e.key.keysym.sym == SDLK_j){
+                    cameraOffsetOffsetx-=camMoveSpeed;
+                }
+                if (e.key.keysym.sym == SDLK_k){
+                    cameraOffsetOffsety+=camMoveSpeed;
+                }
+                if (e.key.keysym.sym == SDLK_l){
+                    cameraOffsetOffsetx+=camMoveSpeed;
+                }
+            }
             Button_handleEvent(&butt, &e, &isButtPressed);
             Entity_handleEvent(&player, &e);
+            Camera_setCameraOffset(&camera, cameraOffsetOffsetx, cameraOffsetOffsety);
         }
         
         if (Mix_PlayingMusic() == 0)
@@ -266,7 +278,7 @@ void gameloop(void){
         //Texture_render(&test, renderer, NULL, &imageLoc, 0.0, NULL, SDL_FLIP_NONE);
         BackgroundEntity_update(&bgFish, renderer, cameraOffsetX, cameraOffsetY, frameCount, 30);
         
-        Tilemap_render(&tilemap, renderer, cameraOffsetX, cameraOffsetY);
+        Tilemap_render(&tilemap, renderer, cameraOffsetX, cameraOffsetY, cameraOffsetOffsetx, cameraOffsetOffsety);
         
         Entity_render(&testObject, renderer, &player.clip[0], -1, NULL,  SDL_FLIP_NONE, cameraOffsetX, cameraOffsetY);
        

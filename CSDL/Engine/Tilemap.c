@@ -212,15 +212,38 @@ void Tilemap_populate(Tilemap* tm, char* fileName){
     free(content);
 }
 
-void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset){
-    int tilesize = TILE_SIZE;
-    for (int i = 0; i<tm->gridAmount; i++){
+void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset, float camOffX, float camOffY){
+    int tileSize = TILE_SIZE;
+    int screenWidth = SCREEN_WIDTH;
+    int screenHeight = SCREEN_HEIGHT;
+    SDL_Point CameraMinTilePos = {(int)((((xOffset-camOffX)/tileSize)/tm->scale)), (int)((((yOffset-camOffY)/tileSize)/tm->scale))};
+    SDL_Point CameraMinGridPos = {(int)((CameraMinTilePos.x)/sqrt(tm->tilesPerGrid)), (int)((CameraMinTilePos.y)/sqrt(tm->tilesPerGrid))};
+    SDL_Point CameraMaxTilePos = {(int)(((((xOffset-camOffX) + screenWidth)/tileSize)/tm->scale)), (int)(((((yOffset-camOffY) + screenHeight)/tileSize)/tm->scale))};
+    SDL_Point CameraMaxGridPos = {(int)((CameraMaxTilePos.x)/sqrt(tm->tilesPerGrid)), (int)((CameraMaxTilePos.y)/sqrt(tm->tilesPerGrid))};
+    if (CameraMinGridPos.x < 0) CameraMinGridPos.x = 0;
+    if (CameraMinGridPos.y < 0) CameraMinGridPos.y = 0;
+    if (CameraMaxGridPos.x >= tm->gridWidth) CameraMaxGridPos.x = tm->gridWidth-1;
+    if(CameraMaxGridPos.y >= tm->gridHeight) CameraMaxGridPos.y = tm->gridHeight-1;
+    //printf("CameraTilePos = (%d, %d) -- CameraGridPos = (%d, %d)\nCameraMaxTilePos = (%d, %d) -- CameraMaxGridPos = (%d, %d)\n", CameraMinTilePos.x, CameraMinTilePos.y, CameraMinGridPos.x, CameraMinGridPos.y, CameraMaxTilePos.x, CameraMaxTilePos.y, CameraMaxGridPos.x, CameraMaxGridPos.y);
+
+    
+    
+    for (int i = (CameraMinGridPos.y*tm->gridWidth)+CameraMinGridPos.x; i<=(CameraMaxGridPos.y*tm->gridWidth)+CameraMaxGridPos.x; i++){
+        if(((i%(tm->gridWidth))>CameraMaxGridPos.x) || i%tm->gridWidth<CameraMinGridPos.x) i+=(tm->gridWidth-((CameraMaxGridPos.x-CameraMinGridPos.x)+1));
         for (int l = 0; l<tm->tilesInGrid[i]; l++){
             SDL_FRect pos = tm->tiles[i][l].pos;
             pos.x = pos.x-xOffset; pos.y=pos.y-yOffset;
-            Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->tiles[i][l].spriteXId*tilesize, tm->tiles[i][l].spriteYId*tilesize, tilesize, tilesize}), &pos, tm->tiles[i][l].rotation, NULL, tm->tiles[i][l].flip);
+            Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->tiles[i][l].spriteXId*tileSize, tm->tiles[i][l].spriteYId*tileSize, tileSize, tileSize}), &pos, tm->tiles[i][l].rotation, NULL, tm->tiles[i][l].flip);
         }
     }
+    
+//    for (int i = 0; i<tm->gridAmount; i++){
+//        for (int l = 0; l<tm->tilesInGrid[i]; l++){
+//            SDL_FRect pos = tm->tiles[i][l].pos;
+//            pos.x = pos.x-xOffset; pos.y=pos.y-yOffset;
+//            Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->tiles[i][l].spriteXId*tileSize, tm->tiles[i][l].spriteYId*tileSize, tileSize, tileSize}), &pos, tm->tiles[i][l].rotation, NULL, tm->tiles[i][l].flip);
+//        }
+//    }
 }
 
 SDL_FRect* Tilemap_getColliders(Tilemap* tm){

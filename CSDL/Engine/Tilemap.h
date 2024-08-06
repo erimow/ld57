@@ -14,6 +14,7 @@
 #include <SDL2/SDL.h>
 #include "Entity.h"
 #include <math.h>
+#include "Camera.h"
 
 
 
@@ -44,7 +45,7 @@ void Tile_free(Tile* tile);
 void Tilemap_init(Tilemap* tm, Texture* text, float scale, int tilesPerGrid, char* fileName, char* tileTypes, int numTileTypes);
 void Tilemap_free(Tilemap* tm);
 void Tilemap_populate(Tilemap* tm, char* file);
-void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset);
+void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yOffset, float camOffX, float camOffY);
 SDL_FRect* Tilemap_getColliders(Tilemap* tm);
 SDL_FRect* Tilemap_getCollidersAroundEntity(Tilemap* tm, Entity* entity, Uint8* colliderAmount);
 bool Tilemap_isTileParseable(Tilemap* tm, char tileToParse, int* tileId);
