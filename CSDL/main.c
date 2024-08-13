@@ -38,6 +38,7 @@ Texture fpsTexture; //freed
 /* Entities */
 Entity player; //freed
 Entity testObject; //freed
+Entity mapEntities[1];
 
 Entity fish; //freed
 BackgroundEntity bgFish; //freed
@@ -76,7 +77,7 @@ bool loadMedia(void)
     Button_init(&butt, 10, 10, 25, 25);
     //Entity_init(&player, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 100, 100, 10);  //Normal entity init
     Entity_initPhysics(&player, SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2-50, 100, 100, 0.8f, 15.0f, 0.3f, .95f, 8.0f, 3);
-    Entity_initPhysics(&testObject, 300, -1000, 100, 100, .8f, 12.0f, 0.3f, .95f, 8.0f, 1);
+    Entity_initPhysics(&testObject, 300, 0, 100, 100, .8f, 12.0f, 0.3f, .95f, 8.0f, 1);
     Entity_init(&fish, 300, 300, 100, 100, 0.0, 2);
     
     Camera_init(&camera);
@@ -86,7 +87,7 @@ bool loadMedia(void)
         printf("Failed to load TileSpritesheet texture image!\n");
         success = false;
     }
-    Tilemap_init(&tilemap, &tilemapSpriteSheet, 3.75, tilemap_tilesPerGrid, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "SP", 2);
+
 
     if (!Entity_setTexture(&player, renderer, "StarfishSpriteSheet.png"))
     {
@@ -102,12 +103,17 @@ bool loadMedia(void)
         printf("Failed to load RelicArt.png!\n");
         success=false;
     }
+
     
     if (!Entity_setTexture(&fish, renderer, "BackgroundFishSpriteSheet.png"))
     {
         printf("Failed to load background fish!\n");
         success=false;
     }
+    testObject.clip[0] = (SDL_Rect){2, 5, 25, 22};
+    mapEntities[0] = testObject;
+    Tilemap_init(&tilemap, &tilemapSpriteSheet, true, 3.75, tilemap_tilesPerGrid, "/Users/erik/Documents/Projects/CSDL/CSDL/CSDL/map.txt", "SX", 2, "E", 1, mapEntities, 1);
+    
     fish.clip[0] = (SDL_Rect){0,0,32,32};
     fish.clip[1] = (SDL_Rect){32,0,32,32};
     BackgroundEntity_init(&bgFish, &fish, 8); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO MAKE ENTITY'S TEXTURE A POINTER DONT FORGET
@@ -233,7 +239,7 @@ void gameloop(void){
         }
         else if (player.onGround == 1)
             playerRotation += player.xVel/2;
-        //Entity_move(&testObject, Tilemap_getCollidersAroundEntity(&tilemap, &testObject, &colliderAmount), colliderAmount);
+        Entity_move(&testObject, Tilemap_getCollidersAroundEntity(&tilemap, &testObject, &colliderAmount), colliderAmount);
         
         
         Camera_followEntity(&camera, &player);
@@ -397,7 +403,7 @@ bool init(void){
 
 void quit(void)
 {
-    
+    printf("Freeing\n");
     Texture_free(&fontTexture);
     //Texture_free(&test);
     Texture_free(&fpsTexture);

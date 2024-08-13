@@ -38,6 +38,16 @@ void BackgroundEntity_init(BackgroundEntity* bge, Entity* entity, int amount){
         
     }
     
+    for (int i = 0; i < bge->amount - 1; i++) {
+            for (int j = 0; j < bge->amount - i - 1; j++) {
+                if (bge->entity[j].depth < bge->entity[j + 1].depth) {
+                    // Swap entities
+                    Entity temp = bge->entity[j];
+                    bge->entity[j] = bge->entity[j + 1];
+                    bge->entity[j + 1] = temp;
+                }
+            }
+        }
 }
 void BackgroundEntity_free(BackgroundEntity* bge){
     for (int i = 0; i<bge->amount; i++){
