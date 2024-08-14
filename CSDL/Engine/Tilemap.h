@@ -29,8 +29,8 @@ typedef struct{
 typedef struct{
     Tile* tiles;
     Uint8 tilesInGrid;
-//    Entity* gridEntities;
-//    Uint8 numGridEntities;
+    Entity* gridEntities;
+    Uint8 numGridEntities;
 }Grid;
 
 typedef struct{

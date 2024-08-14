@@ -39,6 +39,12 @@ void Tilemap_free(Tilemap* tm){
         if (tm->grid[i].tiles != NULL){
             free(tm->grid[i].tiles);
             tm->grid[i].tiles=NULL;
+            tm->grid[i].tilesInGrid=0;
+        }
+        if(tm->grid[i].gridEntities != NULL){
+            free(tm->grid[i].gridEntities);
+            tm->grid[i].gridEntities=NULL;
+            tm->grid[i].numGridEntities=0;
         }
     }
     if (tm->grid != NULL){
@@ -108,23 +114,27 @@ void Tilemap_populate(Tilemap* tm, char* fileName, Entity* entityTypes, int enti
     tm->gridAmount =  tm->gridWidth*tm->gridHeight;
     printf("TilesPerGrid = %d\nGrid Amount = %d\nGrid width = %d, Grid height = %d\n", tm->tilesPerGrid, tm->gridAmount, tm->gridWidth, tm->gridHeight);
     Grid* grid = NULL;
+    grid = malloc(sizeof(Grid)*tm->gridAmount);
+    if (grid == NULL){printf("grid could not be allocatied\n");}
 //    Tile** tiles = NULL;
 //    tiles = malloc(sizeof(Tile*)*tm->gridAmount);
 //    if (tiles == NULL){printf("tiles could not be allocatied\n");}
-    grid = malloc(sizeof(Grid)*tm->gridAmount);
-    if (grid == NULL){printf("grid could not be allocatied\n");}
 //    Uint8* tilesInGrid = malloc(sizeof(Uint8)*tm->gridAmount);
 //    if (tilesInGrid == NULL)
 //        printf("tilesInGrid not malloced\n");
-    
 
+    
     for (int i = 0; i < tm->gridAmount; i++){
         grid[i].tiles = malloc(sizeof(Tile)*tm->tilesPerGrid);
-        if (grid[i].tiles==NULL)
-        {
+        if (grid[i].tiles==NULL){
             printf("tiles[%d] is NULL!\n", i);
         }
         grid[i].tilesInGrid = 0;
+        grid[i].numGridEntities = 0;
+        grid[i].gridEntities = malloc(sizeof(Entity)*tm->tilesPerGrid);
+        if (grid[i].gridEntities == NULL){
+            printf("Could not malloc grid[%d].gridEntities\n", i);
+        }
     }
     int tileAmount = 0;
     
@@ -132,11 +142,11 @@ void Tilemap_populate(Tilemap* tm, char* fileName, Entity* entityTypes, int enti
     int spriteXId = 0;
     int entityId = 0;
     //allocate levelEntites
-    int entityMallocSize = 5;
-    tm->levelEntities=malloc(sizeof(Entity)*entityMallocSize);
-    if (tm->levelEntities==NULL){
-        printf("Could not malloc tm->levelEntities\n");
-    }
+//    int entityMallocSize = 5;
+//    tm->levelEntities=malloc(sizeof(Entity)*entityMallocSize);
+//    if (tm->levelEntities==NULL){
+//        printf("Could not malloc tm->levelEntities\n");
+//    }
     for (int i = 0; i < totalBytesRead; i++)
     {
         char tile = content[i];
@@ -207,28 +217,42 @@ void Tilemap_populate(Tilemap* tm, char* fileName, Entity* entityTypes, int enti
 //            printf("tile:%d->x:%d, y:%d\n", i, i%tm->mapWidth, tm->mapHeight-(i/tm->mapWidth));
 //            printf("Grid index-> [%d], [%d]\n", index, grid[index].tilesInGrid-1);
             tileAmount++;
-
         }
         else if(Tilemap_isEntityTileParseable(tm, tile, &entityId)){
-//            int index = ((int)((i/tm->mapWidth)/sqrt(tm->tilesPerGrid))*(int)((tm->mapWidth/sqrt(tm->tilesPerGrid))+1)) + (int)((i%tm->mapWidth)/sqrt(tm->tilesPerGrid));
-            if (entityMallocSize == tm->entityAmount){
-                entityMallocSize*=2;
-                tm->levelEntities = realloc(tm->levelEntities, sizeof(Entity)*entityMallocSize);
-                if(tm->levelEntities==NULL)
-                {
-                    printf("Reallocing tm->levelEntites failed!\n");
-                }
-            }
-            tm->levelEntities[tm->entityAmount] = entityTypes[entityId];
-            tm->levelEntities[tm->entityAmount].xPos = (i%tm->mapWidth)*tileSize*tm->scale;
-            tm->levelEntities[tm->entityAmount].yPos = (i/tm->mapWidth)*tileSize*tm->scale;
-            tm->entityAmount++;
+            int index = ((int)((i/tm->mapWidth)/sqrt(tm->tilesPerGrid))*(int)((tm->mapWidth/sqrt(tm->tilesPerGrid))+1)) + (int)((i%tm->mapWidth)/sqrt(tm->tilesPerGrid));
+//            if (grid[index].numGridEntities == 0){
+//                grid[index].gridEntities = malloc(sizeof(Entity));
+//                if (grid[index].gridEntities==NULL){
+//                    printf("Reallocing tm->grid[%d] failed!\n", index);
+//                }
+//            }
+            
+//            grid[index].gridEntities = realloc(grid[index].gridEntities, sizeof(Entity)*grid[index].numGridEntities+1);
+//            if (grid[index].gridEntities==NULL){
+//                printf("Reallocing tm->grid[%d] failed!\n", index);
+//            }
+//            if (entityMallocSize == tm->entityAmount){
+//                entityMallocSize*=2;
+//                tm->levelEntities = realloc(tm->levelEntities, sizeof(Entity)*entityMallocSize);
+//                if(tm->levelEntities==NULL)
+//                {
+//                    printf("Reallocing tm->levelEntites failed!\n");
+//                }
+//            }
+//            tm->levelEntities[tm->entityAmount] = entityTypes[entityId];
+//            tm->levelEntities[tm->entityAmount].xPos = (i%tm->mapWidth)*tileSize*tm->scale;
+//            tm->levelEntities[tm->entityAmount].yPos = (i/tm->mapWidth)*tileSize*tm->scale;
+//            tm->entityAmount++;
+            grid[index].gridEntities[grid[index].numGridEntities] = entityTypes[entityId];
+            grid[index].gridEntities[grid[index].numGridEntities].xPos = (i%tm->mapWidth)*tileSize*tm->scale;
+            grid[index].gridEntities[grid[index].numGridEntities].yPos = (i/tm->mapWidth)*tileSize*tm->scale;
+            grid[index].numGridEntities++;
         }
     }
 
-    if (entityMallocSize!=tm->entityAmount){
-        tm->levelEntities = realloc(tm->levelEntities, sizeof(Entity)*tm->entityAmount);
-    }
+//    if (entityMallocSize!=tm->entityAmount){
+//        tm->levelEntities = realloc(tm->levelEntities, sizeof(Entity)*tm->entityAmount);
+//    }
     
     for (int i =0; i < tm->gridAmount; i++)
     {
@@ -274,10 +298,11 @@ void Tilemap_render(Tilemap* tm, SDL_Renderer* renderer, float xOffset, float yO
             pos.x = pos.x-xOffset; pos.y=pos.y-yOffset;
             Texture_render(tm->spriteSheet, renderer, &((SDL_Rect){tm->grid[i].tiles[l].spriteXId*tileSize, tm->grid[i].tiles[l].spriteYId*tileSize, tileSize, tileSize}), &pos, tm->grid[i].tiles[l].rotation, NULL, tm->grid[i].tiles[l].flip);
         }
-    }
-    
-    for (int i = 0; i<tm->entityAmount; i++){
-        Entity_render(&tm->levelEntities[i], renderer, tm->levelEntities[i].clip, -1, NULL, SDL_FLIP_NONE, xOffset, yOffset);
+        Uint8 colliderAmount = 0;
+        for (int l = 0; l<tm->grid[i].numGridEntities; l++){
+            Entity_move(&tm->grid[i].gridEntities[l], Tilemap_getCollidersAroundEntity(tm, &tm->grid[i].gridEntities[l], &colliderAmount), colliderAmount);
+            Entity_render(&tm->grid[i].gridEntities[l], renderer, tm->grid[i].gridEntities[l].clip, -1, NULL, SDL_FLIP_NONE, xOffset, yOffset);
+        }
     }
     
 }
