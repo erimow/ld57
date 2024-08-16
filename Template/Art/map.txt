@@ -1,11 +1,11 @@
 S*************************************S*SS
 S***************SSS*******************SSSS
-S*******S***S*****E*****************SSSSSS
-S*****SSSS**S***SSSS**************E***S*SS
+S*******S***S***********************SSSSSS
+S*****SSSS**S***SSSS******************S*SS
 S*******S***S****SS***********S*SSS***SSSS
 SS***********************************SSSSS
 SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS**SSSSSS
-****************E**********E**********E***
+******************************************
 SSSSSSS*SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 SSSSSSS*SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 SSS**********************************SSSSS
