@@ -64,7 +64,7 @@
 		0307D6952C4F2F700096CEEF /* BackgroundFishSpriteSheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BackgroundFishSpriteSheet.png; sourceTree = "<group>"; };
 		0307D6972C4F2FAD0096CEEF /* BackgroundEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BackgroundEntity.h; sourceTree = "<group>"; };
 		0307D6982C4F2FAD0096CEEF /* BackgroundEntity.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BackgroundEntity.c; sourceTree = "<group>"; };
-		032362BA2C474BC000AD351B /* CSDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CSDL.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		032362BA2C474BC000AD351B /* Template.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Template.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		032362C02C474BC100AD351B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		032362C72C474BC100AD351B /* CSDL.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CSDL.entitlements; sourceTree = "<group>"; };
 		032362CE2C474BE800AD351B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
@@ -141,7 +141,7 @@
 		032362B12C474BC000AD351B = {
 			isa = PBXGroup;
 			children = (
-				032362BC2C474BC000AD351B /* CSDL */,
+				032362BC2C474BC000AD351B /* Template */,
 				032362BB2C474BC000AD351B /* Products */,
 				032362DE2C474CE800AD351B /* Frameworks */,
 			);
@@ -150,12 +150,12 @@
 		032362BB2C474BC000AD351B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				032362BA2C474BC000AD351B /* CSDL.app */,
+				032362BA2C474BC000AD351B /* Template.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		032362BC2C474BC000AD351B /* CSDL */ = {
+		032362BC2C474BC000AD351B /* Template */ = {
 			isa = PBXGroup;
 			children = (
 				03F0614A2C50F13200375EAF /* map.txt */,
@@ -168,7 +168,7 @@
 				032362C72C474BC100AD351B /* CSDL.entitlements */,
 				032362CE2C474BE800AD351B /* main.c */,
 			);
-			path = CSDL;
+			path = Template;
 			sourceTree = "<group>";
 		};
 		032362CD2C474BD800AD351B /* Scripts */ = {
@@ -228,9 +228,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		032362B92C474BC000AD351B /* CSDL */ = {
+		032362B92C474BC000AD351B /* Template */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 032362CA2C474BC100AD351B /* Build configuration list for PBXNativeTarget "CSDL" */;
+			buildConfigurationList = 032362CA2C474BC100AD351B /* Build configuration list for PBXNativeTarget "Template" */;
 			buildPhases = (
 				032362B62C474BC000AD351B /* Sources */,
 				032362B72C474BC000AD351B /* Frameworks */,
@@ -241,9 +241,9 @@
 			);
 			dependencies = (
 			);
-			name = CSDL;
+			name = Template;
 			productName = CSDL;
-			productReference = 032362BA2C474BC000AD351B /* CSDL.app */;
+			productReference = 032362BA2C474BC000AD351B /* Template.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -260,7 +260,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 032362B52C474BC000AD351B /* Build configuration list for PBXProject "CSDL" */;
+			buildConfigurationList = 032362B52C474BC000AD351B /* Build configuration list for PBXProject "Template" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -273,7 +273,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				032362B92C474BC000AD351B /* CSDL */,
+				032362B92C474BC000AD351B /* Template */,
 			);
 		};
 /* End PBXProject section */
@@ -504,7 +504,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		032362B52C474BC000AD351B /* Build configuration list for PBXProject "CSDL" */ = {
+		032362B52C474BC000AD351B /* Build configuration list for PBXProject "Template" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				032362C82C474BC100AD351B /* Debug */,
@@ -513,7 +513,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		032362CA2C474BC100AD351B /* Build configuration list for PBXNativeTarget "CSDL" */ = {
+		032362CA2C474BC100AD351B /* Build configuration list for PBXNativeTarget "Template" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				032362CB2C474BC100AD351B /* Debug */,
