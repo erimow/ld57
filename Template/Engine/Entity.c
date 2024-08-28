@@ -102,7 +102,7 @@ void Entity_setRotation(Entity* entity, double rotation){
 void Entity_setBaseVelocity(Entity* entity, float newVelocity){
     entity->entityVelocity = newVelocity;
 }
-void Entity_move(Entity* entity, SDL_FRect* colliders, int size){
+void Entity_move(Entity* entity, SDL_FRect* colliders, int size, bool freeColliders){
     if (entity->isPhysics)
     {
         entity->xVel += ((entity->right*entity->entityVelocity) - (entity->left * entity->entityVelocity));
@@ -158,7 +158,7 @@ void Entity_move(Entity* entity, SDL_FRect* colliders, int size){
             entity->collider.y=entity->yPos;
         }
     //printf("onGround: %d\n", entity->onGround);
-    if (colliders!=NULL)
+    if (colliders!=NULL && freeColliders)
         free(colliders);
 }
 void Entity_handleEvent(Entity* entity, SDL_Event* e){

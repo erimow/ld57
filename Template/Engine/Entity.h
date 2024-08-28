@@ -43,7 +43,7 @@ void Entity_render(Entity* entity, SDL_Renderer* renderer, SDL_Rect* clip, Uint8
 void Entity_setPosition(Entity* entity, int x, int y);
 void Entity_setRotation(Entity* entity, double rotation);
 void Entity_setBaseVelocity(Entity* entity, float newVelocity);
-void Entity_move(Entity* entity, SDL_FRect object[], int size);
+void Entity_move(Entity* entity, SDL_FRect object[], int size, bool freeColliders);
 void Entity_handleEvent(Entity* entity, SDL_Event* e);
 bool Entity_checkCollision(Entity* entity, SDL_FRect rect);
 

@@ -361,7 +361,7 @@ void Tilemap_render(Tilemap *tm, SDL_Renderer *renderer, float xOffset,
       Entity_move(&tm->grid[i].gridEntities[l],
                   Tilemap_getCollidersAroundEntity(
                       tm, &tm->grid[i].gridEntities[l], &colliderAmount),
-                  colliderAmount);
+                  colliderAmount, true);
       Entity_render(&tm->grid[i].gridEntities[l], renderer,
                     tm->grid[i].gridEntities[l].clip, -1, NULL, SDL_FLIP_NONE,
                     xOffset, yOffset);
@@ -391,7 +391,7 @@ SDL_FRect *Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
     return NULL;
   }
   Uint8 tileSize = TILE_SIZE;
-  printf("Tilesize = %d\n", tileSize);
+  //printf("Tilesize = %d\n", tileSize);
   SDL_Point EntityTilePos = {
       (int)(((entity->xPos + (entity->width / 2)) / (tileSize) / tm->scale)),
       (int)((((entity->yPos + (entity->height / 2)) / tileSize) / tm->scale))};

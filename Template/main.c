@@ -19,7 +19,9 @@
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#endif /* ifdef __EMSCRIPTEN__ */
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -148,7 +150,7 @@ bool loadMedia(context *ctx) {
   ctx->fish.clip[1] = (SDL_Rect){32, 0, 32, 32};
   BackgroundEntity_init(
       &ctx->bgFish, &ctx->fish,
-      3); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO MAKE
+      5); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO MAKE
           // ENTITY'S TEXTURE A POINTER DONT FORGET
 
   ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
@@ -231,7 +233,7 @@ void gameLoop(void *arg) {
   Entity_move(&ctx->player,
               Tilemap_getCollidersAroundEntity(&ctx->tilemap, &ctx->player,
                                                &colliderAmount),
-              colliderAmount);
+              colliderAmount, true);
 
   if (ctx->player.onGround == 1 && checkForLanding) {
     Mix_PlayChannel(-1, ctx->soundEffect, 0);
@@ -244,7 +246,7 @@ void gameLoop(void *arg) {
   Entity_move(&ctx->testObject,
               Tilemap_getCollidersAroundEntity(&ctx->tilemap, &ctx->testObject,
                                                &colliderAmount),
-              colliderAmount);
+              colliderAmount, true);
 
   Camera_followEntity(&ctx->camera, &ctx->player);
   Camera_getObjectOffset(&ctx->camera, &ctx->cameraOffsetX,
@@ -479,7 +481,9 @@ int main(int argc, char *argv[]) {
     printf("Init not loaded properly!");
   else {
     startGameloop(&ctx);
+#ifdef __EMSCRIPTEN__
     emscripten_set_main_loop_arg(gameLoop, &ctx, -1, 1);
+#endif /* ifdef __EMSCRIPTEN__ */
   }
   quit(&ctx);
 

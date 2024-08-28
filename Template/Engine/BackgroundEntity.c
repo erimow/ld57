@@ -62,7 +62,7 @@ void BackgroundEntity_update(BackgroundEntity* bge, SDL_Renderer* renderer, floa
     for (int i = 0; i<bge->amount; i++)
     {
         SDL_RendererFlip flip = (bge->entity[i].left==1) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-        Entity_move(&bge->entity[i], NULL, 0);
+        Entity_move(&bge->entity[i], NULL, 0, false);
         if (bge->entity[i].xPos > (xOffset/bge->entity[i].depth)+SCREEN_WIDTH)
             bge->entity[i].xPos -= SCREEN_WIDTH+bge->entity[i].width;
         else if (bge->entity[i].xPos < (xOffset/bge->entity[i].depth)-bge->entity[i].width)
