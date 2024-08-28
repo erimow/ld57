@@ -87,6 +87,7 @@ typedef struct context {
   bool lastMovedRight;
 
   bool isButtPressed;
+  bool quit;
 } context;
 
 bool loadMedia(context *ctx) {
@@ -106,9 +107,9 @@ bool loadMedia(context *ctx) {
   Button_init(&ctx->butt, 10, 10, 25, 25);
   // Entity_init(&player, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 100, 100, 10);
   // //Normal entity init
-  Entity_initPhysics(&ctx->player, SCREEN_WIDTH / 2 - 50,
-                     SCREEN_HEIGHT / 2 - 50, 100, 100, 0.8f, 15.0f, 0.3f, .95f,
-                     8.0f, 3);
+  Entity_initPhysics(&ctx->player, (float)SCREEN_WIDTH / 2 - 50,
+                     (float)SCREEN_HEIGHT / 2 - 50, 100, 100, 0.8f, 15.0f, 0.3f,
+                     .95f, 8.0f, 3);
   Entity_initPhysics(&ctx->testObject, 300, 0, 100, 100, .8f, 12.0f, 0.3f, .95f,
                      8.0f, 1);
   Entity_init(&ctx->fish, 300, 300, 100, 100, 0.0, 2);
@@ -192,6 +193,11 @@ void gameLoop(void *arg) {
   Timer_start(&ctx->capTimer);
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
+#ifdef __EMSCRIPTEN__
+    if (e.type == SDL_QUIT) {
+      ctx->quit = true;
+    }
+#endif
     if (e.type == SDL_KEYDOWN) {
       if (e.key.keysym.sym == SDLK_i) {
         ctx->cameraOffsetOffsety -= ctx->camMoveSpeed;
@@ -483,6 +489,9 @@ int main(int argc, char *argv[]) {
     startGameloop(&ctx);
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop_arg(gameLoop, &ctx, -1, 1);
+#else
+    while (!ctx.quit)
+      gameLoop(&ctx);
 #endif /* ifdef __EMSCRIPTEN__ */
   }
   quit(&ctx);

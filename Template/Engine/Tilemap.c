@@ -290,7 +290,7 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
   //    }
 
   for (int i = 0; i < tm->gridAmount; i++) {
-    printf("grid[%d] -> %d tiles\n", i, grid[i].tilesInGrid);
+    // printf("grid[%d] -> %d tiles\n", i, grid[i].tilesInGrid);
 
     Tile *newTile = realloc(grid[i].tiles, sizeof(Tile) * grid[i].tilesInGrid);
     if (newTile == NULL && grid[i].tilesInGrid != 0) {
@@ -391,7 +391,7 @@ SDL_FRect *Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
     return NULL;
   }
   Uint8 tileSize = TILE_SIZE;
-  //printf("Tilesize = %d\n", tileSize);
+  // printf("Tilesize = %d\n", tileSize);
   SDL_Point EntityTilePos = {
       (int)(((entity->xPos + (entity->width / 2)) / (tileSize) / tm->scale)),
       (int)((((entity->yPos + (entity->height / 2)) / tileSize) / tm->scale))};
