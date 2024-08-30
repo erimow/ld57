@@ -6,6 +6,7 @@
 //
 
 #include "Tilemap.h"
+#include <SDL2/SDL_rect.h>
 
 void Tile_init(Tile *tile, int xGridPos, int yGridPos, int spriteXId,
                int spriteYId, int tileSize, int mapHeight, float scale,
@@ -357,14 +358,15 @@ void Tilemap_render(Tilemap *tm, SDL_Renderer *renderer, float xOffset,
                      tm->grid[i].tiles[l].flip);
     }
     Uint8 colliderAmount = 0;
+    SDL_FRect *surroundingColliders = NULL;
     for (int l = 0; l < tm->grid[i].numGridEntities; l++) {
-      Entity_move(&tm->grid[i].gridEntities[l],
-                  Tilemap_getCollidersAroundEntity(
-                      tm, &tm->grid[i].gridEntities[l], &colliderAmount),
-                  colliderAmount, true);
-      Entity_render(&tm->grid[i].gridEntities[l], renderer,
-                    tm->grid[i].gridEntities[l].clip, -1, NULL, SDL_FLIP_NONE,
-                    xOffset, yOffset);
+      // surroundingColliders = Tilemap_getCollidersAroundEntity(
+      //     tm, &tm->grid[i].gridEntities[l], &colliderAmount);
+      // Entity_move(&tm->grid[i].gridEntities[l], surroundingColliders,
+      //             colliderAmount, true);
+      // Entity_render(&tm->grid[i].gridEntities[l], renderer,
+      //               tm->grid[i].gridEntities[l].clip, -1, NULL,
+      //               SDL_FLIP_NONE, xOffset, yOffset);
     }
   }
 }
@@ -385,6 +387,7 @@ SDL_FRect *Tilemap_getColliders(Tilemap *tm) {
 
 SDL_FRect *Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
                                             Uint8 *colliderAmount) {
+  // SDL_FRect rects[9];
   SDL_FRect *rects = malloc(sizeof(SDL_FRect) * 9);
   if (!rects) {
     printf("getCollidersAroundEntity memory not initialized propery.\n");
@@ -510,6 +513,7 @@ SDL_FRect *Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
     SDL_FRect *newRect = realloc(rects, sizeof(SDL_FRect) * rectCount);
     if (newRect == NULL) {
       free(rects);
+      rects = NULL;
       printf("getCollidersAroundEntity memory not initialized propery.\n");
       return NULL;
     }

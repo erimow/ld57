@@ -4,11 +4,11 @@ OBJS = main.c #Unused
 SOURCES := $(wildcard ./*.c) $(wildcard Engine/*.c)
 
 #CC specifies which compiler we're using
-CC = cc
+CC = gcc
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
-COMPILER_FLAGS = -w
+COMPILER_FLAGS = -w -Wall -Wextra
 
 #INCLUDES
 INCLUDES = -I./Sounds -I./Art -I./Engine -I./Fonts

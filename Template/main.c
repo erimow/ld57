@@ -17,6 +17,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_pixels.h>
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #ifdef __EMSCRIPTEN__
@@ -194,6 +195,13 @@ void gameLoop(void *arg) {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
 #ifdef __EMSCRIPTEN__
+    if (e.type == SDL_KEYDOWN) {
+      if (e.key.keysym.sym == SDLK_END) {
+        emscripten_cancel_main_loop();
+      }
+    }
+
+#else
     if (e.type == SDL_QUIT) {
       ctx->quit = true;
     }
@@ -235,11 +243,9 @@ void gameLoop(void *arg) {
   if (ctx->player.onGround == 0)
     checkForLanding = true;
   Uint8 colliderAmount = 0;
-
-  Entity_move(&ctx->player,
-              Tilemap_getCollidersAroundEntity(&ctx->tilemap, &ctx->player,
-                                               &colliderAmount),
-              colliderAmount, true);
+  SDL_FRect *surroudningColliders = Tilemap_getCollidersAroundEntity(
+      &ctx->tilemap, &ctx->player, &colliderAmount);
+  Entity_move(&ctx->player, surroudningColliders, colliderAmount, true);
 
   if (ctx->player.onGround == 1 && checkForLanding) {
     Mix_PlayChannel(-1, ctx->soundEffect, 0);
@@ -249,10 +255,10 @@ void gameLoop(void *arg) {
     // (int)(tilemap.mapHeight-((player.yPos/tileSize)/tilemap.scale)));
   } else if (ctx->player.onGround == 1)
     ctx->playerRotation += ctx->player.xVel / 2;
-  Entity_move(&ctx->testObject,
-              Tilemap_getCollidersAroundEntity(&ctx->tilemap, &ctx->testObject,
-                                               &colliderAmount),
-              colliderAmount, true);
+  // SDL_FRect *testsurroudningColliders = Tilemap_getCollidersAroundEntity(
+  //     &ctx->tilemap, &ctx->testObject, &colliderAmount);
+  // Entity_move(&ctx->testObject, testsurroudningColliders, colliderAmount,
+  // true);
 
   Camera_followEntity(&ctx->camera, &ctx->player);
   Camera_getObjectOffset(&ctx->camera, &ctx->cameraOffsetX,
