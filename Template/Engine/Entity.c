@@ -11,6 +11,10 @@ void Entity_init(Entity *entity, float xPos, float yPos, float width,
                  float height, float velocity, Uint8 spriteAmount) {
   entity->xVel = 0;
   entity->yVel = 0;
+  entity->left = 0;
+  entity->right = 0;
+  entity->up = 0;
+  entity->down = 0;
   entity->xPos = xPos;
   entity->yPos = yPos;
   entity->width = width;
@@ -47,6 +51,7 @@ void Entity_initPhysics(Entity *entity, float xPos, float yPos, float width,
   entity->left = 0;
   entity->right = 0;
   entity->up = 0;
+  entity->down = 0;
   entity->onGround = 0;
   Texture_init(&entity->spriteSheet);
   entity->clipLength = spriteAmount;
@@ -74,6 +79,7 @@ void Entity_free(Entity *entity, bool freeClip) {
   entity->left = 0;
   entity->right = 0;
   entity->up = 0;
+  entity->down = 0;
   entity->onGround = 0;
   Texture_free(&entity->spriteSheet);
   entity->isPhysics = false;
@@ -111,9 +117,7 @@ void Entity_setRotation(Entity *entity, double rotation) {
 void Entity_setBaseVelocity(Entity *entity, float newVelocity) {
   entity->entityVelocity = newVelocity;
 }
-void Entity_move(Entity *entity, SDL_FRect *colliders, int size,
-                 bool freeColliders) {
-  // printf("size = %d", size);
+void Entity_move(Entity *entity, SDL_FRect *colliders, int size) {
   if (entity->isPhysics) {
     entity->xVel += ((entity->right * entity->entityVelocity) -
                      (entity->left * entity->entityVelocity));
@@ -133,20 +137,27 @@ void Entity_move(Entity *entity, SDL_FRect *colliders, int size,
 
     if (entity->yVel != 0)
       entity->onGround = 0;
+  } else {
+    if (entity->up == 0 && entity->down == 0) {
+      entity->yVel = 0;
+    }
+    if (entity->left == 0 && entity->right == 0) {
+      entity->xVel = 0;
+    }
   }
   entity->xPos += entity->xVel;
   entity->collider.x = entity->xPos;
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++)
     if (Entity_checkCollision(entity, colliders[i])) {
       //            entity->xPos -= entity->xVel;
       if (entity->xVel < 0)
         entity->xPos = colliders[i].x + colliders[i].w;
       else if (entity->xVel > 0)
         entity->xPos = colliders[i].x - entity->width;
-      entity->xVel = 0;
+      if (entity->isPhysics)
+        entity->xVel = 0;
       entity->collider.x = entity->xPos;
     }
-  }
   entity->yPos += entity->yVel;
   entity->collider.y = entity->yPos;
   for (int i = 0; i < size; i++)
@@ -161,14 +172,13 @@ void Entity_move(Entity *entity, SDL_FRect *colliders, int size,
       }
 
       // entity->yPos -= entity->yVel;
-
-      entity->yVel = 0;
+      if (entity->isPhysics)
+        entity->yVel = 0;
       entity->collider.y = entity->yPos;
     }
   // printf("onGround: %d\n", entity->onGround);
-  if (colliders != NULL && freeColliders && size != 0) {
+  if (colliders != NULL) {
     free(colliders);
-    colliders = NULL;
   }
 }
 void Entity_handleEvent(Entity *entity, SDL_Event *e) {
@@ -179,18 +189,22 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
       case SDLK_UP:
       case SDLK_w:
         entity->yVel -= entity->entityVelocity;
+        entity->up = 1;
         break;
       case SDLK_DOWN:
       case SDLK_s:
         entity->yVel += entity->entityVelocity;
+        entity->down = 1;
         break;
       case SDLK_RIGHT:
       case SDLK_d:
         entity->xVel += entity->entityVelocity;
+        entity->right = 1;
         break;
       case SDLK_LEFT:
       case SDLK_a:
         entity->xVel -= entity->entityVelocity;
+        entity->left = 1;
         break;
       }
     } else {
@@ -221,18 +235,22 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
       case SDLK_UP:
       case SDLK_w:
         entity->yVel += entity->entityVelocity;
+        entity->up = 0;
         break;
       case SDLK_DOWN:
       case SDLK_s:
         entity->yVel -= entity->entityVelocity;
+        entity->down = 0;
         break;
       case SDLK_RIGHT:
       case SDLK_d:
         entity->xVel -= entity->entityVelocity;
+        entity->right = 0;
         break;
       case SDLK_LEFT:
       case SDLK_a:
         entity->xVel += entity->entityVelocity;
+        entity->left = 0;
         break;
       }
     }
@@ -260,6 +278,14 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
     }
   }
 }
+
+void Entity_updateCollider(Entity *entity) {
+  entity->collider.x = entity->xPos;
+  entity->collider.y = entity->yPos;
+  entity->collider.w = entity->width;
+  entity->collider.h = entity->height;
+}
+
 bool Entity_checkCollision(Entity *entity, SDL_FRect rect) {
   if (entity->collider.x + entity->width > rect.x &&
       entity->collider.x < rect.x + rect.w &&

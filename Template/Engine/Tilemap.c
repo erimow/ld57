@@ -508,10 +508,13 @@ SDL_FRect *Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
         }
       }
   }
-  if (rectCount == 0)
+  if (rectCount == 0) {
+    free(rects);
     return NULL;
-  else if (rectCount < 9) {
-    SDL_FRect *newRect = realloc(rects, sizeof(SDL_FRect) * rectCount);
+  } else if (rectCount < 9) {
+    SDL_FRect *newRect =
+        realloc(rects, sizeof(SDL_FRect) *
+                           rectCount); // WARNING, does not free rects if
     if (newRect == NULL) {
       free(rects);
       rects = NULL;

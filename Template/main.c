@@ -245,7 +245,7 @@ void gameLoop(void *arg) {
   Uint8 colliderAmount = 0;
   SDL_FRect *surroudningColliders = Tilemap_getCollidersAroundEntity(
       &ctx->tilemap, &ctx->player, &colliderAmount);
-  Entity_move(&ctx->player, surroudningColliders, colliderAmount, true);
+  Entity_move(&ctx->player, surroudningColliders, colliderAmount);
 
   if (ctx->player.onGround == 1 && checkForLanding) {
     Mix_PlayChannel(-1, ctx->soundEffect, 0);
