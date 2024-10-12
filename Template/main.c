@@ -44,9 +44,9 @@ typedef struct context {
   Texture fpsTexture; // freed
 
   /* Entities */
-  Entity player;     // freed
-  Entity testObject; // freed
-  Entity mapEntities[1];
+  Entity player;         // freed
+  Entity testObject;     // freed
+  Entity mapEntities[1]; // freed
 
   Entity fish;             // freed
   BackgroundEntity bgFish; // freed
@@ -149,8 +149,8 @@ bool loadMedia(context *ctx) {
   ctx->fish.clip[1] = (SDL_Rect){32, 0, 32, 32};
   BackgroundEntity_init(
       &ctx->bgFish, &ctx->fish,
-      5); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO MAKE
-          // ENTITY'S TEXTURE A POINTER DONT FORGET
+      125); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO MAKE
+            // ENTITY'S TEXTURE A POINTER DONT FORGET
 
   ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
                             56); // Location and font size;
@@ -252,10 +252,10 @@ void gameLoop(void *arg) {
     // (int)(tilemap.mapHeight-((player.yPos/tileSize)/tilemap.scale)));
   } else if (ctx->player.onGround == 1)
     ctx->playerRotation += ctx->player.xVel / 2;
-  // SDL_FRect *testsurroudningColliders = Tilemap_getCollidersAroundEntity(
-  //     &ctx->tilemap, &ctx->testObject, &colliderAmount);
-  // Entity_move(&ctx->testObject, testsurroudningColliders, colliderAmount,
-  // true);
+  colliderAmount = 0;
+  SDL_FRect *testsurroudningColliders = Tilemap_getCollidersAroundEntity(
+      &ctx->tilemap, &ctx->testObject, &colliderAmount);
+  Entity_move(&ctx->testObject, testsurroudningColliders, colliderAmount);
 
   Camera_setPosition(&ctx->camera, ctx->player.xPos + ctx->player.width / 2,
                      ctx->player.yPos + ctx->player.height / 2);
@@ -451,6 +451,7 @@ void quit(context *ctx) {
   TTF_Quit();
   IMG_Quit();
   SDL_Quit();
+  printf("Application finished\n");
 }
 
 int main(int argc, char *argv[]) {

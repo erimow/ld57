@@ -41,6 +41,7 @@ void Tilemap_init(Tilemap *tm, Texture *text, bool isGravityTrue, float scale,
       tilesPerGrid; // MUST BE A PERFECT SQUARE VALUE ie 9->(3x3) 16->(4x4) etc
   tm->levelEntities = NULL;
   tm->entityAmount = 0;
+  tm->colliders = NULL;
   Tilemap_populate(tm, fileName, entityTypes, entityTypesAmount);
   //    tm->colliders = Tilemap_getColliders(tm);
 }
@@ -55,6 +56,7 @@ void Tilemap_free(Tilemap *tm) {
       free(tm->grid[i].gridEntities);
       tm->grid[i].gridEntities = NULL;
       tm->grid[i].numGridEntities = 0;
+      // printf("Freeing in tilemap\n");
     }
   }
   if (tm->grid != NULL) {
@@ -244,7 +246,7 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
                   (int)((i % tm->mapWidth) / sqrt(tm->tilesPerGrid));
       // printf("tile:%d->x:%d, y:%d\n", i, i % tm->mapWidth,
       // tm->mapHeight - (i / tm->mapWidth));
-      printf("Grid index-> [%d], [%d]\n", index, grid[index].tilesInGrid);
+      // printf("Grid index-> [%d], [%d]\n", index, grid[index].tilesInGrid);
       Tile_init(&grid[index].tiles[grid[index].tilesInGrid++], i % tm->mapWidth,
                 tm->mapHeight - (i / tm->mapWidth), spriteXId, spriteYId,
                 tileSize, tm->mapHeight, tm->scale, angle, fl);
@@ -297,16 +299,35 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
 
   for (int i = 0; i < tm->gridAmount; i++) {
     // printf("grid[%d] -> %d tiles\n", i, grid[i].tilesInGrid);
-
-    Tile *newTile = realloc(grid[i].tiles, sizeof(Tile) * grid[i].tilesInGrid);
-    if (newTile == NULL && grid[i].tilesInGrid != 0) {
-      printf("Could not allocate memory to tile[%d] in Tilemap_populate p.2\n",
-             i);
-      free(grid);
-      free(content);
-      return;
+    // Reallocing tiles in each grid
+    if (grid[i].tilesInGrid != 0 && grid[i].tilesInGrid != tm->tilesPerGrid) {
+      Tile *newTile =
+          realloc(grid[i].tiles, sizeof(Tile) * grid[i].tilesInGrid);
+      if (newTile == NULL && grid[i].tilesInGrid != 0) {
+        printf(
+            "Could not allocate memory to tile[%d] in Tilemap_populate p.2\n",
+            i);
+        free(grid);
+        free(content);
+        return;
+      }
+      grid[i].tiles = newTile;
+    } else if (grid[i].tilesInGrid == 0) {
+      free(grid[i].tiles);
+      grid[i].tiles = NULL;
     }
-    grid[i].tiles = newTile;
+    // Reallocing grid entities
+    if (grid[i].numGridEntities != 0 &&
+        grid[i].numGridEntities != tm->tilesPerGrid) {
+      grid[i].gridEntities = realloc(grid[i].gridEntities,
+                                     sizeof(Entity) * grid[i].numGridEntities);
+      if (grid[i].gridEntities == NULL && grid[i].numGridEntities != 0) {
+        printf("Could not realloc gridEntities. Grid # -> %i\n", i);
+      }
+    } else if (grid[i].numGridEntities == 0) {
+      free(grid[i].gridEntities);
+      grid[i].gridEntities = NULL;
+    }
   }
   //    tm->tilesInGrid = tilesInGrid;
   //    tm->tiles=tiles;
@@ -368,13 +389,13 @@ void Tilemap_render(Tilemap *tm, SDL_Renderer *renderer, Camera *camera) {
     Uint8 colliderAmount = 0;
     SDL_FRect *surroundingColliders = NULL;
     for (int l = 0; l < tm->grid[i].numGridEntities; l++) {
-      // surroundingColliders = Tilemap_getCollidersAroundEntity(
-      //     tm, &tm->grid[i].gridEntities[l], &colliderAmount);
-      // Entity_move(&tm->grid[i].gridEntities[l], surroundingColliders,
-      //             colliderAmount, true);
-      // Entity_render(&tm->grid[i].gridEntities[l], renderer,
-      //               tm->grid[i].gridEntities[l].clip, -1, NULL,
-      //               SDL_FLIP_NONE, xOffset, yOffset);
+      surroundingColliders = Tilemap_getCollidersAroundEntity(
+          tm, &tm->grid[i].gridEntities[l], &colliderAmount);
+      Entity_move(&tm->grid[i].gridEntities[l], surroundingColliders,
+                  colliderAmount);
+      Entity_render(&tm->grid[i].gridEntities[l], renderer,
+                    tm->grid[i].gridEntities[l].clip, -1, NULL, SDL_FLIP_NONE,
+                    camera, 1);
     }
   }
 }
