@@ -6,7 +6,10 @@
 //
 
 #include "Tilemap.h"
+#include "Camera.h"
+#include "constants.h"
 #include <SDL2/SDL_rect.h>
+#include <stdio.h>
 
 void Tile_init(Tile *tile, int xGridPos, int yGridPos, int spriteXId,
                int spriteYId, int tileSize, int mapHeight, float scale,
@@ -153,6 +156,7 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
       printf("Could not malloc grid[%d].gridEntities\n", i);
     }
   }
+  printf("done\n");
   int tileAmount = 0;
 
   int spriteYId = 0; // Gets back tileId from the function call below
@@ -238,12 +242,13 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
       int index = ((int)((i / tm->mapWidth) / sqrt(tm->tilesPerGrid)) *
                    (int)((tm->mapWidth / sqrt(tm->tilesPerGrid)) + 1)) +
                   (int)((i % tm->mapWidth) / sqrt(tm->tilesPerGrid));
+      // printf("tile:%d->x:%d, y:%d\n", i, i % tm->mapWidth,
+      // tm->mapHeight - (i / tm->mapWidth));
+      printf("Grid index-> [%d], [%d]\n", index, grid[index].tilesInGrid);
       Tile_init(&grid[index].tiles[grid[index].tilesInGrid++], i % tm->mapWidth,
                 tm->mapHeight - (i / tm->mapWidth), spriteXId, spriteYId,
                 tileSize, tm->mapHeight, tm->scale, angle, fl);
-      //            printf("tile:%d->x:%d, y:%d\n", i, i%tm->mapWidth,
-      //            tm->mapHeight-(i/tm->mapWidth)); printf("Grid index-> [%d],
-      //            [%d]\n", index, grid[index].tilesInGrid-1);
+
       tileAmount++;
     } else if (Tilemap_isEntityTileParseable(tm, tile, &entityId)) {
       int index = ((int)((i / tm->mapWidth) / sqrt(tm->tilesPerGrid)) *
@@ -310,11 +315,14 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
   free(content);
 }
 
-void Tilemap_render(Tilemap *tm, SDL_Renderer *renderer, float xOffset,
-                    float yOffset, float camOffX, float camOffY) {
+void Tilemap_render(Tilemap *tm, SDL_Renderer *renderer, Camera *camera) {
   int tileSize = TILE_SIZE;
   int screenWidth = SCREEN_WIDTH;
   int screenHeight = SCREEN_HEIGHT;
+  float xOffset = Camera_getObjectXOffset(camera);
+  float yOffset = Camera_getObjectYOffset(camera);
+  float camOffX = Camera_getCameraXOffset(camera);
+  float camOffY = Camera_getCameraYOffset(camera);
   SDL_Point CameraMinTilePos = {
       (int)((((xOffset - camOffX) / tileSize) / tm->scale)),
       (int)((((yOffset - camOffY) / tileSize) / tm->scale))};
@@ -547,4 +555,8 @@ bool Tilemap_isEntityTileParseable(Tilemap *tm, char tileToParse,
     *entityId = *entityId + 1;
   }
   return false;
+}
+
+float Tilemap_getMapWidthPixels(Tilemap *tm) {
+  return (tm->mapWidth - 1) * tm->scale * TILE_SIZE;
 }

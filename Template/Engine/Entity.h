@@ -8,6 +8,7 @@
 #ifndef Entity_h
 #define Entity_h
 
+#include "Camera.h"
 #include "Texture.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
@@ -15,7 +16,7 @@
 typedef struct {
   Texture spriteSheet;
   SDL_Rect *clip;
-  Uint8 clipLength;
+  Uint8 clipLength, currentAnimationFrame;
   // default vars
   float xPos, yPos;
   float xVel, yVel;
@@ -33,27 +34,30 @@ typedef struct {
   float depth;
 } Entity;
 
-void Entity_init(Entity *entity, float xPos, float yPos, float width,
-                 float height, float velocity, Uint8 spriteAmount);
-void Entity_initPhysics(Entity *entity, float xPos, float yPos, float width,
-                        float height, float velocity, float jumpStr, float grav,
-                        float frict, float maxXVel, Uint8 spriteAmount);
-void Entity_free(Entity *entity, bool freeClip);
-bool Entity_setTexture(Entity *entity, SDL_Renderer *renderer,
-                       const char *path);
-void Entity_getPosition(Entity *entity, int *x, int *y);
-void Entity_render(Entity *entity, SDL_Renderer *renderer, SDL_Rect *clip,
-                   Uint8 clipToRender, SDL_FPoint *center,
-                   SDL_RendererFlip flip, float xOffset, float yOffset);
-void Entity_setPosition(Entity *entity, int x, int y);
-void Entity_setRotation(Entity *entity, double rotation);
-void Entity_updateCollider(Entity *entity);
-void Entity_setBaseVelocity(Entity *entity, float newVelocity);
-void Entity_move(Entity *entity, SDL_FRect object[], int size);
-void Entity_handleEvent(Entity *entity, SDL_Event *e);
-bool Entity_checkCollision(Entity *entity, SDL_FRect rect);
+extern void Entity_init(Entity *entity, float xPos, float yPos, float width,
+                        float height, float velocity, Uint8 spriteAmount);
+extern void Entity_initPhysics(Entity *entity, float xPos, float yPos,
+                               float width, float height, float velocity,
+                               float jumpStr, float grav, float frict,
+                               float maxXVel, Uint8 spriteAmount);
+extern void Entity_free(Entity *entity, bool freeClip);
+extern bool Entity_setTexture(Entity *entity, SDL_Renderer *renderer,
+                              const char *path);
+extern void Entity_getPosition(Entity *entity, int *x, int *y);
+extern void Entity_render(Entity *entity, SDL_Renderer *renderer,
+                          SDL_Rect *clip, Uint8 clipToRender,
+                          SDL_FPoint *center, SDL_RendererFlip flip,
+                          Camera *camera, float depthZ);
+extern void Entity_setPosition(Entity *entity, int x, int y);
+extern void Entity_setRotation(Entity *entity, double rotation);
+extern void Entity_updateCollider(Entity *entity);
+extern void Entity_setBaseVelocity(Entity *entity, float newVelocity);
+extern void Entity_move(Entity *entity, SDL_FRect colliders[],
+                        int collidersSize);
+extern void Entity_handleEvent(Entity *entity, SDL_Event *e);
+extern bool Entity_checkCollision(Entity *entity, SDL_FRect rect);
 
 // getters
-bool Entity_onGround(Entity *entity);
+extern bool Entity_onGround(Entity *entity);
 
 #endif /* Entity_h */

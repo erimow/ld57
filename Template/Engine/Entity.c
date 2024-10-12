@@ -6,6 +6,8 @@
 //
 
 #include "Entity.h"
+#include "Camera.h"
+#include <SDL2/SDL_rect.h>
 
 void Entity_init(Entity *entity, float xPos, float yPos, float width,
                  float height, float velocity, Uint8 spriteAmount) {
@@ -23,6 +25,7 @@ void Entity_init(Entity *entity, float xPos, float yPos, float width,
   SDL_FRect col = {entity->xPos, entity->yPos, entity->width, entity->height};
   entity->collider = col;
   entity->entityVelocity = velocity;
+  entity->currentAnimationFrame = 0;
   Texture_init(&entity->spriteSheet);
   entity->clipLength = spriteAmount;
   entity->clip = (SDL_Rect *)malloc(sizeof(SDL_Rect) * spriteAmount);
@@ -43,6 +46,7 @@ void Entity_initPhysics(Entity *entity, float xPos, float yPos, float width,
   SDL_FRect col = {entity->xPos, entity->yPos, entity->width, entity->height};
   entity->collider = col;
   entity->entityVelocity = velocity;
+  entity->currentAnimationFrame = 0;
   // init physics
   entity->jumpStrength = jumpStr;
   entity->gravity = grav;
@@ -69,6 +73,7 @@ void Entity_free(Entity *entity, bool freeClip) {
   entity->height = 0;
   entity->entityRotation = 0.0;
   entity->entityVelocity = 0;
+  entity->currentAnimationFrame = 0;
   SDL_FRect col = {0, 0, 0, 0};
   entity->collider = col;
   // free physics
@@ -96,9 +101,16 @@ bool Entity_setTexture(Entity *entity, SDL_Renderer *renderer,
 
 void Entity_render(Entity *entity, SDL_Renderer *renderer, SDL_Rect *clip,
                    Uint8 clipToRender, SDL_FPoint *center,
-                   SDL_RendererFlip flip, float xOffset, float yOffset) {
-  SDL_FRect pos = {entity->xPos - (xOffset), entity->yPos - (yOffset),
-                   entity->width, entity->height};
+                   SDL_RendererFlip flip, Camera *camera, float depthZ) {
+  SDL_FRect pos;
+  if (camera != NULL)
+    pos = (SDL_FRect){entity->xPos - (Camera_getObjectXOffset(camera) / depthZ),
+                      entity->yPos - (Camera_getObjectYOffset(camera) / depthZ),
+                      entity->width, entity->height};
+  else
+    pos = (SDL_FRect){entity->xPos / depthZ, entity->yPos / depthZ,
+                      entity->width, entity->height};
+
   if (clip != NULL) {
     Texture_render(&entity->spriteSheet, renderer, clip, &pos,
                    entity->entityRotation, center, flip);

@@ -79,9 +79,6 @@ typedef struct context {
 
   Uint8 currentPlayerSprite;
 
-  // Camera_setCameraOffset(&camera, 0, -200);
-  float cameraOffsetX, cameraOffsetY;
-
   // player stuff
   double playerRotation;
   bool onNub;
@@ -260,9 +257,16 @@ void gameLoop(void *arg) {
   // Entity_move(&ctx->testObject, testsurroudningColliders, colliderAmount,
   // true);
 
-  Camera_followEntity(&ctx->camera, &ctx->player);
-  Camera_getObjectOffset(&ctx->camera, &ctx->cameraOffsetX,
-                         &ctx->cameraOffsetY);
+  Camera_setPosition(&ctx->camera, ctx->player.xPos + ctx->player.width / 2,
+                     ctx->player.yPos + ctx->player.height / 2);
+  // printf(
+  //     "Camera xPos: %f, yPos: %f\n xOff: %f, yOff: %f \n xCam: %f, yCam: %f
+  //     \n", ctx->camera.xPos, ctx->camera.yPos, ctx->camera.xObjOffset,
+  //     ctx->camera.yObjOffset, ctx->camera.xCamOffset,
+  //     ctx->camera.yCamOffset);
+  Camera_setBounds(
+      &ctx->camera,
+      (SDL_FRect){0, 0, Tilemap_getMapWidthPixels(&ctx->tilemap), 3000});
 
   //        sceneObjects[4] = testObject.collider;
 
@@ -311,18 +315,16 @@ void gameLoop(void *arg) {
 
   // OBJECT RENDERING
   // Texture_render(&test, renderer, NULL, &imageLoc, 0.0, NULL, SDL_FLIP_NONE);
-  BackgroundEntity_update(&ctx->bgFish, ctx->renderer, ctx->cameraOffsetX,
-                          ctx->cameraOffsetY, ctx->frameCount, 30);
+  BackgroundEntity_update(&ctx->bgFish, ctx->renderer, &ctx->camera,
+                          ctx->frameCount, 30);
 
-  Tilemap_render(&ctx->tilemap, ctx->renderer, ctx->cameraOffsetX,
-                 ctx->cameraOffsetY, ctx->cameraOffsetOffsetx,
-                 ctx->cameraOffsetOffsety);
+  Tilemap_render(&ctx->tilemap, ctx->renderer, &ctx->camera);
 
   Entity_render(&ctx->testObject, ctx->renderer, &ctx->player.clip[0], -1, NULL,
-                SDL_FLIP_NONE, ctx->cameraOffsetX, ctx->cameraOffsetY);
+                SDL_FLIP_NONE, &ctx->camera, 1);
 
   Entity_render(&ctx->player, ctx->renderer, NULL, ctx->currentPlayerSprite,
-                NULL, SDL_FLIP_NONE, ctx->cameraOffsetX, ctx->cameraOffsetY);
+                NULL, SDL_FLIP_NONE, &ctx->camera, 1);
 
   // UI RENDERING
   if (!Texture_loadFromRenderedText(&ctx->fpsTexture, ctx->renderer, ctx->gFont,
@@ -474,9 +476,9 @@ int main(int argc, char *argv[]) {
   ctx.fpsCol = (SDL_Color){0, 0, 0, 255};
 
   // camera stuff
+  ctx.camMoveSpeed = 100;
   ctx.cameraOffsetOffsetx = 0;
   ctx.cameraOffsetOffsety = 0;
-  ctx.camMoveSpeed = 100;
 
   // player stuff
   ctx.playerRotation = 0.0;
