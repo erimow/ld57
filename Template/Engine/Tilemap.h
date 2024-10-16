@@ -50,7 +50,7 @@ typedef struct {
   float scale;
   Entity *levelEntities;
   int entityAmount;
-  bool isGravityTrue;
+  bool isGravityTrue, displayGrid;
 } Tilemap;
 
 extern void Tile_init(Tile *tile, int xGridPos, int yGridPos, int spriteXId,
@@ -75,4 +75,5 @@ extern bool Tilemap_isTileParseable(Tilemap *tm, char tileToParse, int *tileId);
 extern bool Tilemap_isEntityTileParseable(Tilemap *tm, char tileToParse,
                                           int *entityId);
 extern float Tilemap_getMapWidthPixels(Tilemap *tm);
+extern float Tilemap_getMapHeightPixels(Tilemap *tm);
 #endif /* Tilemap_h */

@@ -38,7 +38,10 @@ void BackgroundEntity_init(BackgroundEntity *bge, Entity *entity, int amount) {
     bge->entity[i].width = entity->width / (bge->entity[i].depth / 3);
     bge->entity[i].height = entity->height / (bge->entity[i].depth / 3);
     bge->entity[i].up =
-        ((rand() % (TARGET_FPS))); // USING UP FOR ANIMATION OFFSET
+        ((rand() %
+          (TARGET_FPS))); // USING UP FOR ANIMATION OFFSET // CHANGE THIS, AND
+                          // ADJUST BASED ON MOVE SPEED // ACTUALLY MAKE AN
+                          // ANIMATION SPEED VARIABLE ON TOP OF OFFSET
   }
 
   for (int i = 0; i < bge->amount - 1; i++) {
@@ -75,6 +78,7 @@ void BackgroundEntity_update(BackgroundEntity *bge, SDL_Renderer *renderer,
              (Camera_getObjectXOffset(camera) / bge->entity[i].depth) -
                  bge->entity[i].width)
       bge->entity[i].xPos += SCREEN_WIDTH + bge->entity[i].width;
+    // Implement y scrolling?
     bge->entity[i].yPos = (int)bge->entity[i].yPos;
     //        printf("Entity %d: xPos = %f, yPos = %f\n", i,
     //        bge->entity[i].xPos, bge->entity[i].yPos);
@@ -87,7 +91,8 @@ void BackgroundEntity_update(BackgroundEntity *bge, SDL_Renderer *renderer,
           bge->entity[i].currentAnimationFrame = 0;
       }
     }
-    Entity_render(&bge->entity[i], renderer, NULL, bge->entity[i].right, NULL,
-                  flip, camera, bge->entity[i].depth);
+    Entity_render(&bge->entity[i], renderer, NULL,
+                  bge->entity[i].currentAnimationFrame, NULL, flip, camera,
+                  bge->entity[i].depth);
   }
 }

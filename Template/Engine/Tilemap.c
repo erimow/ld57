@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "constants.h"
 #include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_render.h>
 #include <stdio.h>
 
 void Tile_init(Tile *tile, int xGridPos, int yGridPos, int spriteXId,
@@ -39,6 +40,7 @@ void Tilemap_init(Tilemap *tm, Texture *text, bool isGravityTrue, float scale,
   tm->scale = scale;
   tm->tilesPerGrid =
       tilesPerGrid; // MUST BE A PERFECT SQUARE VALUE ie 9->(3x3) 16->(4x4) etc
+  tm->displayGrid = true;
   tm->levelEntities = NULL;
   tm->entityAmount = 0;
   tm->colliders = NULL;
@@ -80,6 +82,7 @@ void Tilemap_free(Tilemap *tm) {
     tm->levelEntities = NULL;
     tm->entityAmount = 0;
   }
+  tm->displayGrid = false;
 }
 void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
                       int entityTypesAmount) {
@@ -158,6 +161,8 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
       printf("Could not malloc grid[%d].gridEntities\n", i);
     }
   }
+
+  // printF("Tiles per grid = %d\n", tm->tilesPerGrid);
   printf("done\n");
   int tileAmount = 0;
 
@@ -397,6 +402,30 @@ void Tilemap_render(Tilemap *tm, SDL_Renderer *renderer, Camera *camera) {
                     tm->grid[i].gridEntities[l].clip, -1, NULL, SDL_FLIP_NONE,
                     camera, 1);
     }
+    if (tm->displayGrid) {
+      SDL_FPoint gridLines[4];
+      int x1 = ((i % tm->gridWidth) * tileSize * tm->scale *
+                sqrt(tm->tilesPerGrid)) -
+               xOffset;
+      int x2 = x1 + (sqrt(tm->tilesPerGrid) * tileSize * tm->scale);
+
+      int y1 = ((i / tm->gridWidth) * tileSize * tm->scale *
+                sqrt(tm->tilesPerGrid)) -
+               yOffset; // Need data loss from int
+      int y2 = y1 + (sqrt(tm->tilesPerGrid) * tileSize * tm->scale);
+
+      gridLines[0].x = x1;
+      gridLines[0].y = y1;
+      gridLines[1].x = x1;
+      gridLines[1].y = y2;
+      gridLines[2].x = x1;
+      gridLines[2].y = y1;
+      gridLines[3].x = x2;
+      gridLines[3].y = y1;
+
+      SDL_SetRenderDrawColor(renderer, 200, 0, 0, 0xFF); // setting to blue
+      SDL_RenderDrawLinesF(renderer, gridLines, 4);
+    }
   }
 }
 
@@ -580,4 +609,7 @@ bool Tilemap_isEntityTileParseable(Tilemap *tm, char tileToParse,
 
 float Tilemap_getMapWidthPixels(Tilemap *tm) {
   return (tm->mapWidth - 1) * tm->scale * TILE_SIZE;
+}
+float Tilemap_getMapHeightPixels(Tilemap *tm) {
+  return (tm->mapHeight) * tm->scale * TILE_SIZE;
 }

@@ -15,15 +15,13 @@
 
 typedef struct {
   Texture spriteSheet;
-  SDL_Rect *clip;
-  Uint8 clipLength, currentAnimationFrame;
   // default vars
   float xPos, yPos;
   float xVel, yVel;
   float width, height;
   float entityVelocity;
   double entityRotation;
-  SDL_FRect collider;
+  SDL_FRect collider; // also used to render entity: should separate
   // physics vars
   float jumpStrength, gravity, friction, maxXVel;
   // flags
@@ -32,6 +30,10 @@ typedef struct {
 
   // background entity stuff
   float depth;
+
+  // Animation stuff
+  Uint8 clipLength, currentAnimationFrame;
+  SDL_Rect *clip;
 } Entity;
 
 extern void Entity_init(Entity *entity, float xPos, float yPos, float width,

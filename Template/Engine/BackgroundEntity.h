@@ -17,8 +17,8 @@
 #include <time.h>
 
 typedef struct {
-  Entity *entity;
   int amount;
+  Entity *entity;
 } BackgroundEntity;
 
 extern void BackgroundEntity_init(BackgroundEntity *bge, Entity *entity,

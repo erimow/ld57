@@ -228,6 +228,7 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
         break;
       case SDLK_DOWN:
       case SDLK_s:
+        entity->down = 1;
 
         break;
       case SDLK_RIGHT:
@@ -276,6 +277,7 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
         break;
       case SDLK_DOWN:
       case SDLK_s:
+        entity->down = 0;
 
         break;
       case SDLK_RIGHT:

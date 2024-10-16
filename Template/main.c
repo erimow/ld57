@@ -141,16 +141,16 @@ bool loadMedia(context *ctx) {
   }
   ctx->testObject.clip[0] = (SDL_Rect){2, 5, 25, 22};
   ctx->mapEntities[0] = ctx->testObject;
-  Tilemap_init(&ctx->tilemap, &ctx->tilemapSpriteSheet, true, 3.75,
-               ctx->tilemap_tilesPerGrid, "Art/map.txt", "SX", 2, "E", 1,
+  Tilemap_init(&ctx->tilemap, &ctx->tilemapSpriteSheet, true, .5f,
+               ctx->tilemap_tilesPerGrid, "Art/map3.txt", "SX", 2, "E", 1,
                ctx->mapEntities, 1);
 
   ctx->fish.clip[0] = (SDL_Rect){0, 0, 32, 32};
   ctx->fish.clip[1] = (SDL_Rect){32, 0, 32, 32};
   BackgroundEntity_init(
       &ctx->bgFish, &ctx->fish,
-      125); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO MAKE
-            // ENTITY'S TEXTURE A POINTER DONT FORGET
+      10); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO
+           // MAKE ENTITY'S TEXTURE A POINTER DONT FORGET
 
   ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
                             56); // Location and font size;
@@ -216,6 +216,9 @@ void gameLoop(void *arg) {
       if (e.key.keysym.sym == SDLK_l) {
         ctx->cameraOffsetOffsetx += ctx->camMoveSpeed;
       }
+      if (e.key.keysym.sym == SDLK_g) { // Tilemap grid testing
+        ctx->tilemap.displayGrid = !ctx->tilemap.displayGrid;
+      }
     }
     Button_handleEvent(&ctx->butt, &e, &ctx->isButtPressed);
     Entity_handleEvent(&ctx->player, &e);
@@ -234,6 +237,13 @@ void gameLoop(void *arg) {
       Mix_ResumeMusic();
     }
   }
+  // background entity testing
+  // if (ctx->frameCount % 1200 == 0) {
+  //   for (int i = 0; i < 10; i++) {
+  //     printf("BGE %d: clip pointer -> %p, clip size -> %d\n", i,
+  //            ctx->bgFish.entity[i].clip, ctx->bgFish.entity[i].clipLength);
+  //   }
+  // }
 
   // ACTUAL GAME STUFF
   bool checkForLanding = false;
@@ -264,9 +274,9 @@ void gameLoop(void *arg) {
   //     \n", ctx->camera.xPos, ctx->camera.yPos, ctx->camera.xObjOffset,
   //     ctx->camera.yObjOffset, ctx->camera.xCamOffset,
   //     ctx->camera.yCamOffset);
-  Camera_setBounds(
-      &ctx->camera,
-      (SDL_FRect){0, 0, Tilemap_getMapWidthPixels(&ctx->tilemap), 3000});
+  Camera_setBounds(&ctx->camera,
+                   (SDL_FRect){0, 0, Tilemap_getMapWidthPixels(&ctx->tilemap),
+                               Tilemap_getMapHeightPixels(&ctx->tilemap)});
 
   //        sceneObjects[4] = testObject.collider;
 
@@ -310,7 +320,7 @@ void gameLoop(void *arg) {
            avgFps); // Feeds int into char buffer
 
   // START OF RENDERING
-  SDL_SetRenderDrawColor(ctx->renderer, 100, 200, 255, 0xFF);
+  SDL_SetRenderDrawColor(ctx->renderer, 100, 200, 255, 0xFF); // setting to blue
   SDL_RenderClear(ctx->renderer);
 
   // OBJECT RENDERING

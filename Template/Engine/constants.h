@@ -14,6 +14,4 @@
 #define TILE_SIZE 32;
 #define TILES_PER_GRID 16;
 
-
-
 #endif /* constants_h */
