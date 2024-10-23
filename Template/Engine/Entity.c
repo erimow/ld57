@@ -8,9 +8,12 @@
 #include "Entity.h"
 #include "Camera.h"
 #include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_stdinc.h>
 
-void Entity_init(Entity *entity, float xPos, float yPos, float width,
-                 float height, float velocity, Uint8 spriteAmount) {
+void Entity_init(Entity *entity, float xPos, float yPos, float spriteWidth,
+                 float spriteHeight, float colWidth, float colHeight,
+                 SDL_FPoint colliderOffset, float velocity,
+                 Uint8 spriteAmount) {
   entity->xVel = 0;
   entity->yVel = 0;
   entity->left = 0;
@@ -19,13 +22,18 @@ void Entity_init(Entity *entity, float xPos, float yPos, float width,
   entity->down = 0;
   entity->xPos = xPos;
   entity->yPos = yPos;
-  entity->width = width;
-  entity->height = height;
+  entity->colliderOffset = colliderOffset;
+  // entity->width = width;
+
   entity->entityRotation = 0.0;
-  SDL_FRect col = {entity->xPos, entity->yPos, entity->width, entity->height};
-  entity->collider = col;
+  entity->collider =
+      (SDL_FRect){entity->xPos + colliderOffset.x,
+                  entity->yPos + colliderOffset.y, colWidth, colHeight};
+  entity->spriteRenderRect =
+      (SDL_FRect){entity->xPos, entity->yPos, spriteWidth, spriteHeight};
   entity->entityVelocity = velocity;
   entity->currentAnimationFrame = 0;
+  entity->animationSpeed = 0;
   Texture_init(&entity->spriteSheet);
   entity->clipLength = spriteAmount;
   entity->clip = (SDL_Rect *)malloc(sizeof(SDL_Rect) * spriteAmount);
@@ -33,20 +41,27 @@ void Entity_init(Entity *entity, float xPos, float yPos, float width,
     printf("clip not properly malloced!\n");
   entity->isPhysics = false;
 }
-void Entity_initPhysics(Entity *entity, float xPos, float yPos, float width,
-                        float height, float velocity, float jumpStr, float grav,
-                        float frict, float maxXVel, Uint8 spriteAmount) {
+void Entity_initPhysics(Entity *entity, float xPos, float yPos,
+                        float spriteWidth, float spriteHeight, float colWidth,
+                        float colHeight, SDL_FPoint colliderOffset,
+                        float velocity, float jumpStr, float grav, float frict,
+                        float maxXVel, Uint8 spriteAmount) {
   entity->xVel = 0;
   entity->yVel = 0;
   entity->xPos = xPos;
   entity->yPos = yPos;
-  entity->width = width;
-  entity->height = height;
+  // entity->spriteWidth = spriteWidth;
+  // entity->spriteHeight = spriteHeight;
   entity->entityRotation = 0.0;
-  SDL_FRect col = {entity->xPos, entity->yPos, entity->width, entity->height};
-  entity->collider = col;
+  entity->collider =
+      (SDL_FRect){entity->xPos + colliderOffset.x,
+                  entity->yPos + colliderOffset.y, colWidth, colHeight};
+  entity->spriteRenderRect =
+      (SDL_FRect){entity->xPos, entity->yPos, spriteWidth, spriteHeight};
+
   entity->entityVelocity = velocity;
   entity->currentAnimationFrame = 0;
+  entity->animationSpeed = 0;
   // init physics
   entity->jumpStrength = jumpStr;
   entity->gravity = grav;
@@ -69,13 +84,15 @@ void Entity_free(Entity *entity, bool freeClip) {
   entity->yVel = 0;
   entity->xPos = 0;
   entity->yPos = 0;
-  entity->width = 0;
-  entity->height = 0;
+  // entity->width = 0;
+  // entity->height = 0;
+  entity->spriteRenderRect = (SDL_FRect){0, 0, 0, 0};
+  entity->collider = (SDL_FRect){0, 0, 0, 0};
   entity->entityRotation = 0.0;
   entity->entityVelocity = 0;
   entity->currentAnimationFrame = 0;
-  SDL_FRect col = {0, 0, 0, 0};
-  entity->collider = col;
+  entity->animationSpeed = 0;
+
   // free physics
   entity->jumpStrength = 0;
   entity->gravity = 0;
@@ -106,10 +123,10 @@ void Entity_render(Entity *entity, SDL_Renderer *renderer, SDL_Rect *clip,
   if (camera != NULL)
     pos = (SDL_FRect){entity->xPos - (Camera_getObjectXOffset(camera) / depthZ),
                       entity->yPos - (Camera_getObjectYOffset(camera) / depthZ),
-                      entity->width, entity->height};
+                      entity->spriteRenderRect.w, entity->spriteRenderRect.h};
   else
     pos = (SDL_FRect){entity->xPos / depthZ, entity->yPos / depthZ,
-                      entity->width, entity->height};
+                      entity->spriteRenderRect.w, entity->spriteRenderRect.h};
 
   if (clip != NULL) {
     Texture_render(&entity->spriteSheet, renderer, clip, &pos,
@@ -129,7 +146,7 @@ void Entity_setRotation(Entity *entity, double rotation) {
 void Entity_setBaseVelocity(Entity *entity, float newVelocity) {
   entity->entityVelocity = newVelocity;
 }
-void Entity_move(Entity *entity, SDL_FRect *colliders, int size) {
+void Entity_move(Entity *entity, SDL_FRect *colliders[], int size) {
   if (entity->isPhysics) {
     entity->xVel += ((entity->right * entity->entityVelocity) -
                      (entity->left * entity->entityVelocity));
@@ -160,12 +177,12 @@ void Entity_move(Entity *entity, SDL_FRect *colliders, int size) {
   entity->xPos += entity->xVel;
   entity->collider.x = entity->xPos;
   for (int i = 0; i < size; i++)
-    if (Entity_checkCollision(entity, colliders[i])) {
+    if (Entity_checkCollision(entity, *colliders[i])) {
       //            entity->xPos -= entity->xVel;
       if (entity->xVel < 0)
-        entity->xPos = colliders[i].x + colliders[i].w;
+        entity->xPos = colliders[i]->x + colliders[i]->w;
       else if (entity->xVel > 0)
-        entity->xPos = colliders[i].x - entity->width;
+        entity->xPos = colliders[i]->x - entity->collider.w;
       if (entity->isPhysics)
         entity->xVel = 0;
       entity->collider.x = entity->xPos;
@@ -173,14 +190,14 @@ void Entity_move(Entity *entity, SDL_FRect *colliders, int size) {
   entity->yPos += entity->yVel;
   entity->collider.y = entity->yPos;
   for (int i = 0; i < size; i++)
-    if (Entity_checkCollision(entity, colliders[i])) {
+    if (Entity_checkCollision(entity, *colliders[i])) {
       // for phyisics | stuff
       //              V
       if (entity->yVel > 0) {
-        entity->yPos = colliders[i].y - entity->height;
+        entity->yPos = colliders[i]->y - entity->collider.h;
         entity->onGround = 1;
       } else if (entity->yVel < 0) {
-        entity->yPos = colliders[i].y + colliders[i].h;
+        entity->yPos = colliders[i]->y + colliders[i]->h;
       }
 
       // entity->yPos -= entity->yVel;
@@ -296,14 +313,14 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
 void Entity_updateCollider(Entity *entity) {
   entity->collider.x = entity->xPos;
   entity->collider.y = entity->yPos;
-  entity->collider.w = entity->width;
-  entity->collider.h = entity->height;
+  entity->collider.w = entity->collider.w;
+  entity->collider.h = entity->collider.h;
 }
 
 bool Entity_checkCollision(Entity *entity, SDL_FRect rect) {
-  if (entity->collider.x + entity->width > rect.x &&
+  if (entity->collider.x + entity->collider.w > rect.x &&
       entity->collider.x < rect.x + rect.w &&
-      entity->collider.y + entity->height > rect.y &&
+      entity->collider.y + entity->collider.h > rect.y &&
       entity->collider.y < rect.y + rect.h) {
     return true;
   }

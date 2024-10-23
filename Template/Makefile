@@ -8,7 +8,7 @@ CC = gcc
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
-COMPILER_FLAGS = -w -Wall -Wextra
+COMPILER_FLAGS = -w -Wall -Wextra -g -ggdb3 -O0
 
 #INCLUDES
 INCLUDES = -I./Sounds -I./Art -I./Engine -I./Fonts

@@ -7,23 +7,27 @@
 
 #include "BackgroundEntity.h"
 #include "Camera.h"
+#include "Entity.h"
 
 void BackgroundEntity_init(BackgroundEntity *bge, Entity *entity, int amount) {
   bge->amount = amount;
   bge->entity = malloc(sizeof(Entity) * amount);
+  // printf("sizeof(*entity)=%ld, sizeof(Entity)=%ld\n", sizeof(*entity),
+  // sizeof(Entity));
 
   if (bge->entity == NULL) {
     printf("bge->entity is equal to NULL!!!\n");
   }
 
   for (int i = 0; i < amount; i++) {
-    bge->entity[i].isPhysics = entity->isPhysics;
-    bge->entity[i].maxXVel = entity->maxXVel;
-    bge->entity[i].clip = entity->clip;
-    bge->entity[i].clipLength = entity->clipLength;
-    bge->entity[i].spriteSheet = entity->spriteSheet;
-    bge->entity[i].entityRotation = entity->entityRotation;
-    bge->entity[i].collider = entity->collider;
+    bge->entity[i] = *entity;
+    // bge->entity[i].isPhysics = entity->isPhysics;
+    // bge->entity[i].maxXVel = entity->maxXVel;
+    // bge->entity[i].clip = entity->clip;
+    // bge->entity[i].clipLength = entity->clipLength;
+    // bge->entity[i].spriteSheet = entity->spriteSheet;
+    // bge->entity[i].entityRotation = entity->entityRotation;
+    // bge->entity[i].collider = entity->collider;
     bge->entity[i].xPos = rand() % SCREEN_WIDTH;
     bge->entity[i].yPos = rand() % SCREEN_HEIGHT;
     bge->entity[i].depth = (((float)(rand() % (50)) / 10) + 1.2f);
@@ -35,13 +39,17 @@ void BackgroundEntity_init(BackgroundEntity *bge, Entity *entity, int amount) {
       bge->entity[i].xVel = -bge->entity[i].xVel;
     else
       bge->entity[i].right = 1;
-    bge->entity[i].width = entity->width / (bge->entity[i].depth / 3);
-    bge->entity[i].height = entity->height / (bge->entity[i].depth / 3);
+    bge->entity[i].spriteRenderRect.w =
+        entity->spriteRenderRect.w / (bge->entity[i].depth / 3);
+    bge->entity[i].spriteRenderRect.h =
+        entity->spriteRenderRect.h / (bge->entity[i].depth / 3);
     bge->entity[i].up =
         ((rand() %
           (TARGET_FPS))); // USING UP FOR ANIMATION OFFSET // CHANGE THIS, AND
                           // ADJUST BASED ON MOVE SPEED // ACTUALLY MAKE AN
                           // ANIMATION SPEED VARIABLE ON TOP OF OFFSET
+    // bge->entity[i].animationSpeed = bge->entity[i].xVel
+    // bge->entity[i].currentAnimationFrame = 0;
   }
 
   for (int i = 0; i < bge->amount - 1; i++) {
@@ -73,21 +81,23 @@ void BackgroundEntity_update(BackgroundEntity *bge, SDL_Renderer *renderer,
     Entity_move(&bge->entity[i], NULL, 0);
     if (bge->entity[i].xPos >
         (Camera_getObjectXOffset(camera) / bge->entity[i].depth) + SCREEN_WIDTH)
-      bge->entity[i].xPos -= SCREEN_WIDTH + bge->entity[i].width;
+      bge->entity[i].xPos -= SCREEN_WIDTH + bge->entity[i].spriteRenderRect.w;
     else if (bge->entity[i].xPos <
              (Camera_getObjectXOffset(camera) / bge->entity[i].depth) -
-                 bge->entity[i].width)
-      bge->entity[i].xPos += SCREEN_WIDTH + bge->entity[i].width;
+                 bge->entity[i].spriteRenderRect.w)
+      bge->entity[i].xPos += SCREEN_WIDTH + bge->entity[i].spriteRenderRect.w;
     // Implement y scrolling?
     bge->entity[i].yPos = (int)bge->entity[i].yPos;
     //        printf("Entity %d: xPos = %f, yPos = %f\n", i,
     //        bge->entity[i].xPos, bge->entity[i].yPos);
     if (bge->entity[i].clipLength > 1) {
-      if ((frameCount + bge->entity[i].up) % animationInterval == 0) {
+      if ((frameCount + bge->entity[i].up) %
+              (animationInterval - abs((int)bge->entity[i].xVel * 4)) ==
+          0) {
         bge->entity[i]
             .currentAnimationFrame++; // TEMP using entity[i].right to hold the
                                       // previous/current animation frame
-        if (bge->entity[i].currentAnimationFrame == bge->entity[i].clipLength)
+        if (bge->entity[i].currentAnimationFrame >= bge->entity[i].clipLength)
           bge->entity[i].currentAnimationFrame = 0;
       }
     }

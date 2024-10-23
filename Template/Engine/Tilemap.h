@@ -19,16 +19,17 @@
 typedef struct {
   int xGridPos, yGridPos;
   int spriteXId, spriteYId;
+  double rotation;
   SDL_FRect pos;
   SDL_RendererFlip flip;
-  double rotation;
 } Tile;
 
 typedef struct {
   Tile *tiles;
-  Uint8 tilesInGrid;
   Entity *gridEntities;
+  Uint8 tilesInGrid;
   Uint8 numGridEntities;
+  bool isEntityCheckingGrid;
 } Grid;
 
 typedef struct {
@@ -69,8 +70,8 @@ extern void
 Tilemap_render(Tilemap *tm, SDL_Renderer *renderer,
                Camera *camera); // last two were for rendering testing
 extern SDL_FRect *Tilemap_getColliders(Tilemap *tm);
-extern SDL_FRect *Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
-                                                   Uint8 *colliderAmount);
+extern SDL_FRect **Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
+                                                    Uint8 *colliderAmount);
 extern bool Tilemap_isTileParseable(Tilemap *tm, char tileToParse, int *tileId);
 extern bool Tilemap_isEntityTileParseable(Tilemap *tm, char tileToParse,
                                           int *entityId);
