@@ -12,6 +12,6 @@
 #define SCREEN_HEIGHT 720
 #define TARGET_FPS 60
 #define TILE_SIZE 32;
-#define TILES_PER_GRID 16;
+#define TILES_PER_GRID 36;
 
 #endif /* constants_h */

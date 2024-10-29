@@ -108,8 +108,8 @@ bool loadMedia(context *ctx) {
   Entity_initPhysics(&ctx->player, (float)SCREEN_WIDTH / 2 - 50,
                      (float)SCREEN_HEIGHT / 2 - 50, 100, 100, 100, 100,
                      (SDL_FPoint){0, 0}, 0.8f, 15.0f, 0.3f, .95f, 20.0f, 3);
-  Entity_initPhysics(&ctx->testObject, 300, 0, 100, 100, 90, 90,
-                     (SDL_FPoint){5, 5}, .8f, 12.0f, 0.3f, .95f, 8.0f, 1);
+  Entity_initPhysics(&ctx->testObject, 300, 0, 100, 100, 100, 100,
+                     (SDL_FPoint){0, 0}, .8f, 12.0f, 0.3f, .95f, 8.0f, 1);
   Entity_init(&ctx->fish, 300, 300, 100, 100, 100, 100, (SDL_FPoint){0, 0}, 0.0,
               2);
 
@@ -142,14 +142,14 @@ bool loadMedia(context *ctx) {
   }
   ctx->testObject.clip[0] = (SDL_Rect){2, 5, 25, 22};
   ctx->mapEntities[0] = ctx->testObject;
-  Tilemap_init(&ctx->tilemap, &ctx->tilemapSpriteSheet, true, 3.75f,
-               ctx->tilemap_tilesPerGrid, "Art/map.txt", "SX", 2, "E", 1,
+  Tilemap_init(&ctx->tilemap, &ctx->tilemapSpriteSheet, true, 0.75f,
+               ctx->tilemap_tilesPerGrid, "Art/map3.txt", "SX", 2, "E", 1,
                ctx->mapEntities, 1);
   ctx->fish.clip[0] = (SDL_Rect){0, 0, 32, 32};
   ctx->fish.clip[1] = (SDL_Rect){32, 0, 32, 32};
   BackgroundEntity_init(
       &ctx->bgFish, &ctx->fish,
-      20); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO
+      10); // CURRENTLY NEED TO INIT AFTER LOADING ENTITY TEXTURE. NEED TO
            // MAKE ENTITY'S TEXTURE A POINTER DONT FORGET
 
   ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
@@ -260,6 +260,8 @@ void gameLoop(void *arg) {
       &ctx->tilemap, &ctx->player, &colliderAmount);
   Entity_move(&ctx->player, surroudningColliders, colliderAmount);
 
+  // printf("colliderAmount for player -> %d\n", colliderAmount);
+
   if (ctx->player.onGround == 1 && checkForLanding) {
     Mix_PlayChannel(-1, ctx->soundEffect, 0);
     ctx->playerRotation += ctx->player.xVel / 2;
@@ -268,10 +270,10 @@ void gameLoop(void *arg) {
     // (int)(tilemap.mapHeight-((player.yPos/tileSize)/tilemap.scale)));
   } else if (ctx->player.onGround == 1)
     ctx->playerRotation += ctx->player.xVel / 2;
-  colliderAmount = 0;
+  Uint8 TcolliderAmount = 0;
   SDL_FRect **testsurroudningColliders = Tilemap_getCollidersAroundEntity(
-      &ctx->tilemap, &ctx->testObject, &colliderAmount);
-  Entity_move(&ctx->testObject, testsurroudningColliders, colliderAmount);
+      &ctx->tilemap, &ctx->testObject, &TcolliderAmount);
+  Entity_move(&ctx->testObject, testsurroudningColliders, TcolliderAmount);
 
   Camera_setPosition(&ctx->camera,
                      ctx->player.xPos + ctx->player.spriteRenderRect.w / 2,

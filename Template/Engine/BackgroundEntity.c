@@ -86,6 +86,14 @@ void BackgroundEntity_update(BackgroundEntity *bge, SDL_Renderer *renderer,
              (Camera_getObjectXOffset(camera) / bge->entity[i].depth) -
                  bge->entity[i].spriteRenderRect.w)
       bge->entity[i].xPos += SCREEN_WIDTH + bge->entity[i].spriteRenderRect.w;
+    if (bge->entity[i].yPos >
+        (Camera_getObjectYOffset(camera) / bge->entity[i].depth) +
+            SCREEN_HEIGHT)
+      bge->entity[i].yPos -= SCREEN_HEIGHT + bge->entity[i].spriteRenderRect.h;
+    else if (bge->entity[i].yPos <
+             (Camera_getObjectYOffset(camera) / bge->entity[i].depth) -
+                 bge->entity[i].spriteRenderRect.h)
+      bge->entity[i].yPos += SCREEN_HEIGHT + bge->entity[i].spriteRenderRect.h;
     // Implement y scrolling?
     bge->entity[i].yPos = (int)bge->entity[i].yPos;
     //        printf("Entity %d: xPos = %f, yPos = %f\n", i,

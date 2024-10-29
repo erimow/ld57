@@ -121,7 +121,7 @@ void Tilemap_populate(Tilemap *tm, char *fileName, Entity *entityTypes,
     totalBytesRead += len - 1; // remove newline character or null terminator
   }
   content[totalBytesRead] = '\0'; // Null-terminate the final string
-  printf("content=%s\n", content);
+  // printf("content=%s\n", content);
 
   tm->mapHeight = rows;
   tm->mapWidth = (int)(totalBytesRead / rows);
@@ -479,8 +479,10 @@ SDL_FRect **Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
 
   Uint8 entityTileWidth = divideUp(entity->collider.w, tileScaledSize);
   Uint8 entityTileHeight = divideUp(entity->collider.h, tileScaledSize);
-  Uint8 maxColliders = (entityTileHeight * entityTileWidth) +
-                       (entityTileHeight * 2) + (entityTileWidth * 2) + 4;
+  Uint8 maxColliders =
+      ((entityTileHeight + 1) * (entityTileWidth + 1)) +
+      ((entityTileHeight + 1) * 2) + ((entityTileWidth + 1) * 2) +
+      4; //+1's are to account for entity being inside different tiles at once
   // printf("Max colliders %d\n", maxColliders);
   /// DOUBLE CHECK ALL OF THIS SHIT ALSO CHECK IF THE EFUNC IS WORKING PROPERLY
   /// | MAYBE AN ISSUE WITH THE UNSIGNED INTS??
@@ -500,6 +502,26 @@ SDL_FRect **Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
              tm->scale)),
       (int)((((entity->yPos + (entity->collider.h / 2)) / tileSize) /
              tm->scale))};
+  SDL_Point EntityLeftSideTilePos = (SDL_Point){
+      (int)(((entity->xPos + 1) / (tileSize) / tm->scale)),
+      (int)((((entity->yPos + (entity->collider.h / 2)) / tileSize) /
+             tm->scale))};
+  SDL_Point EntityRightSideTilePos = (SDL_Point){
+      (int)(((entity->xPos + (entity->collider.w) - 1) / (tileSize) /
+             tm->scale)),
+      (int)((((entity->yPos + (entity->collider.h / 2)) / tileSize) /
+             tm->scale))};
+  SDL_Point EntityTopSideTilePos =
+      (SDL_Point){(int)(((entity->xPos + (entity->collider.w / 2)) /
+                         (tileSize) / tm->scale)),
+                  (int)((((entity->yPos + 1) / tileSize) / tm->scale))};
+  SDL_Point EntityBottomSideTilePos = (SDL_Point){
+      (int)(((entity->xPos + (entity->collider.w / 2)) / (tileSize) /
+             tm->scale)),
+      (int)((((entity->yPos - 1 + (entity->collider.h)) / tileSize) /
+             tm->scale))};
+  // printf("bottomX=%d, bottomY=%d\n", EntityBottomSideTilePos.x,
+  //        EntityBottomSideTilePos.y);
 
   SDL_Point EntityGridPos =
       (SDL_Point){(int)((EntityTilePos.x) / squaredTilesPerGrid),
@@ -602,12 +624,15 @@ SDL_FRect **Tilemap_getCollidersAroundEntity(Tilemap *tm, Entity *entity,
         //         tm->scale))),
         // tm->tiles[ind][i].xGridPos, tm->tiles[ind][i].yGridPos);
 
-        if (!(tm->grid[ind].tiles[i].xGridPos < EntityTilePos.x - 1 ||
-              tm->grid[ind].tiles[i].xGridPos > EntityTilePos.x + 1 ||
+        if (!(tm->grid[ind].tiles[i].xGridPos < EntityLeftSideTilePos.x - 1 ||
+              tm->grid[ind].tiles[i].xGridPos > EntityRightSideTilePos.x + 1 ||
               tm->grid[ind].tiles[i].yGridPos <
-                  (tm->mapHeight - EntityTilePos.y) - 1 ||
+                  (tm->mapHeight - EntityBottomSideTilePos.y) - 1 ||
               tm->grid[ind].tiles[i].yGridPos >
-                  (tm->mapHeight - EntityTilePos.y) + 1)) {
+                  (tm->mapHeight - EntityTopSideTilePos.y) + 1)) {
+          /*printf("maxColliders=%d, rectCount=%d, grid[%d].tiles[%d]\n",*/
+          /*       maxColliders, rectCount, ind, i);*/
+          // printf("rectcount=%d\n", rectCount);
           rects[rectCount++] = &tm->grid[ind].tiles[i].pos;
           // tm->tiles[ind][i].spriteYId=1; For collision testing
         }
