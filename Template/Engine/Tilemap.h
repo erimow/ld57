@@ -39,13 +39,15 @@ typedef struct {
   Grid *grid;
   int gridAmount, gridWidth, gridHeight;
 
-  char *tileTypesForParse;
-  int numTileTypesForParse;
-  char *entityTileTypesForParse;
-  int numEntityTileTypesForParse;
-  SDL_FRect *colliders;
-  int tileAmount;
-  int tilesPerGrid;
+  char *tileTypesForParse; // a char array holding the ascii values of tile
+                           // types
+  int numTileTypesForParse;       // num of tile types
+  char *entityTileTypesForParse;  // same but for entity types
+  int numEntityTileTypesForParse; // yes
+  SDL_FRect *colliders;           // this is generally unused
+  int tileAmount;                 // set inside of tilemap_populate
+  int tilesPerGrid; // Needs to be cleanly square rootable - Also works best if
+                    // the square root is an even number
 
   int mapWidth, mapHeight;
   float scale;

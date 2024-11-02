@@ -14,12 +14,18 @@
 #include "Engine/Timer.h"
 #include "Engine/constants.h"
 #include <SDL2/SDL.h>
+#ifdef __linux__
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
+#elif defined __APPLE__
+#include <SDL2_image/SDL_image.h>
+#include <SDL2_mixer/SDL_mixer.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#endif
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif /* ifdef __EMSCRIPTEN__ */
@@ -467,6 +473,12 @@ void quit(context *ctx) {
 }
 
 int main(int argc, char *argv[]) {
+#ifdef __LINUX__
+  printf("Working linux\n");
+#endif
+#ifdef __APPLE__
+  printf("Working apple\n");
+#endif
   context ctx;
   // CONTEXT STUFF
   /* Important stuff */
