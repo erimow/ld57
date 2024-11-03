@@ -95,6 +95,7 @@ typedef struct context {
 } context;
 
 bool loadMedia(context *ctx) {
+
   bool success = true;
 
   ctx->screensize.x = 0;
@@ -481,6 +482,7 @@ int main(int argc, char *argv[]) {
 #endif
   context ctx;
   // CONTEXT STUFF
+    ctx.quit=false;
   /* Important stuff */
   ctx.ticksPerFrame = 1000.0f / TARGET_FPS;
   ctx.window = NULL;   // freed
