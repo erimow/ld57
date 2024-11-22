@@ -14,6 +14,7 @@
 #include <SDL2/SDL_rect.h>
 #include <stdio.h>
 
+typedef enum ControlType { MAK, GAMEPAD } ControlType;
 typedef struct {
   Texture spriteSheet;
   // default vars
@@ -30,13 +31,14 @@ typedef struct {
   // flags
   Uint8 left, right, up, down, onGround;
   bool isPhysics;
+  ControlType currentControlType;
 
   // background entity stuff
   float depth;
 
   // Animation stuff
   Uint8 clipLength, currentAnimationFrame, animationSpeed;
-  SDL_Rect *clip;
+  SDL_Rect *clip; // Sprite locations on spriteSheet
 } Entity;
 
 extern void Entity_init(Entity *entity, float xPos, float yPos,

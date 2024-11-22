@@ -7,6 +7,8 @@
 
 #include "Entity.h"
 #include "Camera.h"
+#include "constants.h"
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_stdinc.h>
 
@@ -39,6 +41,7 @@ void Entity_init(Entity *entity, float xPos, float yPos, float spriteWidth,
   entity->clip = (SDL_Rect *)malloc(sizeof(SDL_Rect) * spriteAmount);
   if (entity->clip == NULL)
     printf("clip not properly malloced!\n");
+  entity->currentControlType = MAK;
   entity->isPhysics = false;
 }
 void Entity_initPhysics(Entity *entity, float xPos, float yPos,
@@ -77,6 +80,8 @@ void Entity_initPhysics(Entity *entity, float xPos, float yPos,
   entity->clip = (SDL_Rect *)malloc(sizeof(SDL_Rect) * spriteAmount);
   if (entity->clip == NULL)
     printf("clip not properly malloced!\n");
+
+  entity->currentControlType = MAK;
   entity->isPhysics = true;
 }
 void Entity_free(Entity *entity, bool freeClip) {
@@ -211,7 +216,9 @@ void Entity_move(Entity *entity, SDL_FRect *colliders[], int size) {
   }
 }
 void Entity_handleEvent(Entity *entity, SDL_Event *e) {
+  // MAK
   if (e->type == SDL_KEYDOWN && e->key.repeat == 0) {
+    entity->currentControlType = MAK;
     if (!entity->isPhysics) {
       switch (e->key.keysym.sym) {
       case SDLK_SPACE:
@@ -306,6 +313,42 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
         entity->left = 0;
         break;
       }
+    }
+  } else if (e->type == SDL_JOYAXISMOTION) {
+    if (e->jaxis.which == 0) // Checking the gamepad at index 0
+    {
+      if (e->jaxis.axis == 0) // Checking the x axis (0=left joystick X, 1=left
+                              // joystick Y, 2=right joystick X, 3=right
+                              // joystick Y) Y AXIS IS INVERTED FROM X
+      {
+        if (e->jaxis.value > JOYSTICK_DEADZONE) {
+          entity->currentControlType = GAMEPAD;
+          entity->right = 1;
+          entity->left = 0;
+        } else if (e->jaxis.value < -JOYSTICK_DEADZONE) {
+          entity->currentControlType = GAMEPAD;
+          entity->left = 1;
+          entity->right = 0;
+        } else {
+          if (entity->currentControlType == GAMEPAD) {
+            entity->left = 0;
+            entity->right = 0;
+          }
+        }
+      }
+    }
+  } else if (e->type == SDL_JOYBUTTONDOWN) {
+    entity->currentControlType = GAMEPAD;
+    switch (e->jbutton.button) { // Make enum with buttons?
+    case 0:                      // 0 = A button (switch controller b)
+      entity->up = 1;
+      break;
+    }
+  } else if (e->type == SDL_JOYBUTTONUP) {
+    switch (e->jbutton.button) {
+    case 0:
+      entity->up = 0; // 0 = A button
+      break;
     }
   }
 }
