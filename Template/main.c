@@ -149,8 +149,8 @@ bool loadMedia(context *ctx) {
   }
   ctx->testObject.clip[0] = (SDL_Rect){2, 5, 25, 22};
   ctx->mapEntities[0] = ctx->testObject;
-  Tilemap_init(&ctx->tilemap, &ctx->tilemapSpriteSheet, true, 0.75f,
-               ctx->tilemap_tilesPerGrid, "Art/map3.txt", "SX", 2, "E", 1,
+  Tilemap_init(&ctx->tilemap, &ctx->tilemapSpriteSheet, true, 3.75f,
+               ctx->tilemap_tilesPerGrid, "Art/map.txt", "SX", 2, "E", 1,
                ctx->mapEntities, 1);
   ctx->fish.clip[0] = (SDL_Rect){0, 0, 32, 32};
   ctx->fish.clip[1] = (SDL_Rect){32, 0, 32, 32};
