@@ -99,7 +99,7 @@ void BackgroundEntity_update(BackgroundEntity *bge, SDL_Renderer *renderer,
     //        printf("Entity %d: xPos = %f, yPos = %f\n", i,
     //        bge->entity[i].xPos, bge->entity[i].yPos);
     if (bge->entity[i].clipLength > 1) {
-      if ((frameCount + bge->entity[i].up) %
+      if ((frameCount + (int)bge->entity[i].up) %
               (animationInterval - abs((int)bge->entity[i].xVel * 4)) ==
           0) {
         bge->entity[i]

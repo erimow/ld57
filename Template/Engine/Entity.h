@@ -29,7 +29,8 @@ typedef struct {
   // physics vars
   float jumpStrength, gravity, friction, maxXVel;
   // flags
-  Uint8 left, right, up, down, onGround;
+  Uint8  jump, onGround;
+    float left, right,up, down;
   bool isPhysics;
   ControlType currentControlType;
 

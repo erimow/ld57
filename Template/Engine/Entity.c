@@ -11,6 +11,7 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_stdinc.h>
+#include "efuncs.h"
 
 void Entity_init(Entity *entity, float xPos, float yPos, float spriteWidth,
                  float spriteHeight, float colWidth, float colHeight,
@@ -164,10 +165,10 @@ void Entity_move(Entity *entity, SDL_FRect *colliders[], int size) {
     if (entity->xVel < .1f && entity->xVel > -.1f)
       entity->xVel = 0;
 
-    entity->yVel -= (entity->onGround * entity->up * entity->jumpStrength) -
+    entity->yVel -= (entity->onGround * entity->jump * entity->jumpStrength) -
                     entity->gravity;
-    if (entity->yVel < 0)
-      entity->onGround = 0;
+    //if (entity->yVel < 0)
+     // entity->onGround = 0;
 
     if (entity->yVel != 0)
       entity->onGround = 0;
@@ -246,6 +247,8 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
     } else {
       switch (e->key.keysym.sym) {
       case SDLK_SPACE:
+              entity->jump = 1;
+              break;
       case SDLK_UP:
       case SDLK_w:
         entity->up = 1;
@@ -295,6 +298,8 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
     else {
       switch (e->key.keysym.sym) {
       case SDLK_SPACE:
+              entity->jump = 0;
+              break;
       case SDLK_UP:
       case SDLK_w:
         entity->up = 0;
@@ -321,13 +326,15 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
                               // joystick Y, 2=right joystick X, 3=right
                               // joystick Y) Y AXIS IS INVERTED FROM X
       {
+          //printf("e->jaxis.value = %d, entity->right = %.02f\n", e->jaxis.value, entity->right);
         if (e->jaxis.value > JOYSTICK_DEADZONE) {
           entity->currentControlType = GAMEPAD;
-          entity->right = 1;
+          entity->right =  maxf((float)e->jaxis.value/30000, 1);
           entity->left = 0;
+            
         } else if (e->jaxis.value < -JOYSTICK_DEADZONE) {
           entity->currentControlType = GAMEPAD;
-          entity->left = 1;
+            entity->left = maxf((float)e->jaxis.value/-30000, 1);
           entity->right = 0;
         } else {
           if (entity->currentControlType == GAMEPAD) {
@@ -335,19 +342,35 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
             entity->right = 0;
           }
         }
+      }else if (e->jaxis.axis == 1){ //LEFT STICK Y AXIS
+          if (e->jaxis.value > JOYSTICK_DEADZONE) {
+          entity->currentControlType = GAMEPAD;
+          entity->down =  maxf((float)e->jaxis.value/30000, 1);
+          entity->up = 0;
+            
+        } else if (e->jaxis.value < -JOYSTICK_DEADZONE) {
+          entity->currentControlType = GAMEPAD;
+            entity->up = maxf((float)e->jaxis.value/-30000, 1);
+          entity->down = 0;
+        } else {
+          if (entity->currentControlType == GAMEPAD) {
+            entity->up = 0;
+            entity->down = 0;
+          }
+        }
       }
     }
   } else if (e->type == SDL_JOYBUTTONDOWN) {
     entity->currentControlType = GAMEPAD;
     switch (e->jbutton.button) { // Make enum with buttons?
-    case 0:                      // 0 = A button (switch controller b)
-      entity->up = 1;
+    case 0:                      // 0 = A button (On linux and switch controller, this is the B button. On Mac it is the proper A button)
+            entity->jump = 1;
       break;
     }
   } else if (e->type == SDL_JOYBUTTONUP) {
     switch (e->jbutton.button) {
     case 0:
-      entity->up = 0; // 0 = A button
+            entity->jump = 0; // 0 = A button
       break;
     }
   }

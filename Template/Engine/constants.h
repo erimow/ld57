@@ -16,6 +16,6 @@
       // 32x32 sprite
 #define TILES_PER_GRID 36; // How many tiles Per grid TOTAL. Ex. 4x4 grid = 16
 //
-#define JOYSTICK_DEADZONE 11000
+#define JOYSTICK_DEADZONE 9000
 
 #endif /* constants_h */
