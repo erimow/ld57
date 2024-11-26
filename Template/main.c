@@ -114,7 +114,7 @@ bool loadMedia(context *ctx) {
   // //Normal entity init
   Entity_initPhysics(&ctx->player, (float)SCREEN_WIDTH / 2 - 50,
                      (float)SCREEN_HEIGHT / 2 - 50, 100, 100, 100, 100,
-                     (SDL_FPoint){0, 0}, 0.8f, 15.0f, 0.3f, .95f, 20.0f, 3);
+                     (SDL_FPoint){0, 0}, 0.8f, 5.0f, 0.3f, .95f, 20.0f, 3);
   Entity_initPhysics(&ctx->testObject, 300, 0, 100, 100, 100, 100,
                      (SDL_FPoint){0, 0}, .8f, 12.0f, 0.3f, .95f, 8.0f, 1);
   Entity_init(&ctx->fish, 300, 300, 100, 100, 100, 100, (SDL_FPoint){0, 0}, 0.0,
@@ -290,9 +290,9 @@ void gameLoop(void *arg) {
   //     \n", ctx->camera.xPos, ctx->camera.yPos, ctx->camera.xObjOffset,
   //     ctx->camera.yObjOffset, ctx->camera.xCamOffset,
   //     ctx->camera.yCamOffset);
-  // Camera_setBounds(&ctx->camera,
-  // (SDL_FRect){0, 0, Tilemap_getMapWidthPixels(&ctx->tilemap),
-  // Tilemap_getMapHeightPixels(&ctx->tilemap)});
+   Camera_setBounds(&ctx->camera,
+   (SDL_FRect){0, 0, Tilemap_getMapWidthPixels(&ctx->tilemap),
+   Tilemap_getMapHeightPixels(&ctx->tilemap)});
 
   // player rotation stuff
   if (ctx->player.xVel > 0) {

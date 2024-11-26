@@ -23,6 +23,7 @@ void Entity_init(Entity *entity, float xPos, float yPos, float spriteWidth,
   entity->right = 0;
   entity->up = 0;
   entity->down = 0;
+    entity->jump = 0;
   entity->xPos = xPos;
   entity->yPos = yPos;
   entity->colliderOffset = colliderOffset;
@@ -76,6 +77,7 @@ void Entity_initPhysics(Entity *entity, float xPos, float yPos,
   entity->up = 0;
   entity->down = 0;
   entity->onGround = 0;
+    entity->jump = 0;
   Texture_init(&entity->spriteSheet);
   entity->clipLength = spriteAmount;
   entity->clip = (SDL_Rect *)malloc(sizeof(SDL_Rect) * spriteAmount);
@@ -164,9 +166,21 @@ void Entity_move(Entity *entity, SDL_FRect *colliders[], int size) {
       entity->xVel = -entity->maxXVel;
     if (entity->xVel < .1f && entity->xVel > -.1f)
       entity->xVel = 0;
-
-    entity->yVel -= (entity->onGround * entity->jump * entity->jumpStrength) -
-                    entity->gravity;
+      
+      
+if (entity->jump>0 && entity->yVel<0 && entity->onGround!=1)
+        entity->jump = (entity->jump-0.04f <= 0) ? 0 : entity->jump-0.04f;
+      if (entity->onGround==1 && entity->jump!=0){
+          entity->jump=1;
+      }
+      else if (entity->yVel>=0){
+          entity->jump=0;
+      }
+      entity->yVel -= (entity->onGround * entity->jump* entity->jumpStrength) -
+      entity->gravity + entity->jump;
+      
+    printf("entity->jump = %.02f\n", entity->jump);
+      
     //if (entity->yVel < 0)
      // entity->onGround = 0;
 
@@ -247,7 +261,8 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
     } else {
       switch (e->key.keysym.sym) {
       case SDLK_SPACE:
-              entity->jump = 1;
+              if(entity->onGround==1)
+                 entity->jump = 1;
               break;
       case SDLK_UP:
       case SDLK_w:
@@ -364,6 +379,7 @@ void Entity_handleEvent(Entity *entity, SDL_Event *e) {
     entity->currentControlType = GAMEPAD;
     switch (e->jbutton.button) { // Make enum with buttons?
     case 0:                      // 0 = A button (On linux and switch controller, this is the B button. On Mac it is the proper A button)
+            if (entity->onGround==1)
             entity->jump = 1;
       break;
     }
