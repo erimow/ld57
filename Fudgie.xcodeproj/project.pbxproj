@@ -162,7 +162,7 @@
 		032362B12C474BC000AD351B = {
 			isa = PBXGroup;
 			children = (
-				032362BC2C474BC000AD351B /* Template */,
+				032362BC2C474BC000AD351B /* Fudgie */,
 				032362BB2C474BC000AD351B /* Products */,
 				032362DE2C474CE800AD351B /* Frameworks */,
 			);
@@ -176,7 +176,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		032362BC2C474BC000AD351B /* Template */ = {
+		032362BC2C474BC000AD351B /* Fudgie */ = {
 			isa = PBXGroup;
 			children = (
 				03E8EE012CD6F53700556F33 /* Fonts */,
@@ -189,7 +189,7 @@
 				032362C72C474BC100AD351B /* CSDL.entitlements */,
 				032362CE2C474BE800AD351B /* main.c */,
 			);
-			path = Template;
+			path = Fudgie;
 			sourceTree = "<group>";
 		};
 		032362CD2C474BD800AD351B /* Scripts */ = {
@@ -297,7 +297,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 032362B52C474BC000AD351B /* Build configuration list for PBXProject "Template" */;
+			buildConfigurationList = 032362B52C474BC000AD351B /* Build configuration list for PBXProject "Fudgie" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -554,7 +554,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		032362B52C474BC000AD351B /* Build configuration list for PBXProject "Template" */ = {
+		032362B52C474BC000AD351B /* Build configuration list for PBXProject "Fudgie" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				032362C82C474BC100AD351B /* Debug */,
