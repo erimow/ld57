@@ -6,72 +6,9 @@
 	objectVersion = 56;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		0307D6992C4F2FAD0096CEEF /* BackgroundEntity.c in Sources */ = {isa = PBXBuildFile; fileRef = 0307D6982C4F2FAD0096CEEF /* BackgroundEntity.c */; };
-		032362C12C474BC100AD351B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 032362C02C474BC100AD351B /* Assets.xcassets */; };
-		032362CF2C474BE800AD351B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 032362CE2C474BE800AD351B /* main.c */; };
-		032362E32C474CE800AD351B /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 032362DF2C474CE800AD351B /* SDL2_mixer.framework */; };
-		032362E42C474CE800AD351B /* SDL2_mixer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 032362DF2C474CE800AD351B /* SDL2_mixer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		032362E52C474CE800AD351B /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 032362E02C474CE800AD351B /* SDL2_ttf.framework */; };
-		032362E62C474CE800AD351B /* SDL2_ttf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 032362E02C474CE800AD351B /* SDL2_ttf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		032362E72C474CE800AD351B /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 032362E12C474CE800AD351B /* SDL2.framework */; };
-		032362E82C474CE800AD351B /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 032362E12C474CE800AD351B /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		032362E92C474CE800AD351B /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 032362E22C474CE800AD351B /* SDL2_image.framework */; };
-		032362EA2C474CE800AD351B /* SDL2_image.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 032362E22C474CE800AD351B /* SDL2_image.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		034C3B0D2C47981A00913D57 /* Texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 034C3B0C2C47981A00913D57 /* Texture.c */; };
-		034C3B1A2C47A52A00913D57 /* scratch.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B122C47A52A00913D57 /* scratch.wav */; };
-		034C3B1B2C47A52A00913D57 /* medium.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B132C47A52A00913D57 /* medium.wav */; };
-		034C3B1C2C47A52A00913D57 /* beat.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B142C47A52A00913D57 /* beat.wav */; };
-		034C3B1D2C47A52A00913D57 /* high.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B152C47A52A00913D57 /* high.wav */; };
-		034C3B1E2C47A52A00913D57 /* game - music 1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B162C47A52A00913D57 /* game - music 1.wav */; };
-		034C3B1F2C47A52A00913D57 /* The Penguin God.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B172C47A52A00913D57 /* The Penguin God.wav */; };
-		034C3B202C47A52A00913D57 /* game - music 2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B182C47A52A00913D57 /* game - music 2.wav */; };
-		034C3B212C47A52A00913D57 /* low.wav in Resources */ = {isa = PBXBuildFile; fileRef = 034C3B192C47A52A00913D57 /* low.wav */; };
-		034C3B242C47A7B500913D57 /* Button.c in Sources */ = {isa = PBXBuildFile; fileRef = 034C3B232C47A7B500913D57 /* Button.c */; };
-		034C3B292C48494100913D57 /* Timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 034C3B282C48494100913D57 /* Timer.c */; };
-		034C3B2C2C486A3B00913D57 /* Entity.c in Sources */ = {isa = PBXBuildFile; fileRef = 034C3B2B2C486A3B00913D57 /* Entity.c */; };
-		034C3B2F2C4AF74B00913D57 /* Camera.c in Sources */ = {isa = PBXBuildFile; fileRef = 034C3B2E2C4AF74B00913D57 /* Camera.c */; };
-		03E8EE022CD6F53700556F33 /* tuffy_regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE002CD6F53700556F33 /* tuffy_regular.ttf */; };
-		03E8EE052CD6F54D00556F33 /* efuncs.c in Sources */ = {isa = PBXBuildFile; fileRef = 03E8EE042CD6F54D00556F33 /* efuncs.c */; };
-		03E8EE1E2CD6F82600556F33 /* ButtonBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE102CD6F82600556F33 /* ButtonBackground.png */; };
-		03E8EE1F2CD6F82600556F33 /* map2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE122CD6F82600556F33 /* map2.txt */; };
-		03E8EE202CD6F82600556F33 /* Starfish.png in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE162CD6F82600556F33 /* Starfish.png */; };
-		03E8EE212CD6F82600556F33 /* StarfishgameTileSpritesheet.xcf in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE172CD6F82600556F33 /* StarfishgameTileSpritesheet.xcf */; };
-		03E8EE222CD6F82600556F33 /* BackgroundFishSpriteSheet.xcf in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE0F2CD6F82600556F33 /* BackgroundFishSpriteSheet.xcf */; };
-		03E8EE232CD6F82600556F33 /* map3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE132CD6F82600556F33 /* map3.txt */; };
-		03E8EE242CD6F82600556F33 /* map.txt in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE112CD6F82600556F33 /* map.txt */; };
-		03E8EE252CD6F82600556F33 /* BackgroundFishSpriteSheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE0E2CD6F82600556F33 /* BackgroundFishSpriteSheet.png */; };
-		03E8EE262CD6F82600556F33 /* TileSpritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE1B2CD6F82600556F33 /* TileSpritesheet.png */; };
-		03E8EE272CD6F82600556F33 /* StarfishRightRoll.png in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE182CD6F82600556F33 /* StarfishRightRoll.png */; };
-		03E8EE282CD6F82600556F33 /* TileSpritesheet.xcf in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE1C2CD6F82600556F33 /* TileSpritesheet.xcf */; };
-		03E8EE292CD6F82600556F33 /* StarfishSpriteSheet.xcf in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE1A2CD6F82600556F33 /* StarfishSpriteSheet.xcf */; };
-		03E8EE2A2CD6F82600556F33 /* map4.txt in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE142CD6F82600556F33 /* map4.txt */; };
-		03E8EE2B2CD6F82600556F33 /* StarfishSpriteSheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE192CD6F82600556F33 /* StarfishSpriteSheet.png */; };
-		03E8EE2C2CD6F82600556F33 /* RelicArt.png in Resources */ = {isa = PBXBuildFile; fileRef = 03E8EE152CD6F82600556F33 /* RelicArt.png */; };
-		03F0613E2C50704700375EAF /* Tilemap.c in Sources */ = {isa = PBXBuildFile; fileRef = 03F0613D2C50704700375EAF /* Tilemap.c */; };
-/* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		032362EB2C474CE800AD351B /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				032362E82C474CE800AD351B /* SDL2.framework in Embed Frameworks */,
-				032362E62C474CE800AD351B /* SDL2_ttf.framework in Embed Frameworks */,
-				032362E42C474CE800AD351B /* SDL2_mixer.framework in Embed Frameworks */,
-				032362EA2C474CE800AD351B /* SDL2_image.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		0307D6972C4F2FAD0096CEEF /* BackgroundEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BackgroundEntity.h; sourceTree = "<group>"; };
 		0307D6982C4F2FAD0096CEEF /* BackgroundEntity.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BackgroundEntity.c; sourceTree = "<group>"; };
-		032362BA2C474BC000AD351B /* Template.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Template.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		032362C02C474BC100AD351B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		032362C72C474BC100AD351B /* CSDL.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CSDL.entitlements; sourceTree = "<group>"; };
 		032362CE2C474BE800AD351B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
@@ -120,20 +57,6 @@
 		03F0613D2C50704700375EAF /* Tilemap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Tilemap.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFrameworksBuildPhase section */
-		032362B72C474BC000AD351B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				032362E72C474CE800AD351B /* SDL2.framework in Frameworks */,
-				032362E52C474CE800AD351B /* SDL2_ttf.framework in Frameworks */,
-				032362E32C474CE800AD351B /* SDL2_mixer.framework in Frameworks */,
-				032362E92C474CE800AD351B /* SDL2_image.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
 /* Begin PBXGroup section */
 		0307D6942C4DB8200096CEEF /* Engine */ = {
 			isa = PBXGroup;
@@ -171,7 +94,6 @@
 		032362BB2C474BC000AD351B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				032362BA2C474BC000AD351B /* Template.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -264,38 +186,12 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXNativeTarget section */
-		032362B92C474BC000AD351B /* Template */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 032362CA2C474BC100AD351B /* Build configuration list for PBXNativeTarget "Template" */;
-			buildPhases = (
-				032362B62C474BC000AD351B /* Sources */,
-				032362B72C474BC000AD351B /* Frameworks */,
-				032362B82C474BC000AD351B /* Resources */,
-				032362EB2C474CE800AD351B /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Template;
-			productName = CSDL;
-			productReference = 032362BA2C474BC000AD351B /* Template.app */;
-			productType = "com.apple.product-type.application";
-		};
-/* End PBXNativeTarget section */
-
 /* Begin PBXProject section */
 		032362B22C474BC000AD351B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastUpgradeCheck = 1540;
-				TargetAttributes = {
-					032362B92C474BC000AD351B = {
-						CreatedOnToolsVersion = 15.4;
-					};
-				};
 			};
 			buildConfigurationList = 032362B52C474BC000AD351B /* Build configuration list for PBXProject "Fudgie" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -310,64 +206,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				032362B92C474BC000AD351B /* Template */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		032362B82C474BC000AD351B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				034C3B1F2C47A52A00913D57 /* The Penguin God.wav in Resources */,
-				034C3B212C47A52A00913D57 /* low.wav in Resources */,
-				034C3B1D2C47A52A00913D57 /* high.wav in Resources */,
-				034C3B1E2C47A52A00913D57 /* game - music 1.wav in Resources */,
-				034C3B1C2C47A52A00913D57 /* beat.wav in Resources */,
-				03E8EE1E2CD6F82600556F33 /* ButtonBackground.png in Resources */,
-				03E8EE1F2CD6F82600556F33 /* map2.txt in Resources */,
-				03E8EE202CD6F82600556F33 /* Starfish.png in Resources */,
-				03E8EE212CD6F82600556F33 /* StarfishgameTileSpritesheet.xcf in Resources */,
-				03E8EE222CD6F82600556F33 /* BackgroundFishSpriteSheet.xcf in Resources */,
-				03E8EE232CD6F82600556F33 /* map3.txt in Resources */,
-				03E8EE242CD6F82600556F33 /* map.txt in Resources */,
-				03E8EE252CD6F82600556F33 /* BackgroundFishSpriteSheet.png in Resources */,
-				03E8EE262CD6F82600556F33 /* TileSpritesheet.png in Resources */,
-				03E8EE272CD6F82600556F33 /* StarfishRightRoll.png in Resources */,
-				03E8EE282CD6F82600556F33 /* TileSpritesheet.xcf in Resources */,
-				03E8EE292CD6F82600556F33 /* StarfishSpriteSheet.xcf in Resources */,
-				03E8EE2A2CD6F82600556F33 /* map4.txt in Resources */,
-				03E8EE2B2CD6F82600556F33 /* StarfishSpriteSheet.png in Resources */,
-				03E8EE2C2CD6F82600556F33 /* RelicArt.png in Resources */,
-				032362C12C474BC100AD351B /* Assets.xcassets in Resources */,
-				03E8EE022CD6F53700556F33 /* tuffy_regular.ttf in Resources */,
-				034C3B1A2C47A52A00913D57 /* scratch.wav in Resources */,
-				034C3B202C47A52A00913D57 /* game - music 2.wav in Resources */,
-				034C3B1B2C47A52A00913D57 /* medium.wav in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		032362B62C474BC000AD351B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0307D6992C4F2FAD0096CEEF /* BackgroundEntity.c in Sources */,
-				034C3B2C2C486A3B00913D57 /* Entity.c in Sources */,
-				032362CF2C474BE800AD351B /* main.c in Sources */,
-				034C3B2F2C4AF74B00913D57 /* Camera.c in Sources */,
-				03E8EE052CD6F54D00556F33 /* efuncs.c in Sources */,
-				034C3B292C48494100913D57 /* Timer.c in Sources */,
-				034C3B242C47A7B500913D57 /* Button.c in Sources */,
-				03F0613E2C50704700375EAF /* Tilemap.c in Sources */,
-				034C3B0D2C47981A00913D57 /* Texture.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		032362C82C474BC100AD351B /* Debug */ = {
@@ -489,68 +330,6 @@
 			};
 			name = Release;
 		};
-		032362CB2C474BC100AD351B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QZXG9JL6YR;
-				ENABLE_HARDENED_RUNTIME = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainNibFile = MainMenu;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = erik.CSDL;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-			};
-			name = Debug;
-		};
-		032362CC2C474BC100AD351B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QZXG9JL6YR;
-				ENABLE_HARDENED_RUNTIME = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainNibFile = MainMenu;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = erik.CSDL;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -559,15 +338,6 @@
 			buildConfigurations = (
 				032362C82C474BC100AD351B /* Debug */,
 				032362C92C474BC100AD351B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		032362CA2C474BC100AD351B /* Build configuration list for PBXNativeTarget "Template" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				032362CB2C474BC100AD351B /* Debug */,
-				032362CC2C474BC100AD351B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
