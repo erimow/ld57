@@ -39,6 +39,7 @@ typedef struct context {
   int ticksPerFrame;
   SDL_Window *window;     // freed
   SDL_Renderer *renderer; // freed
+  uint32_t width, height;
  
 
   /* Textures/Fonts */
@@ -297,6 +298,8 @@ int main(int argc, char *argv[]) {
   ctx.ticksPerFrame = 1000.0f / TARGET_FPS;
   ctx.window = NULL;   // freed
   ctx.renderer = NULL; // freed
+  ctx.width = SCREEN_WIDTH;
+  ctx.height = SCREEN_HEIGHT;
   /* Textures/Fonts */
   ctx.gFont = NULL; // freed
 
