@@ -13,6 +13,7 @@
 #include "Engine/Tilemap.h"
 #include "Engine/Timer.h"
 #include "Engine/constants.h"
+#include "Scripts/game.c"
 #include <SDL2/SDL.h>
 #ifdef __linux__
 #include <SDL2/SDL_image.h>
@@ -40,23 +41,20 @@ typedef struct context {
   SDL_Window *window;     // freed
   SDL_Renderer *renderer; // freed
   uint32_t width, height;
- 
 
   /* Textures/Fonts */
   TTF_Font *gFont;     // freed
   Texture fontTexture; // freed
-
-  Texture fpsTexture; // freed
+  Texture fpsTexture;  // freed
 
   /* Entities */
-  
+
   /* Other */
   Button butt;           // freed
   SDL_Joystick *gamePad; // freed
   Timer fps;             // no need to free
   Timer capTimer;
   int frameCount;
-
 
   /* Music/Sounds */
   Mix_Chunk *soundEffect; // freed
@@ -86,9 +84,8 @@ bool loadMedia(context *ctx) {
                             56); // Location and font size;
   if (ctx->gFont != NULL) {
     SDL_Color fontCol = {0, 255, 122, 255};
-    if (!Texture_loadFromRenderedText(
-            &ctx->fontTexture, ctx->renderer, ctx->gFont,
-            "Fudgie", fontCol)) {
+    if (!Texture_loadFromRenderedText(&ctx->fontTexture, ctx->renderer,
+                                      ctx->gFont, "Fudgie", fontCol)) {
       printf("Failed to load Font texture!\n");
       success = false;
     }
@@ -117,9 +114,7 @@ bool loadMedia(context *ctx) {
 }
 
 // START GAME LOOP
-void startGameloop(context *ctx) {
-  Timer_start(&ctx->fps);
-}
+void startGameloop(context *ctx) { Timer_start(&ctx->fps); }
 
 void gameLoop(void *arg) {
   context *ctx = SDL_static_cast(context *, arg);
@@ -154,7 +149,6 @@ void gameLoop(void *arg) {
   }
 
   // ACTUAL GAME STUFF
- 
 
   // FPS Stuff
   Uint32 avgFps = ctx->frameCount / (Timer_getTicks(&ctx->fps) / 1000.f);
@@ -167,8 +161,8 @@ void gameLoop(void *arg) {
   SDL_RenderClear(ctx->renderer);
 
   // OBJECT RENDERING
-    
-    // UI RENDERING
+
+  // UI RENDERING
   if (!Texture_loadFromRenderedText(&ctx->fpsTexture, ctx->renderer, ctx->gFont,
                                     fpsText, ctx->fpsCol)) {
     printf("Couldn't render fps text!!\n");
@@ -293,7 +287,7 @@ int main(int argc, char *argv[]) {
 #endif
   context ctx;
   // CONTEXT STUFF
-    ctx.quit=false;
+  ctx.quit = false;
   /* Important stuff */
   ctx.ticksPerFrame = 1000.0f / TARGET_FPS;
   ctx.window = NULL;   // freed
