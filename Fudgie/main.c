@@ -13,6 +13,7 @@
 #include "Engine/Tilemap.h"
 #include "Engine/Timer.h"
 #include "Engine/constants.h"
+#include "Engine/context.h"
 #include "Scripts/game.c"
 #include <SDL2/SDL.h>
 #ifdef __linux__
@@ -34,39 +35,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-typedef struct context {
-  /* Important stuff */
-  int ticksPerFrame;
-  SDL_Window *window;     // freed
-  SDL_Renderer *renderer; // freed
-  uint32_t width, height;
-
-  /* Textures/Fonts */
-  TTF_Font *gFont;     // freed
-  Texture fontTexture; // freed
-  Texture fpsTexture;  // freed
-
-  /* Entities */
-
-  /* Other */
-  Button butt;           // freed
-  SDL_Joystick *gamePad; // freed
-  Timer fps;             // no need to free
-  Timer capTimer;
-  int frameCount;
-
-  /* Music/Sounds */
-  Mix_Chunk *soundEffect; // freed
-  Mix_Music *gameMusic;   // freed
-
-  // Other ctx stuff
-  SDL_FRect fpsLoc;
-  SDL_Color fpsCol;
-
-  bool isButtPressed;
-  bool quit;
-} context;
 
 bool loadMedia(context *ctx) {
 
@@ -114,13 +82,17 @@ bool loadMedia(context *ctx) {
 }
 
 // START GAME LOOP
-void startGameloop(context *ctx) { Timer_start(&ctx->fps); }
+void startGameloop(context *ctx) {
+  Timer_start(&ctx->fps);
+  Game_Start(ctx);
+}
 
 void gameLoop(void *arg) {
   context *ctx = SDL_static_cast(context *, arg);
   Timer_start(&ctx->capTimer);
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
+    Game_Events(ctx, &e); // Calls the events function in the game file
 #ifdef __EMSCRIPTEN__
     if (e.type == SDL_KEYDOWN) {
       if (e.key.keysym.sym == SDLK_END) {
@@ -133,7 +105,9 @@ void gameLoop(void *arg) {
       ctx->quit = true;
     }
 #endif
-    Button_handleEvent(&ctx->butt, &e, &ctx->isButtPressed);
+    Button_handleEvent(
+        &ctx->butt, &e,
+        &ctx->isButtPressed); // should likely be moved into the game script
   }
 
   if (Mix_PlayingMusic() == 0) {
@@ -155,12 +129,16 @@ void gameLoop(void *arg) {
   char fpsText[50] = "";
   snprintf(fpsText, sizeof(fpsText), "fps: %d",
            avgFps); // Feeds int into char buffer
+  //
+  //
+  Game_Update(ctx); // calls update in the game.c file
 
   // START OF RENDERING
   SDL_SetRenderDrawColor(ctx->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
   SDL_RenderClear(ctx->renderer);
 
   // OBJECT RENDERING
+  Game_Render(ctx);
 
   // UI RENDERING
   if (!Texture_loadFromRenderedText(&ctx->fpsTexture, ctx->renderer, ctx->gFont,
@@ -193,7 +171,7 @@ bool init(context *ctx) {
     printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
   } else {
 
-    ctx->window = SDL_CreateWindow("Erik test", SDL_WINDOWPOS_UNDEFINED,
+    ctx->window = SDL_CreateWindow("Fudgie The Game", SDL_WINDOWPOS_UNDEFINED,
                                    SDL_WINDOWPOS_UNDEFINED, ctx->width,
                                    ctx->height, SDL_WINDOW_SHOWN);
     if (ctx->window == NULL) {
@@ -256,6 +234,7 @@ bool init(context *ctx) {
 
 void quit(context *ctx) {
   printf("Freeing\n");
+  Game_Stop(ctx);
   Texture_free(&ctx->fontTexture);
   // Texture_free(&test);
   Texture_free(&ctx->fpsTexture);
@@ -285,7 +264,7 @@ int main(int argc, char *argv[]) {
 #ifdef __APPLE__
   printf("Working apple\n");
 #endif
-  context ctx;
+  context ctx; // Defining context
   // CONTEXT STUFF
   ctx.quit = false;
   /* Important stuff */
