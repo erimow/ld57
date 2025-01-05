@@ -134,7 +134,8 @@ void gameLoop(void *arg) {
   Game_Update(ctx); // calls update in the game.c file
 
   // START OF RENDERING
-  SDL_SetRenderDrawColor(ctx->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  SDL_SetRenderDrawColor(ctx->renderer, 0b00001111, 0b00001111, 0b00001111,
+                         0xFF);
   SDL_RenderClear(ctx->renderer);
 
   // OBJECT RENDERING
@@ -282,7 +283,7 @@ int main(int argc, char *argv[]) {
 
   // fps stuff
   ctx.fpsLoc = (SDL_FRect){SCREEN_WIDTH - 50, 0, 50, 25};
-  ctx.fpsCol = (SDL_Color){0, 0, 0, 255};
+  ctx.fpsCol = (SDL_Color){200, 200, 200, 255};
 
   // button
   ctx.isButtPressed = false;

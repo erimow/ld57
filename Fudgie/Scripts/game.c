@@ -26,7 +26,7 @@ static void loadAssets(context *ctx) {
 static void Game_Start(context *ctx) {
   loadAssets(ctx);
   c.isSelected = false;
-  c.pos = (SDL_FRect){400, 100, 100, 250};
+  c.pos = (SDL_FRect){400, 100, 200, 280};
 }
 
 static void Game_Update(context *ctx) {
@@ -88,13 +88,13 @@ static void Game_Events(context *ctx, SDL_Event *e) {
 
       case SDL_MOUSEBUTTONDOWN:
         Texture_setColor(&c.CardBackdrop, 130, 130, 130);
-        c.isSelected = !c.isSelected;
+        c.isSelected = true;
         whenSelectedMousePos = (SDL_FPoint){x - c.pos.x, y - c.pos.y};
         break;
 
       case SDL_MOUSEBUTTONUP:
         Texture_setColor(&c.CardBackdrop, 200, 200, 200);
-        // c.isSelected = false;
+        c.isSelected = false;
         break;
       }
     }
