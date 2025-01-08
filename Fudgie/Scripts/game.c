@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+typedef enum Scenes { MAINMENU, GAME } Scenes;
+static Scenes currentScene;
 static SDL_FRect handLocation = {
     (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
     SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
@@ -24,6 +26,7 @@ static void loadAssets(context *ctx) {
 
 static void Game_Start(context *ctx) {
   loadAssets(ctx);
+  currentScene = GAME;
   c.isSelected = false;
   c.pos = (SDL_FRect){50, 100, 100, 150};
   for (int i = 0; i < 7; i++) {
@@ -33,6 +36,13 @@ static void Game_Start(context *ctx) {
 }
 
 static void Game_Update(context *ctx) {
+  switch (currentScene) {
+  case MAINMENU:
+    break;
+  case GAME:
+    // call games function
+    break;
+  }
   for (int i = 0; i < 7; i++) {
     Card *a = &cardsInHand[i];
     if (a->isSelected) {
@@ -47,6 +57,13 @@ static void Game_Render(context *ctx) {
   SDL_RenderDrawRectF(ctx->renderer, &handLocation);
   for (int i = 0; i < 7; i++) {
     Card_Render(&cardsInHand[i], ctx->renderer);
+  }
+  switch (currentScene) {
+  case MAINMENU:
+    break;
+  case GAME:
+    // call games function
+    break;
   }
 }
 
@@ -63,6 +80,13 @@ static void Game_Events(context *ctx, SDL_Event *e) {
   getMousePos(e);
   for (int i = 0; i < 7; i++) {
     Card_HandleEvents(&cardsInHand[i], e, mousePos);
+  }
+  switch (currentScene) {
+  case MAINMENU:
+    break;
+  case GAME:
+    // call games function
+    break;
   }
 }
 
