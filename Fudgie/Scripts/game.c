@@ -1,21 +1,20 @@
+#include "../Engine/constants.h"
 #include "../Engine/context.h"
 #include "../Engine/efuncs.h"
+#include "card.h"
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 
-typedef struct card {
-  Texture CardBackdrop;
-  SDL_FRect pos;
-  bool isSelected;
-} card;
-
-static SDL_FPoint whenSelectedMousePos;
+static SDL_FRect handLocation = {
+    (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
+    SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
+    SCREEN_WIDTH - (float)SCREEN_WIDTH / 4, (float)SCREEN_HEIGHT / 4};
 static SDL_FPoint mousePos;
-static card c;
+static Card cardsInHand[7];
+static Card c;
 
 static void loadAssets(context *ctx) {
   if (!Texture_loadFromFile(&c.CardBackdrop, ctx->renderer,
@@ -26,77 +25,53 @@ static void loadAssets(context *ctx) {
 static void Game_Start(context *ctx) {
   loadAssets(ctx);
   c.isSelected = false;
-  c.pos = (SDL_FRect){400, 100, 200, 280};
+  c.pos = (SDL_FRect){50, 100, 100, 150};
+  for (int i = 0; i < 7; i++) {
+    cardsInHand[i] = c;
+    cardsInHand[i].pos.x += 150 * i;
+  }
 }
 
 static void Game_Update(context *ctx) {
-  if (c.isSelected) {
-    c.pos.x = mousePos.x - whenSelectedMousePos.x;
-    c.pos.y = mousePos.y - whenSelectedMousePos.y;
+  for (int i = 0; i < 7; i++) {
+    Card *a = &cardsInHand[i];
+    if (a->isSelected) {
+      a->pos.x = mousePos.x - cardsInHand[i].whenSelectedMousePos.x;
+      a->pos.y = mousePos.y - cardsInHand[i].whenSelectedMousePos.y;
+    }
   }
 }
 
 static void Game_Render(context *ctx) {
-  Texture_render(&c.CardBackdrop, ctx->renderer, NULL, &c.pos, 0.0, NULL,
-                 SDL_FLIP_NONE);
+  SDL_SetRenderDrawColor(ctx->renderer, 255, 100, 0, 255);
+  SDL_RenderDrawRectF(ctx->renderer, &handLocation);
+  for (int i = 0; i < 7; i++) {
+    Card_Render(&cardsInHand[i], ctx->renderer);
+  }
 }
 
 static void Game_Stop(context *ctx) {
   printf("stopping game\n");
   Texture_free(&c.CardBackdrop);
+  for (int i = 0; i < 7; i++) {
+    Texture_free(&cardsInHand[i].CardBackdrop);
+  }
   printf("game assets stopped\n");
 }
-
+static void getMousePos(SDL_Event *e);
 static void Game_Events(context *ctx, SDL_Event *e) {
-  if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN ||
-      e->type == SDL_MOUSEBUTTONUP) {
+  getMousePos(e);
+  for (int i = 0; i < 7; i++) {
+    Card_HandleEvents(&cardsInHand[i], e, mousePos);
+  }
+}
+
+static void getMousePos(SDL_Event *e) {
+  if (e->type == SDL_MOUSEMOTION) {
     // Get mouse position
     int x, y;
     SDL_GetMouseState(&x, &y);
     mousePos.x = x;
     mousePos.y = y;
-    // Check if mouse is in button
-    bool inside = true;
-
-    // Mouse is left of the button
-    if (x < c.pos.x) {
-      inside = false;
-    }
-    // Mouse is right of the button
-    else if (x > c.pos.x + c.pos.w) {
-      inside = false;
-    }
-    // Mouse above the button
-    else if (y < c.pos.y) {
-      inside = false;
-    }
-    // Mouse below the button
-    else if (y > c.pos.y + c.pos.h) {
-      inside = false;
-    }
-    // Mouse is outside button
-    if (!inside) {
-      Texture_setColor(&c.CardBackdrop, 255, 255, 255);
-    }
-    // Mouse is inside button
-    else {
-      // Set mouse over sprite
-      switch (e->type) {
-      case SDL_MOUSEMOTION:
-        Texture_setColor(&c.CardBackdrop, 200, 200, 200);
-        break;
-
-      case SDL_MOUSEBUTTONDOWN:
-        Texture_setColor(&c.CardBackdrop, 130, 130, 130);
-        c.isSelected = true;
-        whenSelectedMousePos = (SDL_FPoint){x - c.pos.x, y - c.pos.y};
-        break;
-
-      case SDL_MOUSEBUTTONUP:
-        Texture_setColor(&c.CardBackdrop, 200, 200, 200);
-        c.isSelected = false;
-        break;
-      }
-    }
   }
 }

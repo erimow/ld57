@@ -126,9 +126,9 @@ void gameLoop(void *arg) {
 
   // FPS Stuff
   Uint32 avgFps = ctx->frameCount / (Timer_getTicks(&ctx->fps) / 1000.f);
-  char fpsText[50] = "";
-  snprintf(fpsText, sizeof(fpsText), "fps: %d",
-           avgFps); // Feeds int into char buffer
+  // char fpsText[50] = "";
+  // snprintf(fpsText, sizeof(fpsText), "fps: %d",
+  //  avgFps); // Feeds int into char buffer
   //
   //
   Game_Update(ctx); // calls update in the game.c file
@@ -142,13 +142,13 @@ void gameLoop(void *arg) {
   Game_Render(ctx);
 
   // UI RENDERING
-  if (!Texture_loadFromRenderedText(&ctx->fpsTexture, ctx->renderer, ctx->gFont,
-                                    fpsText, ctx->fpsCol)) {
-    printf("Couldn't render fps text!!\n");
-  } else {
-    Texture_render(&ctx->fpsTexture, ctx->renderer, NULL, &ctx->fpsLoc, 0.0,
-                   NULL, SDL_FLIP_NONE);
-  }
+  // if (!Texture_loadFromRenderedText(&ctx->fpsTexture, ctx->renderer,
+  // ctx->gFont, fpsText, ctx->fpsCol)) {
+  // printf("Couldn't render fps text!!\n");
+  // } else {
+  // Texture_render(&ctx->fpsTexture, ctx->renderer, NULL, &ctx->fpsLoc, 0.0,
+  // NULL, SDL_FLIP_NONE);
+  // }
   Button_render(&ctx->butt, ctx->renderer);
 
   // printf("%f\n",camera.yPos);   PRINT CAMERA POS
