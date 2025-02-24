@@ -10,8 +10,8 @@
 
 #include "Camera.h"
 #include "Texture.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rect.h>
+#include <SDL3/SDL.h>
+// #include <SDL2/SDL_rect.h>
 #include <stdio.h>
 
 typedef enum ControlType { MAK, GAMEPAD } ControlType;

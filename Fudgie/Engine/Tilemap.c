@@ -9,8 +9,7 @@
 #include "Camera.h"
 #include "constants.h"
 #include "efuncs.h"
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
+
 #include <math.h>
 #include <stdio.h>
 

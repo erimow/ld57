@@ -9,10 +9,10 @@
 #define Button_h
 
 #include "Texture.h"
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #ifdef __linux__
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
+// #include <SDL2/SDL_image.h>
+// #include <SDL2/SDL_ttf.h>
 #elif defined __APPLE__
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>

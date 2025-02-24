@@ -1,18 +1,18 @@
-#include "Button.h"
-#include "Texture.h"
-#include "Timer.h"
-#include <SDL2/SDL.h>
+// #include "Button.h"
+// #include "Texture.h"
+// #include "Timer.h"
+#include <SDL3/SDL.h>
 #ifdef __linux__
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_pixels.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_ttf.h>
+// #include <SDL2/SDL_image.h>
+// #include <SDL2/SDL_mixer.h>
+// #include <SDL2/SDL_pixels.h>
+// #include <SDL2/SDL_rect.h>
+// #include <SDL2/SDL_render.h>
+// #include <SDL2/SDL_ttf.h>
 #elif defined __APPLE__
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_mixer/SDL_mixer.h>
-#include <SDL2_ttf/SDL_ttf.h>
+// #include <SDL2_image/SDL_image.h>
+// #include <SDL2_mixer/SDL_mixer.h>
+// #include <SDL2_ttf/SDL_ttf.h>
 #endif
 
 #ifndef CONTEXT_H
@@ -26,28 +26,28 @@ typedef struct context {
   uint32_t width, height;
 
   /* Textures/Fonts */
-  TTF_Font *gFont;     // freed
-  Texture fontTexture; // freed
-  Texture fpsTexture;  // freed
+  // TTF_Font *gFont;     // freed
+  // Texture fontTexture; // freed
+  // Texture fpsTexture;  // freed
 
   /* Entities */
 
   /* Other */
-  Button butt;           // freed
-  SDL_Joystick *gamePad; // freed
-  Timer fps;             // no need to free
-  Timer capTimer;
+  // Button butt;           // freed
+  // SDL_Joystick *gamePad; // freed
+  // Timer fps;             // no need to free
+  // Timer capTimer;
   int frameCount;
 
   /* Music/Sounds */
-  Mix_Chunk *soundEffect; // freed
-  Mix_Music *gameMusic;   // freed
+  // Mix_Chunk *soundEffect; // freed
+  // Mix_Music *gameMusic;   // freed
 
   // Other ctx stuff
-  SDL_FRect fpsLoc;
-  SDL_Color fpsCol;
+  // SDL_FRect fpsLoc;
+  // SDL_Color fpsCol;
 
-  bool isButtPressed;
+  // bool isButtPressed;
   bool quit;
 } context;
 

@@ -8,9 +8,7 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "constants.h"
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_stdinc.h>
+
 #include "efuncs.h"
 
 void Entity_init(Entity *entity, float xPos, float yPos, float spriteWidth,

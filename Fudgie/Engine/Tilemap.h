@@ -12,7 +12,7 @@
 #include "Entity.h"
 #include "Texture.h"
 #include "constants.h"
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <math.h>
 #include <stdio.h>
 

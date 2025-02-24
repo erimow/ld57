@@ -1,13 +1,12 @@
-#include "../Engine/Texture.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
+// #include "../Engine/Texture.h"
+#include <SDL3/SDL.h>
+
 
 #ifndef CARD_H
 #define CARD_H
 
 typedef struct Card {
-  Texture CardBackdrop;
+  // Texture CardBackdrop;
   SDL_FRect pos;
   SDL_FPoint whenSelectedMousePos;
   bool isSelected;
