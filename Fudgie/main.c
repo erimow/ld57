@@ -16,6 +16,7 @@
 #include "Engine/context.h"
 #include "Scripts/game.c"
 #include <SDL2/SDL.h>
+//#include <SDL3/SDL.h>
 #ifdef __linux__
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -37,7 +38,6 @@
 #include <time.h>
 
 bool loadMedia(context *ctx) {
-
   bool success = true;
 
   Texture_init(&ctx->fontTexture);
