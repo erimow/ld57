@@ -11,7 +11,7 @@
 // #include "Engine/Entity.h"
 // #include "Engine/Texture.h"
 // #include "Engine/Tilemap.h"
-#include "Engine/Timer.h"
+//#include "Engine/Timer.h"
 #include "Engine/constants.h"
 #include "Engine/context.h"
 #include "Scripts/game.c"
@@ -168,7 +168,7 @@ void gameLoop(void *arg) {
 
 bool init(context *ctx) {
   bool success = false;
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+  if (!SDL_Init(SDL_INIT_VIDEO)) {
     printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
   } else {
     if(!SDL_CreateWindowAndRenderer("Game Name", ctx->width, ctx->height, 0, &ctx->window, &ctx->renderer)){

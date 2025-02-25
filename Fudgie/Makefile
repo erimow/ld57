@@ -1,7 +1,7 @@
 #OBJS specifies which files to compile as part of the project
 OBJS = main.c #Unused
 
-SOURCES := $(wildcard ./*.c)  $(wildcard Scripts/*.c) #$(wildcard Engine/*.c)
+SOURCES := $(wildcard ./*.c)  $(wildcard Scripts/*.c) $(wildcard Engine/*.c)
 
 #CC specifies which compiler we're using
 CC = gcc
