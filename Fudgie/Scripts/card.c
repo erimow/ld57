@@ -48,7 +48,7 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos) {
       switch (e->type) {
       case SDL_EVENT_MOUSE_MOTION:
         // Texture_setColor(&c->CardBackdrop, 200, 200, 200);
-        // break;
+        break;
 
       case SDL_EVENT_MOUSE_BUTTON_DOWN:
         // Texture_setColor(&c->CardBackdrop, 130, 130, 130);
