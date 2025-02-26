@@ -12,19 +12,18 @@ static SDL_FRect handLocation = {
     SCREEN_WIDTH - (float)SCREEN_WIDTH / 4, (float)SCREEN_HEIGHT / 4};
 static SDL_FPoint mousePos;
 static Card cardsInHand[7];
-static Card c;
 
 static void maingamescene_loadAssets(SDL_Renderer *renderer) {
-  if (!Texture_loadFromFile(&c.CardBackdrop, renderer, "Art/CardBackdrop.png"))
+  for (int i = 0; i<7; i++)
+  if (!Texture_loadFromFile(&cardsInHand[i].CardBackdrop, renderer, "Art/CardBackdrop.png"))
     printf("Could not load CardBackdrop\n");
+
 }
 
 static void maingamescene_start() {
-  c.isSelected = false;
-  c.pos = (SDL_FRect){50, 100, 100, 150};
   for (int i = 0; i < 7; i++) {
-    cardsInHand[i] = c;
-    cardsInHand[i].pos.x += 150 * i;
+    cardsInHand[i].isSelected = false;
+    cardsInHand[i].pos = (SDL_FRect){50+(150*i), 150, 100, 130};
   }
 }
 static void maingamescene_update() {
@@ -45,7 +44,6 @@ static void maingamescene_render(SDL_Renderer *renderer) {
 }
 
 static void maingamescene_stop() {
-  Texture_free(&c.CardBackdrop);
   for (int i = 0; i < 7; i++) {
     Texture_free(&cardsInHand[i].CardBackdrop);
   }
