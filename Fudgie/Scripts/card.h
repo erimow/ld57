@@ -5,10 +5,13 @@
 #define CARD_H
 
 typedef struct Card {
-  Texture CardBackdrop;
+  Texture *CardSpritesheet;
+  SDL_FRect clip;
   SDL_FRect pos;
   SDL_FPoint whenSelectedMousePos;
   bool isSelected;
+  char suit;
+  char val;
 } Card;
 
 void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos);

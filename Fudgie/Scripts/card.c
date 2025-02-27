@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 void Card_Render(Card *c, SDL_Renderer *renderer) {
-  Texture_render(&c->CardBackdrop, renderer, NULL, &c->pos, 0.0, NULL,
+  Texture_render(c->CardSpritesheet, renderer, NULL, &c->pos, 0.0, NULL,
                  SDL_FLIP_NONE);
   // SDL_RenderFillRect(renderer, &c->pos);
 }
@@ -39,7 +39,7 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos) {
     // Mouse is outside button
     if (!inside) {
       Texture_setColor(
-          &c->CardBackdrop, 255, 255,
+          c->CardSpritesheet, 255, 255,
           255); // This could potentially be inefficient.. not sure.
     }
     // Mouse is inside button
@@ -47,17 +47,16 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos) {
       // Set mouse over sprite
       switch (e->type) {
       case SDL_EVENT_MOUSE_MOTION:
-        Texture_setColor(&c->CardBackdrop, 200, 200, 200);
         break;
 
       case SDL_EVENT_MOUSE_BUTTON_DOWN:
-        Texture_setColor(&c->CardBackdrop, 130, 130, 130);
+        Texture_setColor(c->CardSpritesheet, 130, 130, 130);
         c->isSelected = true;
         c->whenSelectedMousePos = (SDL_FPoint){x - c->pos.x, y - c->pos.y};
         break;
 
       case SDL_EVENT_MOUSE_BUTTON_UP:
-        Texture_setColor(&c->CardBackdrop, 200, 200, 200);
+        Texture_setColor(c->CardSpritesheet, 200, 200, 200);
         c->isSelected = false;
         break;
       }

@@ -174,14 +174,14 @@ bool init(context *ctx) {
     if(!SDL_CreateWindowAndRenderer("Game Name", ctx->width, ctx->height, 0, &ctx->window, &ctx->renderer)){
       SDL_Log("Could not make window and renderer: %s", SDL_GetError());
     }
-   } /*else {
-        int imgFlags = IMG_INIT_PNG;
-        if (!(IMG_Init(imgFlags) & imgFlags)) {
-          printf("SDL_image could not be initialized! SDL_image Error: %s\n",
-                 IMG_GetError());
-        }
+   } //else {
+        // int imgFlags = IMG_INIT_PNG;
+        // if (!(IMG_Init(imgFlags) & imgFlags)) {
+        //   printf("SDL_image could not be initialized! SDL_image Error: %s\n",
+        //          IMG_GetError());
+        // }
 
-        else */{
+        //else */{
           // Init audio stuff
           /*if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
             printf("Mix could not init! SDL_Mix Error: %s\n", Mix_GetError());
@@ -194,7 +194,7 @@ bool init(context *ctx) {
               // LOAD MEDIA
               if (!loadMedia(ctx)) {
                 printf("Could not load texture image!\n");
-              } else {
+              } /*else {
                 // CHECK FOR JOYSTICKS AND SET TEXTURE FILTERING
 
                 // Set texture filtering to linear
@@ -213,11 +213,11 @@ bool init(context *ctx) {
                 //            "Error: %s\n",
                 //            SDL_GetError());
                 //   }
-                }
+                }*/
                 success = true;
               }
             }
-          }
+
   return success;
 }
 
