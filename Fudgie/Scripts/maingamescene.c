@@ -19,17 +19,18 @@ static void maingamescene_loadAssets(SDL_Renderer *renderer) {
     printf("Could not load CardSpritesheet\n");  //loading in the cardspritesheet
 
 }
-
+static unsigned int curCard = 22;
 static void maingamescene_start() {
   Deck_init(&deck);
+  deck.cards[curCard].pos = (SDL_FRect){50, 150, 125, 175};
 }
 static void maingamescene_update() {
   // for (int i = 0; i < 7; i++) {
-  //   Card *a = &cardsInHand[i];
-  //   if (a->isSelected) {
-  //     a->pos.x = mousePos.x - cardsInHand[i].whenSelectedMousePos.x;
-  //     a->pos.y = mousePos.y - cardsInHand[i].whenSelectedMousePos.y;
-  //   }
+    Card *a = &deck.cards[curCard];
+    if (a->isSelected) {
+      a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
+      a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
+    }
   // }
 }
 static void maingamescene_render(SDL_Renderer *renderer) {
@@ -38,6 +39,7 @@ static void maingamescene_render(SDL_Renderer *renderer) {
   // for (int i = 0; i < 7; i++) {
   //   Card_Render(&cardsInHand[i], renderer);
   // }
+  Card_Render(&deck.cards[curCard], renderer);
 }
 
 static void maingamescene_stop() {
@@ -49,6 +51,7 @@ static void maingamescene_events(SDL_Event *e) {
   // for (int i = 0; i < 7; i++) {
   //   Card_HandleEvents(&cardsInHand[i], e, mousePos);
   // }
+  Card_HandleEvents(&deck.cards[curCard], e, mousePos);
 }
 static void getMousePos(SDL_Event *e) {
   if (e->type == SDL_EVENT_MOUSE_MOTION) {

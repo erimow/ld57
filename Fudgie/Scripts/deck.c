@@ -46,6 +46,6 @@ void Deck_init(Deck *d){
         d->cards[i].clip = (SDL_FRect){(i%13)*CARDPXWIDTH, (i/13)*CARDPXHEIGHT, CARDPXWIDTH, CARDPXHEIGHT};
         d->cards[i].CardSpritesheet = &d->spriteSheet;
         d->cards[i].isSelected = false;
-        printf("Card: %d, val: %c, suit: %c\n", i, val, suit);
+        // printf("Card: %d, val: %c, suit: %c\n", i, val, suit);
     }
 }

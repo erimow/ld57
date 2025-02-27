@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 void Card_Render(Card *c, SDL_Renderer *renderer) {
-  Texture_render(c->CardSpritesheet, renderer, NULL, &c->pos, 0.0, NULL,
+  Texture_render(c->CardSpritesheet, renderer, &c->clip, &c->pos, 0.0, NULL,
                  SDL_FLIP_NONE);
   // SDL_RenderFillRect(renderer, &c->pos);
 }
