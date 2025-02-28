@@ -1,6 +1,5 @@
 #include "deck.h"
-#include <stdint.h>
-#include <stdio.h>
+
 
 static uint8_t CARDPXWIDTH = 125;
 static uint8_t CARDPXHEIGHT = 175;
@@ -48,4 +47,11 @@ void Deck_init(Deck *d){
         d->cards[i].isSelected = false;
         // printf("Card: %d, val: %c, suit: %c\n", i, val, suit);
     }
+}
+
+void Deck_scramble(Deck *d){
+  for (int i = 0; i < 52; i++){
+      Card swap = d->cards[i];
+      int ran = (rand() % 52);
+}
 }

@@ -19,7 +19,7 @@ static void maingamescene_loadAssets(SDL_Renderer *renderer) {
     printf("Could not load CardSpritesheet\n");  //loading in the cardspritesheet
 
 }
-static unsigned int curCard = 22;
+static unsigned int curCard = 29;
 static void maingamescene_start() {
   Deck_init(&deck);
   deck.cards[curCard].pos = (SDL_FRect){50, 150, 125, 175};
