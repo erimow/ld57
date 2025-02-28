@@ -13,6 +13,7 @@ static SDL_FRect handLocation = {
     SCREEN_WIDTH - (float)SCREEN_WIDTH / 4, (float)SCREEN_HEIGHT / 4};
 static SDL_FPoint mousePos;
 static unsigned int curCard = 29;
+static unsigned int numCardsToDeal = 10;
 static unsigned int numPlayas = 4;
 static Deck deck;
 static Player *players;
@@ -31,7 +32,7 @@ maingamescene_start() { //---------------------------------------------------STA
   Deck_init(&deck);
   players = (Player *)malloc(sizeof(Player) * numPlayas);
   Player_InitPlayers(players, numPlayas);
-  Deck_deal(&deck, players, numPlayas, 10);
+  Deck_deal(&deck, players, numPlayas, numCardsToDeal);
   deck.cards[curCard].pos = (SDL_FRect){50, 150, 125, 175};
 }
 static void
