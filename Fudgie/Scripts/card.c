@@ -6,12 +6,13 @@
 #include <stdio.h>
 
 void Card_Render(Card *c, SDL_Renderer *renderer) {
+  printf("x: %f, y: %f\n", c->pos.x, c->pos.y);
   Texture_render(c->CardSpritesheet, renderer, &c->clip, &c->pos, 0.0, NULL,
                  SDL_FLIP_NONE);
-  // SDL_RenderFillRect(renderer, &c->pos);
 }
 void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos) {
-  if (e->type == SDL_EVENT_MOUSE_MOTION || e->type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
+  if (e->type == SDL_EVENT_MOUSE_MOTION ||
+      e->type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
       e->type == SDL_EVENT_MOUSE_BUTTON_UP) {
     // Get mouse position
     int x, y;

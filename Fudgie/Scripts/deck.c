@@ -1,8 +1,8 @@
 #include "deck.h"
 #include <stdint.h>
 
-static uint8_t CARDPXWIDTH = 125;
-static uint8_t CARDPXHEIGHT = 175;
+static uint8_t cardPxWidth = CARDPXWIDTH;
+static uint8_t cardPxHeight = CARDPXHEIGHT;
 
 void Deck_init(Deck *d) {
   d->cardsRemainingInDeck = 52;
@@ -43,8 +43,8 @@ void Deck_init(Deck *d) {
     d->cards[i].suit = suit;
     d->cards[i].val = val;
     d->cards[i].clip =
-        (SDL_FRect){(i % 13) * CARDPXWIDTH, (i / 13) * CARDPXHEIGHT,
-                    CARDPXWIDTH, CARDPXHEIGHT};
+        (SDL_FRect){(i % 13) * cardPxWidth, (i / 13) * cardPxHeight,
+                    cardPxWidth, cardPxHeight};
     d->cards[i].CardSpritesheet = &d->spriteSheet;
     d->cards[i].isSelected = false;
     // printf("Card: %d, val: %c, suit: %c\n", i, val, suit);

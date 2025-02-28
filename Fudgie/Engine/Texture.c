@@ -25,7 +25,7 @@ bool Texture_loadFromFile(Texture *texture, SDL_Renderer *renderer,
   SDL_Texture *newTexture = IMG_LoadTexture(renderer, path);
   if (newTexture == NULL) {
     SDL_Log("Unable to create texture from %s! SDL Error: %s\n", path,
-           SDL_GetError());
+            SDL_GetError());
   } else {
     float width, height;
     SDL_GetTextureSize(newTexture, &width, &height);
@@ -111,7 +111,8 @@ void Texture_setAlpha(Texture *texture, Uint8 alpha) {
 void Texture_render(Texture *texture, SDL_Renderer *renderer, SDL_FRect *clip,
                     SDL_FRect *pos, double angle, SDL_FPoint *center,
                     SDL_FlipMode flip) {
-  SDL_RenderTextureRotated(renderer, texture->texture, clip, pos, angle, center, flip);
+  SDL_RenderTextureRotated(renderer, texture->texture, clip, pos, angle, center,
+                           flip);
 }
 
 // Get texture width

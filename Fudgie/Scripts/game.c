@@ -44,8 +44,8 @@ static void Game_Stop(context *ctx) {
   printf("Stopping game\n");
   maingamescene_stop();
 }
-static void Game_Events(context *ctx, SDL_Event *e) {
-
+static void Game_Events(context *ctx,
+                        SDL_Event *e) { // events are called before update
   switch (currentScene) {
   case MAINMENU:
     break;
