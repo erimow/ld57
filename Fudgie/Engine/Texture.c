@@ -65,6 +65,33 @@ bool Texture_loadFromFile(Texture *texture, SDL_Renderer *renderer,
 //   return (texture->texture != NULL);
 // }
 
+// bool Texture_loadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
+//                                    const char *textureText,
+//                                   SDL_Color textColor) {
+//   // Free any pre-existing texture
+//   Texture_free(texture);
+//
+//   SDL_Surface *textSurface =
+//       TTF_RenderText_Solid(gFont, textureText, textColor);
+//   if (textSurface == NULL) {
+//     printf("Unable to render text surface! SDL_ttf Error: %s\n",
+//            TTF_GetError());
+//   } else {
+//     texture->texture = SDL_CreateTextureFromSurface(renderer, textSurface);
+//     if (texture->texture == NULL) {
+//       printf("Unable to create texture from rendered text! SDL Error: %s\n",
+//              SDL_GetError());
+//     } else {
+//       texture->width = textSurface->w;
+//       texture->height = textSurface->h;
+//     }
+//
+//     SDL_FreeSurface(textSurface);
+//   }
+//
+//   return (texture->texture != NULL);
+// }
+
 // Set color modulation
 void Texture_setColor(Texture *texture, Uint8 red, Uint8 green, Uint8 blue) {
   SDL_SetTextureColorMod(texture->texture, red, green, blue);

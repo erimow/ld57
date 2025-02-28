@@ -1,12 +1,13 @@
 #include "../Engine/constants.h"
 #include "../Engine/context.h"
 #include "../Engine/efuncs.h"
+#include "../Engine/Button.h"
 #include "card.h"
 #include "deck.h"
 
 #include <stdbool.h>
 #include <stdio.h>
-
+const static int fontSize = 12;
 static SDL_FRect handLocation = {
     (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
     SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
@@ -17,6 +18,7 @@ static unsigned int numCardsToDeal = 10;
 static unsigned int numPlayas = 4;
 static Deck deck;
 static Player *players;
+static Button butt;//test
 
 static void maingamescene_loadAssets(
     SDL_Renderer
@@ -25,6 +27,7 @@ static void maingamescene_loadAssets(
                             "Art/CardSpritesheet.png"))
     printf("Could not load CardSpritesheet\n"); // loading in the
                                                 // cardspritesheet
+  Button_initAndLoad(&butt, renderer, 15, 15, 120, 30, "Art/ButtonBackground.png", "Is this working", (SDL_Color){5,5,5,255});
 }
 
 static void
@@ -53,10 +56,14 @@ static void maingamescene_render(
   //   Card_Render(&cardsInHand[i], renderer);
   // }
   Card_Render(&deck.cards[curCard], renderer);
+
+  //UI
+  Button_render(&butt, renderer);
 }
 
 static void
 maingamescene_stop() { // --------------------------------------------STOP
+  Button_free(&butt);
   Texture_free(&deck.spriteSheet);
   free(players);
 }
@@ -68,6 +75,9 @@ static void maingamescene_events(
   //   Card_HandleEvents(&cardsInHand[i], e, mousePos);
   // }
   Card_HandleEvents(&deck.cards[curCard], e, mousePos);
+
+  //UI
+  Button_handleEvent(&butt, e);
 }
 static void getMousePos(SDL_Event *e) {
   if (e->type == SDL_EVENT_MOUSE_MOTION) {

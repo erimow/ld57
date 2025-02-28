@@ -17,6 +17,10 @@ bool Texture_loadFromFile(Texture *texture, SDL_Renderer *renderer,
 // bool Texture_loadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
 //                                   TTF_Font *gFont, const char *textureText,
 //                                   SDL_Color textColor);
+
+// bool Texture_loadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
+//                                    const char *textureText,
+//                                   SDL_Color textColor);
 void Texture_setColor(Texture *texture, Uint8 red, Uint8 green, Uint8 blue);
 void Texture_setBlendMode(Texture *texture, SDL_BlendMode blending);
 void Texture_setAlpha(Texture *texture, Uint8 alpha);
