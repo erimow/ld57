@@ -39,19 +39,22 @@ maingamescene_start() { //---------------------------------------------------STA
   Player_InitPlayers(players, numPlayas);
   Deck_deal(&deck, players, numPlayas, numCardsToDeal);
   printf("player 0 cards in hand -> %d\n", players[0].numCardsInHand);
+  // for (int i = 0; i<players[0].numCardsInHand;i++){
+  //   printf("")
+  // }
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
-  for (int i = 0; i < players[0].numCardsInHand; i++) {
-    Card *a = players[0].hand[i];
-    SDL_Log("Debug \n");
-    if (a->isSelected) {
-      a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
-      a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
-    }
-    SDL_Log("Debuga\n");
-  }
-  SDL_Log("Debug\n");
+  // for (int i = 0; i < players[0].numCardsInHand; i++) {
+  //   SDL_Log("i:%d, cardsInHand - %d \n",i,players[0].numCardsInHand);
+  //   Card *a = players[0].hand[i];
+  //   if (a->isSelected) {
+  //     a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
+  //     a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
+  //   }
+  //   SDL_Log("Debuga\n");
+  // }
+  SDL_Log("Debug Done\n");
 }
 static void maingamescene_render(
     SDL_Renderer *renderer) { // -------------------------------------- RENDER
@@ -82,7 +85,6 @@ maingamescene_stop() { // --------------------------------------------STOP
 static void getMousePos(SDL_Event *e);
 static void maingamescene_events(
     SDL_Event *e) { // -------------------------------------------------  EVENTS
-  SDL_Log("Debug\n");
   getMousePos(e);
   for (int i = 0; i < players[0].numCardsInHand; i++) {
     Card_HandleEvents(players[0].hand[i], e, mousePos);

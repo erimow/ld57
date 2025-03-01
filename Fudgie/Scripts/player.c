@@ -9,7 +9,6 @@ void Player_InitPlayers(Player *p, uint8_t numPlayers) {
 void Player_AddCard(Player *p, Card *c) { p->hand[p->numCardsInHand++] = c; }
 void Player_RenderHand(Player *p, SDL_Renderer *renderer,
                        SDL_FRect *handLocation) {
-  SDL_Log("Debug\n");
   Uint8 cardsInHand = p->numCardsInHand;
   unsigned int cardPxWidth = CARDPXWIDTH;
   unsigned int cardPxHeight = CARDPXHEIGHT;
@@ -23,8 +22,6 @@ void Player_RenderHand(Player *p, SDL_Renderer *renderer,
       p->hand[i]->pos.y =
           handLocation->y + ((float)(handLocation->h - cardPxHeight) / 2);
     }
-    SDL_Log("break\n");
     Card_Render(p->hand[i], renderer);
-    SDL_Log("break\n");
   }
 }
