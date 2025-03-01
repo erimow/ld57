@@ -14,7 +14,7 @@ void Player_RenderHand(Player *p, SDL_Renderer *renderer,
   unsigned int cardPxHeight = CARDPXHEIGHT;
   int spacingBetweenCards =
       (handLocation->w - (cardsInHand * cardPxWidth)) / cardsInHand;
-  SDL_Log("spaceBetween %d\n", spacingBetweenCards);
+  // SDL_Log("spaceBetween %d\n", spacingBetweenCards);
   for (int i = 0; i < cardsInHand; i++) {
     if (!p->hand[i]->isSelected) {
       p->hand[i]->pos.x =

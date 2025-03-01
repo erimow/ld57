@@ -8,6 +8,7 @@ void Deck_init(Deck *d) {
   d->cardsRemainingInDeck = 52;
   char suit;
   uint8_t val;
+  SDL_FRect defaultPos = {0, 0, cardPxWidth, cardPxHeight};
   for (int i = 0; i < 52; i++) {
     switch (i / 13) {
     case 0:
@@ -45,6 +46,7 @@ void Deck_init(Deck *d) {
     d->cards[i].clip =
         (SDL_FRect){(i % 13) * cardPxWidth, (i / 13) * cardPxHeight,
                     cardPxWidth, cardPxHeight};
+    d->cards[i].pos = defaultPos;
     d->cards[i].CardSpritesheet = &d->spriteSheet;
     d->cards[i].isSelected = false;
     // printf("Card: %d, val: %c, suit: %c\n", i, val, suit);
@@ -65,7 +67,7 @@ void Deck_deal(Deck *d, Player *players, uint8_t numPlayers,
   for (int l = 0; l < numCardsToDealForEachPlayer; l++)
     for (int i = 0; i < numPlayers; i++) {
       if (d->cardsRemainingInDeck > 0) {
-        Player_AddCard(&players[i], &d->cards[d->cardsRemainingInDeck--]);
+        Player_AddCard(&players[i], &d->cards[(--d->cardsRemainingInDeck)]);
       } else {
         printf("No cards remaining in deck!!!\n");
       }

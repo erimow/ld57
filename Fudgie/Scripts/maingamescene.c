@@ -14,7 +14,7 @@ static SDL_FRect handLocation = {
     SCREEN_WIDTH - (float)SCREEN_WIDTH / 4, (float)SCREEN_HEIGHT / 4};
 static SDL_FPoint mousePos;
 // static unsigned int curCard = 22;
-static unsigned int numCardsToDeal = 10;
+static unsigned int numCardsToDeal = 7;
 static unsigned int numPlayas = 4;
 static Deck deck;
 static Player *players;
@@ -38,39 +38,26 @@ maingamescene_start() { //---------------------------------------------------STA
   players = (Player *)malloc(sizeof(Player) * numPlayas);
   Player_InitPlayers(players, numPlayas);
   Deck_deal(&deck, players, numPlayas, numCardsToDeal);
-  printf("player 0 cards in hand -> %d\n", players[0].numCardsInHand);
-  // for (int i = 0; i<players[0].numCardsInHand;i++){
-  //   printf("")
-  // }
+  // printf("player 0 cards in hand -> %d\n", players[0].numCardsInHand);
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
-  // for (int i = 0; i < players[0].numCardsInHand; i++) {
-  //   SDL_Log("i:%d, cardsInHand - %d \n",i,players[0].numCardsInHand);
-  //   Card *a = players[0].hand[i];
-  //   if (a->isSelected) {
-  //     a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
-  //     a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
-  //   }
-  //   SDL_Log("Debuga\n");
-  // }
-  SDL_Log("Debug Done\n");
+  for (int i = 0; i < players[0].numCardsInHand; i++) {
+    Card *a = players[0].hand[i];
+    if (a->isSelected) {
+      a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
+      a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
+    }
+  }
 }
 static void maingamescene_render(
     SDL_Renderer *renderer) { // -------------------------------------- RENDER
-  SDL_Log("Debug\n");
   SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
   SDL_RenderRect(renderer, &handLocation);
-  // for (int i = 0; i < 7; i++) {
-  //   Card_Render(&cardsInHand[i], renderer);
-  // }
-  // Card_Render(&deck.cards[curCard], renderer);
   // for (int i = 0; i<numPlayas; i++){
   //   Player_
   // }
-  SDL_Log("Debug\n");
   Player_RenderHand(&players[0], renderer, &handLocation);
-  // Card_Render(players[0].hand[0], renderer);
 
   // UI
   Button_render(&butt, renderer);
@@ -82,6 +69,7 @@ maingamescene_stop() { // --------------------------------------------STOP
   Texture_free(&deck.spriteSheet);
   free(players);
 }
+
 static void getMousePos(SDL_Event *e);
 static void maingamescene_events(
     SDL_Event *e) { // -------------------------------------------------  EVENTS
@@ -89,7 +77,6 @@ static void maingamescene_events(
   for (int i = 0; i < players[0].numCardsInHand; i++) {
     Card_HandleEvents(players[0].hand[i], e, mousePos);
   }
-  // Card_HandleEvents(&deck.cards[curCard], e, mousePos);
 
   // UI
   Button_handleEvent(&butt, e);
