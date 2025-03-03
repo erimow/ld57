@@ -247,6 +247,7 @@ void quit(context *ctx) {
 }
 
 int main(int argc, char *argv[]) {
+  srand((unsigned int)time(NULL));
 #ifdef __LINUX__
   printf("Working linux\n");
 #endif

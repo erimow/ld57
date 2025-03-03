@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 void Card_Render(Card *c, SDL_Renderer *renderer) {
-  printf("x: %f, y: %f\n", c->pos.x, c->pos.y);
+  //printf("x: %f, y: %f\n", c->pos.x, c->pos.y);
   Texture_render(c->CardSpritesheet, renderer, &c->clip, &c->pos, 0.0, NULL,
                  SDL_FLIP_NONE);
 }

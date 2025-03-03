@@ -1,5 +1,4 @@
 #include "deck.h"
-#include <stdint.h>
 
 static uint8_t cardPxWidth = CARDPXWIDTH;
 static uint8_t cardPxHeight = CARDPXHEIGHT;
