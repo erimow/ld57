@@ -7,28 +7,26 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-const static int fontSize = 12;
+typedef enum Phase { deal, play, scoring } Phase;
+const static int fontSize = 34;
 const static Uint8 cardGap = 15;
 static SDL_FRect handLocation = {
     (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
     SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
     SCREEN_WIDTH - (float)SCREEN_WIDTH / 4, (float)SCREEN_HEIGHT / 4};
-    static SDL_FRect playLocation = {
-      ((float)SCREEN_WIDTH / 2)-(float)((CARDPXWIDTH * 4) + (float)cardGap * 3)/2,
-      ((float)SCREEN_HEIGHT / 2) - (float)CARDPXHEIGHT/2,
-      (float)(CARDPXWIDTH * 4) + (float)cardGap * 3,
-      (float)CARDPXHEIGHT
-    };
+static SDL_FRect playLocation = {
+    ((float)SCREEN_WIDTH / 2) -
+        (float)((CARDPXWIDTH * 4) + (float)cardGap * 3) / 2,
+    ((float)SCREEN_HEIGHT / 2) - (float)CARDPXHEIGHT / 2,
+    (float)(CARDPXWIDTH * 4) + (float)cardGap * 3, (float)CARDPXHEIGHT};
 static SDL_FPoint mousePos;
 // static unsigned int curCard = 22;
-static unsigned int numCardsToDeal = 7;
 static unsigned int numPlayas = 4;
 static unsigned int round = 10;
+static Phase currentPhase;
 static Deck deck;
 static Player *players;
 static Button butt; // test
-
-static void play_fudgie();
 
 static void maingamescene_loadAssets(
     SDL_Renderer
@@ -37,8 +35,8 @@ static void maingamescene_loadAssets(
                             "Art/CardSpritesheet.png"))
     printf("Could not load CardSpritesheet\n"); // loading in the
                                                 // cardspritesheet
-  Button_initAndLoad(&butt, renderer, 15, 15, 120, 30,
-                     "Art/ButtonBackground.png", "Is this working",
+  Button_initAndLoad(&butt, renderer, 15, ((float)SCREEN_WIDTH / 2) - 15, 120,
+                     50, "Art/ButtonBackground.png", "Play",
                      (SDL_Color){5, 5, 5, 255});
 }
 
@@ -48,17 +46,29 @@ maingamescene_start() { //---------------------------------------------------STA
   Deck_scramble(&deck);
   players = (Player *)malloc(sizeof(Player) * numPlayas);
   Player_InitPlayers(players, numPlayas);
-  Deck_deal(&deck, players, numPlayas, numCardsToDeal);
-
+  Deck_deal(&deck, players, numPlayas, round);
+  currentPhase = play;
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
-  for (int i = 0; i < players[0].numCardsInHand; i++) {
-    Card *a = players[0].hand[i];
-    if (a->isSelected) {
-      a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
-      a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
+  switch (currentPhase) {
+  case deal:
+    // Deck_scramble(&deck);
+    // Deck_deal(&deck, players, numPlayas, --round);
+    currentPhase = play;
+    break;
+  case play:
+    for (int i = 0; i < players[0].numCardsInHand; i++) {
+      Card *a = players[0].hand[i];
+      if (a->isSelected) {
+        a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
+        a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
+      }
     }
+    break;
+  case scoring:
+
+    break;
   }
 }
 static void maingamescene_render(
@@ -69,10 +79,18 @@ static void maingamescene_render(
   // for (int i = 0; i<numPlayas; i++){
   //   Player_
   // }
-  Player_RenderHand(&players[0], renderer, &handLocation);
 
   // UI
-  Button_render(&butt, renderer);
+  switch (currentPhase) {
+  case deal:
+    break;
+  case play:
+    Player_RenderHand(&players[0], renderer, &handLocation);
+    Button_render(&butt, renderer);
+    break;
+  case scoring:
+    break;
+  }
 }
 
 static void
@@ -103,7 +121,4 @@ static void getMousePos(SDL_Event *e) {
   }
 }
 
-
-static void play_fudgie(){
-
-}
+static void play_fudgie() {}
