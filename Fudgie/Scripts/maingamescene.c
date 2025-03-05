@@ -8,17 +8,27 @@
 #include <stdbool.h>
 #include <stdio.h>
 const static int fontSize = 12;
+const static Uint8 cardGap = 15;
 static SDL_FRect handLocation = {
     (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
     SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
     SCREEN_WIDTH - (float)SCREEN_WIDTH / 4, (float)SCREEN_HEIGHT / 4};
+    static SDL_FRect playLocation = {
+      ((float)SCREEN_WIDTH / 2)-(float)((CARDPXWIDTH * 4) + (float)cardGap * 3)/2,
+      ((float)SCREEN_HEIGHT / 2) - (float)CARDPXHEIGHT/2,
+      (float)(CARDPXWIDTH * 4) + (float)cardGap * 3,
+      (float)CARDPXHEIGHT
+    };
 static SDL_FPoint mousePos;
 // static unsigned int curCard = 22;
 static unsigned int numCardsToDeal = 7;
 static unsigned int numPlayas = 4;
+static unsigned int round = 10;
 static Deck deck;
 static Player *players;
 static Button butt; // test
+
+static void play_fudgie();
 
 static void maingamescene_loadAssets(
     SDL_Renderer
@@ -35,10 +45,11 @@ static void maingamescene_loadAssets(
 static void
 maingamescene_start() { //---------------------------------------------------START
   Deck_init(&deck);
+  Deck_scramble(&deck);
   players = (Player *)malloc(sizeof(Player) * numPlayas);
   Player_InitPlayers(players, numPlayas);
   Deck_deal(&deck, players, numPlayas, numCardsToDeal);
-  // printf("player 0 cards in hand -> %d\n", players[0].numCardsInHand);
+
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
@@ -54,6 +65,7 @@ static void maingamescene_render(
     SDL_Renderer *renderer) { // -------------------------------------- RENDER
   SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
   SDL_RenderRect(renderer, &handLocation);
+  SDL_RenderRect(renderer, &playLocation);
   // for (int i = 0; i<numPlayas; i++){
   //   Player_
   // }
@@ -89,4 +101,9 @@ static void getMousePos(SDL_Event *e) {
     mousePos.x = x;
     mousePos.y = y;
   }
+}
+
+
+static void play_fudgie(){
+
 }

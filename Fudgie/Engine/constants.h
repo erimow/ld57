@@ -20,7 +20,7 @@
 #define JOYSTICK_DEADZONE 9000
 
 // GAME DEFINES
-#define CARDPXWIDTH 125;
-#define CARDPXHEIGHT 175;
+#define CARDPXWIDTH 125
+#define CARDPXHEIGHT 175
 
 #endif /* constants_h */
