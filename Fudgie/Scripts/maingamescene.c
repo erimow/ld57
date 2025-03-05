@@ -20,6 +20,8 @@ static SDL_FRect playLocation = {
     ((float)SCREEN_HEIGHT / 2) - (float)CARDPXHEIGHT / 2,
     (float)(CARDPXWIDTH * 4) + (float)cardGap * 3, (float)CARDPXHEIGHT};
 static SDL_FPoint mousePos;
+static Card *cardBeingHeld = NULL;
+static Card *cardSelected = NULL;
 // static unsigned int curCard = 22;
 static unsigned int numPlayas = 4;
 static unsigned int round = 10;
@@ -47,10 +49,12 @@ maingamescene_start() { //---------------------------------------------------STA
   players = (Player *)malloc(sizeof(Player) * numPlayas);
   Player_InitPlayers(players, numPlayas);
   Deck_deal(&deck, players, numPlayas, round);
+
   currentPhase = play;
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
+  // printf("CurrnetlySelectedCard = %b\n", *isCardCurrentlySelected);
   switch (currentPhase) {
   case deal:
     // Deck_scramble(&deck);
@@ -60,9 +64,9 @@ maingamescene_update() { //--------------------------------------------------UPD
   case play:
     for (int i = 0; i < players[0].numCardsInHand; i++) {
       Card *a = players[0].hand[i];
-      if (a->isSelected) {
-        a->pos.x = mousePos.x - a->whenSelectedMousePos.x;
-        a->pos.y = mousePos.y - a->whenSelectedMousePos.y;
+      if (a->isHeld) {
+        a->pos.x = mousePos.x - a->whenHeldMousePos.x;
+        a->pos.y = mousePos.y - a->whenHeldMousePos.y;
       }
     }
     break;
@@ -76,16 +80,13 @@ static void maingamescene_render(
   SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
   SDL_RenderRect(renderer, &handLocation);
   SDL_RenderRect(renderer, &playLocation);
-  // for (int i = 0; i<numPlayas; i++){
-  //   Player_
-  // }
 
   // UI
   switch (currentPhase) {
   case deal:
     break;
   case play:
-    Player_RenderHand(&players[0], renderer, &handLocation);
+    Player_RenderHand(&players[0], renderer, &handLocation, &playLocation);
     Button_render(&butt, renderer);
     break;
   case scoring:
@@ -105,7 +106,7 @@ static void maingamescene_events(
     SDL_Event *e) { // -------------------------------------------------  EVENTS
   getMousePos(e);
   for (int i = 0; i < players[0].numCardsInHand; i++) {
-    Card_HandleEvents(players[0].hand[i], e, mousePos);
+    Card_HandleEvents(players[0].hand[i], e, mousePos, &playLocation, cardBeingHeld, cardSelected);
   }
 
   // UI

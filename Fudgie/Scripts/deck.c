@@ -48,6 +48,7 @@ void Deck_init(Deck *d) {
     d->cards[i].pos = defaultPos;
     d->cards[i].CardSpritesheet = &d->spriteSheet;
     d->cards[i].isSelected = false;
+    d->cards[i].isHeld = false;
     // printf("Card: %d, val: %c, suit: %c\n", i, val, suit);
   }
 }

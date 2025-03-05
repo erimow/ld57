@@ -10,7 +10,7 @@ void Card_Render(Card *c, SDL_Renderer *renderer) {
   Texture_render(c->CardSpritesheet, renderer, &c->clip, &c->pos, 0.0, NULL,
                  SDL_FLIP_NONE);
 }
-void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos) {
+void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos, SDL_FRect *playZone, Card *cardHeld, Card *cardSelected) {
   if (e->type == SDL_EVENT_MOUSE_MOTION ||
       e->type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
       e->type == SDL_EVENT_MOUSE_BUTTON_UP) {
@@ -52,13 +52,29 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos) {
 
       case SDL_EVENT_MOUSE_BUTTON_DOWN:
         Texture_setColor(c->CardSpritesheet, 130, 130, 130);
-        c->isSelected = true;
-        c->whenSelectedMousePos = (SDL_FPoint){x - c->pos.x, y - c->pos.y};
+        if (cardHeld == NULL){
+        c->isHeld = true;
+        cardHeld = c;
+        c->isSelected=false;
+        cardSelected = NULL;
+        c->whenHeldMousePos = (SDL_FPoint){x - c->pos.x, y - c->pos.y};
+        }
         break;
 
       case SDL_EVENT_MOUSE_BUTTON_UP:
         Texture_setColor(c->CardSpritesheet, 200, 200, 200);
-        c->isSelected = false;
+        if (c->isHeld){
+          c->isHeld = false;
+          cardHeld = NULL;
+        }
+        if (SDL_PointInRectFloat(&mousePos, playZone)){
+          if (cardSelected != NULL)
+            cardSelected = NULL;
+         c->isSelected = true;
+         cardSelected =c;
+        }
+        else
+          c->isSelected = false;
         break;
       }
     }
