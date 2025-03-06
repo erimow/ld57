@@ -5,11 +5,13 @@
 #include "card.h"
 #include "deck.h"
 
+#include <SDL3_ttf/SDL_ttf.h>
 #include <stdbool.h>
 #include <stdio.h>
 typedef enum Phase { deal, play, scoring } Phase;
 const static int fontSize = 34;
 const static Uint8 cardGap = 15;
+static TTF_Font *gFont;
 static SDL_FRect handLocation = {
     (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
     SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
@@ -20,11 +22,11 @@ static SDL_FRect playLocation = {
     ((float)SCREEN_HEIGHT / 2) - (float)CARDPXHEIGHT / 2,
     (float)(CARDPXWIDTH * 4) + (float)cardGap * 3, (float)CARDPXHEIGHT};
 static SDL_FPoint mousePos;
+    //----------------------------------------------------------------------
 static Card *cardBeingHeld = NULL;
 static Card *cardSelected = NULL;
-// static unsigned int curCard = 22;
 static unsigned int numPlayas = 4;
-static unsigned int round = 10;
+static unsigned int round = 8;
 static Phase currentPhase;
 static Deck deck;
 static Player *players;
@@ -33,12 +35,17 @@ static Button butt; // test
 static void maingamescene_loadAssets(
     SDL_Renderer
         *renderer) { //-------------------------------------------ASSET-LOADING
+  gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
+                            56); // Location and font size;
+  if(gFont == NULL){
+    printf("Could not load font!\n");
+  }
   if (!Texture_loadFromFile(&deck.spriteSheet, renderer,
                             "Art/CardSpritesheet.png"))
     printf("Could not load CardSpritesheet\n"); // loading in the
                                                 // cardspritesheet
   Button_initAndLoad(&butt, renderer, 15, ((float)SCREEN_WIDTH / 2) - 15, 120,
-                     50, "Art/ButtonBackground.png", "Play",
+                     50, "Art/ButtonBackground.png", gFont, "Play",
                      (SDL_Color){5, 5, 5, 255});
 }
 
@@ -111,6 +118,7 @@ static void maingamescene_render(
 
 static void
 maingamescene_stop() { // --------------------------------------------STOP
+  TTF_CloseFont(gFont);
   Button_free(&butt);
   Texture_free(&deck.spriteSheet);
   free(players);

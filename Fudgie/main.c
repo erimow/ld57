@@ -17,13 +17,14 @@
 #include "Scripts/game.c"
 //#include <SDL2/SDL.h>
 #include <SDL3/SDL.h>
+#include <string.h>
 #ifdef __linux__
-//#include <SDL/SDL_image.h>
+#include <SDL3_image//SDL_image.h>
 //#include <SDL2/SDL_mixer.h>
 //#include <SDL2/SDL_pixels.h>
 //#include <SDL2/SDL_rect.h>
 //#include <SDL2/SDL_render.h>
-//#include <SDL2/SDL_ttf.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #elif defined __APPLE__
 // #include <SDL2_image/SDL_image.h>
 // #include <SDL2_mixer/SDL_mixer.h>
@@ -50,6 +51,9 @@ bool loadMedia(context *ctx) {
 
   // ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
   //                           56); // Location and font size;
+  // if(ctx->gFont == NULL){
+  //   printf("Could not load font!\n");
+  // }
   // if (ctx->gFont != NULL) {
   //   SDL_Color fontCol = {0, 255, 122, 255};
   //   if (!Texture_loadFromRenderedText(&ctx->fontTexture, ctx->renderer,
@@ -187,10 +191,10 @@ bool init(context *ctx) {
             printf("Mix could not init! SDL_Mix Error: %s\n", Mix_GetError());
           } else*/ {
             // Initialize SDL_ttf
-            /*if (TTF_Init() == -1) {
-              printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n",
-                     TTF_GetError());
-            } else */{
+            if (!TTF_Init()) {
+              printf("SDL_ttf could not initialize! SDL_ttf Error: \n"
+                    );
+            } else {
               // LOAD MEDIA
               if (!loadMedia(ctx)) {
                 printf("Could not load texture image!\n");
@@ -235,14 +239,14 @@ void quit(context *ctx) {
   // ctx->soundEffect = NULL;
   // ctx->gameMusic = NULL;
   // Button_free(&ctx->butt);
-  // SDL_DestroyRenderer(ctx->renderer);
-  // SDL_DestroyWindow(ctx->window);
-  // ctx->window = NULL;
-  // ctx->renderer = NULL;
+  SDL_DestroyRenderer(ctx->renderer);
+  SDL_DestroyWindow(ctx->window);
+  ctx->window = NULL;
+  ctx->renderer = NULL;
   // Mix_Quit();
-  // TTF_Quit();
+  TTF_Quit();
   // IMG_Quit();
-  // SDL_Quit();
+  SDL_Quit();
   printf("Application finished\n");
 }
 
