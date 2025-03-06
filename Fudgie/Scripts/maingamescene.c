@@ -49,12 +49,10 @@ maingamescene_start() { //---------------------------------------------------STA
   players = (Player *)malloc(sizeof(Player) * numPlayas);
   Player_InitPlayers(players, numPlayas);
   Deck_deal(&deck, players, numPlayas, round);
-
   currentPhase = play;
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
-  // printf("CurrnetlySelectedCard = %b\n", *isCardCurrentlySelected);
   switch (currentPhase) {
   case deal:
     // Deck_scramble(&deck);
@@ -106,7 +104,8 @@ static void maingamescene_events(
     SDL_Event *e) { // -------------------------------------------------  EVENTS
   getMousePos(e);
   for (int i = 0; i < players[0].numCardsInHand; i++) {
-    Card_HandleEvents(players[0].hand[i], e, mousePos, &playLocation, cardBeingHeld, cardSelected);
+    Card_HandleEvents(players[0].hand[i], e, mousePos, &playLocation,
+                      &cardBeingHeld, &cardSelected);
   }
 
   // UI
@@ -121,5 +120,3 @@ static void getMousePos(SDL_Event *e) {
     mousePos.y = y;
   }
 }
-
-static void play_fudgie() {}

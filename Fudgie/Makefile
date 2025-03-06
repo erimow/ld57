@@ -22,3 +22,4 @@ OBJ_NAME = play
 #This is the target that compiles our executable
 all : $(SOURCES)
 	$(CC) $(SOURCES) $(COMPILER_FLAGS) $(INCLUDES) $(LINKER_FLAGS) -o $(OBJ_NAME)
+	./play
