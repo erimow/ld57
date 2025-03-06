@@ -4,6 +4,7 @@
 #include <SDL3/SDL_oldnames.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 void Card_Render(Card *c, SDL_Renderer *renderer) {
   // printf("x: %f, y: %f\n", c->pos.x, c->pos.y);
@@ -57,9 +58,11 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos,
         if (*cardHeld == NULL) {
           c->isHeld = true;
           *cardHeld = c;
-          c->isSelected = false;
-          *cardSelected = NULL;
           c->whenHeldMousePos = (SDL_FPoint){x - c->pos.x, y - c->pos.y};
+          if (c->isSelected) {
+            c->isSelected = false;
+            (*cardSelected) = NULL;
+          }
         }
         break;
 
@@ -72,6 +75,7 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos,
         if (SDL_PointInRectFloat(&mousePos, playZone)) {
           if (*cardSelected != NULL) {
             (*cardSelected)->isSelected = false;
+            (*cardSelected)->pos.y += 10000;
             *cardSelected = NULL;
           }
           c->isSelected = true;

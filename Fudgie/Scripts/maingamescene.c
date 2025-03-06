@@ -53,6 +53,7 @@ maingamescene_start() { //---------------------------------------------------STA
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
+  printf("Pointer - %p\n", cardSelected);
   switch (currentPhase) {
   case deal:
     // Deck_scramble(&deck);
@@ -103,7 +104,7 @@ static void getMousePos(SDL_Event *e);
 static void maingamescene_events(
     SDL_Event *e) { // -------------------------------------------------  EVENTS
   getMousePos(e);
-  for (int i = 0; i < players[0].numCardsInHand; i++) {
+  for (int i = players[0].numCardsInHand - 1; i >= 0; i--) {
     Card_HandleEvents(players[0].hand[i], e, mousePos, &playLocation,
                       &cardBeingHeld, &cardSelected);
   }
