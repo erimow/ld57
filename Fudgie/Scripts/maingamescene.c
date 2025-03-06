@@ -53,7 +53,6 @@ maingamescene_start() { //---------------------------------------------------STA
 }
 static void
 maingamescene_update() { //--------------------------------------------------UPDATE
-  printf("Pointer - %p\n", cardSelected);
   switch (currentPhase) {
   case deal:
     // Deck_scramble(&deck);
@@ -66,6 +65,23 @@ maingamescene_update() { //--------------------------------------------------UPD
       if (a->isHeld) {
         a->pos.x = mousePos.x - a->whenHeldMousePos.x;
         a->pos.y = mousePos.y - a->whenHeldMousePos.y;
+        if (players[0].numCardsInHand > 1 &&
+            (a->pos.y + ((float)CARDPXHEIGHT / 2)) > handLocation.y) {
+          if (i != 0) {
+            if (a->pos.x + ((float)CARDPXWIDTH / 2) <
+                players[0].hand[i - 1]->pos.x + ((float)CARDPXWIDTH / 2)) {
+              players[0].hand[i] = players[0].hand[i - 1];
+              players[0].hand[i - 1] = a;
+            }
+          }
+          if (i != players[0].numCardsInHand - 1) {
+            if (a->pos.x + ((float)CARDPXWIDTH / 2) >
+                players[0].hand[i + 1]->pos.x + ((float)CARDPXWIDTH / 2)) {
+              players[0].hand[i] = players[0].hand[i + 1];
+              players[0].hand[i + 1] = a;
+            }
+          }
+        }
       }
     }
     break;

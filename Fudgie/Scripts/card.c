@@ -21,32 +21,36 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos,
     int x, y;
     x = mousePos.x;
     y = mousePos.y;
-    // Check if mouse is in button
+    // Check if mouse is in card
     bool inside = true;
 
-    // Mouse is left of the button
+    // Mouse is left of the card
     if (x < c->pos.x) {
       inside = false;
     }
-    // Mouse is right of the button
+    // Mouse is right of the card
     else if (x > c->pos.x + c->pos.w) {
       inside = false;
     }
-    // Mouse above the button
+    // Mouse above the card
     else if (y < c->pos.y) {
       inside = false;
     }
-    // Mouse below the button
+    // Mouse below the card
     else if (y > c->pos.y + c->pos.h) {
       inside = false;
     }
-    // Mouse is outside button
-    if (!inside) {
-      Texture_setColor(
-          c->CardSpritesheet, 255, 255,
-          255); // This could potentially be inefficient.. not sure.
+    // Mouse is outside card
+    if (e->type == SDL_EVENT_MOUSE_BUTTON_UP && c->isHeld) {
+      c->isHeld = false;
+      *cardHeld = NULL;
     }
-    // Mouse is inside button
+    if (!inside) {
+      // Texture_setColor(
+      //     c->CardSpritesheet, 255, 255,
+      //     255); // This could potentially be inefficient.. not sure.
+    }
+    // Mouse is inside card
     else {
       // Set mouse over sprite
       switch (e->type) {
@@ -54,7 +58,7 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos,
         break;
 
       case SDL_EVENT_MOUSE_BUTTON_DOWN:
-        Texture_setColor(c->CardSpritesheet, 130, 130, 130);
+        // Texture_setColor(c->CardSpritesheet, 130, 130, 130);
         if (*cardHeld == NULL) {
           c->isHeld = true;
           *cardHeld = c;
@@ -67,15 +71,12 @@ void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos,
         break;
 
       case SDL_EVENT_MOUSE_BUTTON_UP:
-        Texture_setColor(c->CardSpritesheet, 200, 200, 200);
-        if (c->isHeld) {
-          c->isHeld = false;
-          *cardHeld = NULL;
-        }
+        // Texture_setColor(c->CardSpritesheet, 200, 200, 200);
         if (SDL_PointInRectFloat(&mousePos, playZone)) {
           if (*cardSelected != NULL) {
             (*cardSelected)->isSelected = false;
-            (*cardSelected)->pos.y += 10000;
+            (*cardSelected)->pos.y += 10000; // Ensures the previously selected
+                                             // card is properly removed
             *cardSelected = NULL;
           }
           c->isSelected = true;
