@@ -5,9 +5,9 @@ void Texture_init(Texture *texture) {
   texture->width = 0;
   texture->height = 0;
 }
-bool Texture_init_andLoadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
-                                  TTF_Font *gFont, SDL_FRect loc, const char *textureText,
-                                  SDL_Color textColor){
+bool Texture_init_andLoadFromRenderedText(
+    Texture *texture, SDL_Renderer *renderer, TTF_Font *gFont, SDL_FRect loc,
+    const char *textureText, unsigned int textSize, SDL_Color textColor) {
   texture->texture = NULL;
   texture->width = 0;
   texture->height = 0;
@@ -15,16 +15,17 @@ bool Texture_init_andLoadFromRenderedText(Texture *texture, SDL_Renderer *render
   // Free any pre-existing texture
   Texture_free(texture);
 
+  SDL_Log("Sizeof(textureText) = %lu\n", sizeof(textureText));
   SDL_Surface *textSurface =
-      TTF_RenderText_Solid(gFont, textureText, sizeof(textureText), textColor);
+      TTF_RenderText_Solid(gFont, textureText, textSize, textColor);
   if (textSurface == NULL) {
     SDL_Log("Unable to render text surface! SDL_ttf Error: %s\n",
-           SDL_GetError());
+            SDL_GetError());
   } else {
     texture->texture = SDL_CreateTextureFromSurface(renderer, textSurface);
     if (texture->texture == NULL) {
       SDL_Log("Unable to create texture from rendered text! SDL Error: %s\n",
-             SDL_GetError());
+              SDL_GetError());
     } else {
       texture->width = textSurface->w;
       texture->height = textSurface->h;
@@ -69,20 +70,20 @@ bool Texture_loadFromFile(Texture *texture, SDL_Renderer *renderer,
 // Load texture from rendered text
 bool Texture_loadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
                                   TTF_Font *gFont, const char *textureText,
-                                  SDL_Color textColor) {
+                                  unsigned int textSize, SDL_Color textColor) {
   // Free any pre-existing texture
   Texture_free(texture);
 
   SDL_Surface *textSurface =
-      TTF_RenderText_Solid(gFont, textureText, sizeof(textureText), textColor);
+      TTF_RenderText_Solid(gFont, textureText, textSize, textColor);
   if (textSurface == NULL) {
     SDL_Log("Unable to render text surface! SDL_ttf Error: %s\n",
-           SDL_GetError());
+            SDL_GetError());
   } else {
     texture->texture = SDL_CreateTextureFromSurface(renderer, textSurface);
     if (texture->texture == NULL) {
       SDL_Log("Unable to create texture from rendered text! SDL Error: %s\n",
-             SDL_GetError());
+              SDL_GetError());
     } else {
       texture->width = textSurface->w;
       texture->height = textSurface->h;
@@ -93,8 +94,6 @@ bool Texture_loadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
 
   return (texture->texture != NULL);
 }
-
-
 
 // Set color modulation
 void Texture_setColor(Texture *texture, Uint8 red, Uint8 green, Uint8 blue) {
@@ -116,12 +115,11 @@ void Texture_render(Texture *texture, SDL_Renderer *renderer, SDL_FRect *clip,
                     SDL_FRect *pos, double angle, SDL_FPoint *center,
                     SDL_FlipMode flip) {
   if (pos == NULL)
-    SDL_RenderTextureRotated(renderer, texture->texture, clip, &texture->loc, angle, center,
-                           flip);
+    SDL_RenderTextureRotated(renderer, texture->texture, clip, &texture->loc,
+                             angle, center, flip);
   else
-    SDL_RenderTextureRotated(renderer, texture->texture, clip, pos, angle, center,
-                           flip);
-
+    SDL_RenderTextureRotated(renderer, texture->texture, clip, pos, angle,
+                             center, flip);
 }
 
 // Get texture width

@@ -16,12 +16,12 @@ void Texture_init(Texture *texture);
 void Texture_free(Texture *texture);
 bool Texture_loadFromFile(Texture *texture, SDL_Renderer *renderer,
                           const char *path);
-bool Texture_init_andLoadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
-                                  TTF_Font *gFont, SDL_FRect loc, const char *textureText,
-                                  SDL_Color textColor);
+bool Texture_init_andLoadFromRenderedText(
+    Texture *texture, SDL_Renderer *renderer, TTF_Font *gFont, SDL_FRect loc,
+    const char *textureText, unsigned int textSize, SDL_Color textColor);
 bool Texture_loadFromRenderedText(Texture *texture, SDL_Renderer *renderer,
                                   TTF_Font *gFont, const char *textureText,
-                                  SDL_Color textColor);
+                                  unsigned int textSize, SDL_Color textColor);
 
 void Texture_setColor(Texture *texture, Uint8 red, Uint8 green, Uint8 blue);
 void Texture_setBlendMode(Texture *texture, SDL_BlendMode blending);

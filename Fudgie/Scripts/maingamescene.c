@@ -22,7 +22,7 @@ static SDL_FRect playLocation = {
     ((float)SCREEN_HEIGHT / 2) - (float)CARDPXHEIGHT / 2,
     (float)(CARDPXWIDTH * 4) + (float)cardGap * 3, (float)CARDPXHEIGHT};
 static SDL_FPoint mousePos;
-    //----------------------------------------------------------------------
+//----------------------------------------------------------------------
 static Card *cardBeingHeld = NULL;
 static Card *cardSelected = NULL;
 static unsigned int numPlayas = 4;
@@ -36,8 +36,8 @@ static void maingamescene_loadAssets(
     SDL_Renderer
         *renderer) { //-------------------------------------------ASSET-LOADING
   gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
-                            56); // Location and font size;
-  if(gFont == NULL){
+                       56); // Location and font size;
+  if (gFont == NULL) {
     printf("Could not load font!\n");
   }
   if (!Texture_loadFromFile(&deck.spriteSheet, renderer,
@@ -45,7 +45,7 @@ static void maingamescene_loadAssets(
     printf("Could not load CardSpritesheet\n"); // loading in the
                                                 // cardspritesheet
   Button_initAndLoad(&butt, renderer, 15, ((float)SCREEN_WIDTH / 2) - 15, 120,
-                     50, "Art/ButtonBackground.png", gFont, "Play",
+                     50, "Art/ButtonBackground.png", gFont, "Play", 4,
                      (SDL_Color){5, 5, 5, 255});
 }
 
