@@ -1,7 +1,6 @@
 #include "../Engine/Button.h"
 #include "../Engine/constants.h"
 #include "../Engine/context.h"
-#include "../Engine/efuncs.h"
 #include "card.h"
 #include "deck.h"
 
@@ -12,8 +11,7 @@ typedef enum Phase { deal, play, scoring } Phase;
 const static int fontSize = 34;
 const static Uint8 cardGap = 15;
 static SDL_FRect handLocation = {
-    (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
-    SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
+    (float)SCREEN_WIDTH / 8, SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
     SCREEN_WIDTH - (float)SCREEN_WIDTH / 4, (float)SCREEN_HEIGHT / 4};
 static SDL_FRect playLocation = {
     ((float)SCREEN_WIDTH / 2) -
@@ -29,7 +27,8 @@ static unsigned int round = 8;
 static Phase currentPhase;
 static Deck deck;
 static Player *players;
-static Button butt; // test
+static Button playbutt; // test
+static Button predictionButtons[9];
 static Texture roundText;
 
 static void maingamescene_loadAssets(
@@ -39,10 +38,26 @@ static void maingamescene_loadAssets(
                             "Art/CardSpritesheet.png"))
     printf("Could not load CardSpritesheet\n"); // loading in the
                                                 // cardspritesheet
-  Button_initAndLoad(&butt, ctx->renderer, 15, ((float)SCREEN_WIDTH / 2) - 15, 120,
-                     50, "Art/ButtonBackground.png", ctx->gFont, "Play", 4,
+  Button_initAndLoad(&playbutt, ctx->renderer, 15,
+                     ((float)SCREEN_WIDTH / 2) - 15, 120, 50,
+                     "Art/ButtonBackground.png", ctx->gFont, "Play", 4,
                      (SDL_Color){5, 5, 5, 255});
-  Texture_init_andLoadFromRenderedText(&roundText, ctx->renderer, ctx->gFont, (SDL_FRect){15,15,250,60},"Round of 8", 10, (SDL_Color){255, 255, 255, 255});
+  for (int i = 0; i < 9; i++) {
+    char text[2];
+    snprintf(text, 2, "%d", i);
+    Button_initAndLoad(&predictionButtons[i], ctx->renderer,
+                       handLocation.x + handLocation.w + 15 +
+                           ((i % 2) * (((float)SCREEN_WIDTH / 16) - 7.5f)),
+                       (float)SCREEN_HEIGHT / 3 +
+                           ((i / 2) * (((float)SCREEN_HEIGHT / 16) + 7.5f)),
+                       ((float)SCREEN_WIDTH / 16) - 20,
+                       ((float)SCREEN_HEIGHT / 16) - 5,
+                       "Art/ButtonBackground.png", ctx->gFont, text, 1,
+                       (SDL_Color){5, 5, 5, 255});
+  }
+  Texture_init_andLoadFromRenderedText(
+      &roundText, ctx->renderer, ctx->gFont, (SDL_FRect){15, 15, 250, 60},
+      "Round of 8", 10, (SDL_Color){255, 255, 255, 255});
 }
 
 static void
@@ -54,8 +69,8 @@ maingamescene_start() { //---------------------------------------------------STA
   Deck_deal(&deck, players, numPlayas, round);
   currentPhase = play;
 }
-static void
-maingamescene_update(context *ctx) { //--------------------------------------------------UPDATE
+static void maingamescene_update(
+    context *ctx) { //--------------------------------------------------UPDATE
   switch (currentPhase) {
   case deal:
     Deck_scramble(&deck);
@@ -101,11 +116,14 @@ static void maingamescene_render(
   case deal:
     break;
   case play:
-  SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
-  SDL_RenderRect(renderer, &handLocation);
-  SDL_RenderRect(renderer, &playLocation);
+    SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
+    SDL_RenderRect(renderer, &handLocation);
+    SDL_RenderRect(renderer, &playLocation);
     Player_RenderHand(&players[0], renderer, &handLocation, &playLocation);
-    Button_render(&butt, renderer);
+    Button_render(&playbutt, renderer);
+    for (int i = 0; i < 9; i++) {
+      Button_render(&predictionButtons[i], renderer);
+    }
     Texture_render(&roundText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
     break;
   case scoring:
@@ -115,7 +133,10 @@ static void maingamescene_render(
 
 static void
 maingamescene_stop() { // --------------------------------------------STOP
-  Button_free(&butt);
+  Button_free(&playbutt);
+  for (int i = 0; i < 9; i++) {
+    Button_free(&predictionButtons[i]);
+  }
   Texture_free(&roundText);
   Texture_free(&deck.spriteSheet);
   free(players);
@@ -131,7 +152,10 @@ static void maingamescene_events(
   }
 
   // UI
-  Button_handleEvent(&butt, e);
+  Button_handleEvent(&playbutt, e);
+  for (int i = 0; i < 9; i++) {
+    Button_handleEvent(&predictionButtons[i], e);
+  }
 }
 static void getMousePos(SDL_Event *e) {
   if (e->type == SDL_EVENT_MOUSE_MOTION) {
