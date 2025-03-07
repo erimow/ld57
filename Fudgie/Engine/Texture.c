@@ -15,7 +15,6 @@ bool Texture_init_andLoadFromRenderedText(
   // Free any pre-existing texture
   Texture_free(texture);
 
-  SDL_Log("Sizeof(textureText) = %lu\n", sizeof(textureText));
   SDL_Surface *textSurface =
       TTF_RenderText_Solid(gFont, textureText, textSize, textColor);
   if (textSurface == NULL) {

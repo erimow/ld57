@@ -18,6 +18,7 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+typedef enum Scenes { MAINMENU, GAME } Scenes;
 typedef struct context {
   /* Important stuff */
   int ticksPerFrame;
@@ -26,7 +27,7 @@ typedef struct context {
   uint32_t width, height;
 
   /* Textures/Fonts */
-  // TTF_Font *gFont;     // freed
+  TTF_Font *gFont;     // freed
   // Texture fontTexture; // freed
   // Texture fpsTexture;  // freed
 
@@ -49,6 +50,10 @@ typedef struct context {
 
   // bool isButtPressed;
   bool quit;
+
+
+ Scenes currentScene; //Find scenes inside of context.h
 } context;
+
 
 #endif

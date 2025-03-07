@@ -11,7 +11,6 @@
 typedef enum Phase { deal, play, scoring } Phase;
 const static int fontSize = 34;
 const static Uint8 cardGap = 15;
-static TTF_Font *gFont;
 static SDL_FRect handLocation = {
     (float)SCREEN_WIDTH / 4 - ((float)SCREEN_WIDTH / 4) / 2,
     SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
@@ -31,22 +30,19 @@ static Phase currentPhase;
 static Deck deck;
 static Player *players;
 static Button butt; // test
+static Texture roundText;
 
 static void maingamescene_loadAssets(
-    SDL_Renderer
-        *renderer) { //-------------------------------------------ASSET-LOADING
-  gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
-                       56); // Location and font size;
-  if (gFont == NULL) {
-    printf("Could not load font!\n");
-  }
-  if (!Texture_loadFromFile(&deck.spriteSheet, renderer,
+    context *ctx) { //-------------------------------------------ASSET-LOADING
+
+  if (!Texture_loadFromFile(&deck.spriteSheet, ctx->renderer,
                             "Art/CardSpritesheet.png"))
     printf("Could not load CardSpritesheet\n"); // loading in the
                                                 // cardspritesheet
-  Button_initAndLoad(&butt, renderer, 15, ((float)SCREEN_WIDTH / 2) - 15, 120,
-                     50, "Art/ButtonBackground.png", gFont, "Play", 4,
+  Button_initAndLoad(&butt, ctx->renderer, 15, ((float)SCREEN_WIDTH / 2) - 15, 120,
+                     50, "Art/ButtonBackground.png", ctx->gFont, "Play", 4,
                      (SDL_Color){5, 5, 5, 255});
+  Texture_init_andLoadFromRenderedText(&roundText, ctx->renderer, ctx->gFont, (SDL_FRect){15,15,250,60},"Round of 8", 10, (SDL_Color){255, 255, 255, 255});
 }
 
 static void
@@ -59,11 +55,11 @@ maingamescene_start() { //---------------------------------------------------STA
   currentPhase = play;
 }
 static void
-maingamescene_update() { //--------------------------------------------------UPDATE
+maingamescene_update(context *ctx) { //--------------------------------------------------UPDATE
   switch (currentPhase) {
   case deal:
-    // Deck_scramble(&deck);
-    // Deck_deal(&deck, players, numPlayas, --round);
+    Deck_scramble(&deck);
+    Deck_deal(&deck, players, numPlayas, --round);
     currentPhase = play;
     break;
   case play:
@@ -99,17 +95,18 @@ maingamescene_update() { //--------------------------------------------------UPD
 }
 static void maingamescene_render(
     SDL_Renderer *renderer) { // -------------------------------------- RENDER
-  SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
-  SDL_RenderRect(renderer, &handLocation);
-  SDL_RenderRect(renderer, &playLocation);
 
   // UI
   switch (currentPhase) {
   case deal:
     break;
   case play:
+  SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
+  SDL_RenderRect(renderer, &handLocation);
+  SDL_RenderRect(renderer, &playLocation);
     Player_RenderHand(&players[0], renderer, &handLocation, &playLocation);
     Button_render(&butt, renderer);
+    Texture_render(&roundText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
     break;
   case scoring:
     break;
@@ -118,8 +115,8 @@ static void maingamescene_render(
 
 static void
 maingamescene_stop() { // --------------------------------------------STOP
-  TTF_CloseFont(gFont);
   Button_free(&butt);
+  Texture_free(&roundText);
   Texture_free(&deck.spriteSheet);
   free(players);
 }

@@ -49,11 +49,11 @@ bool loadMedia(context *ctx) {
   // Entity_init(&player, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 100, 100, 10);
   // //Normal entity init
 
-  // ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
-  //                           56); // Location and font size;
-  // if(ctx->gFont == NULL){
-  //   printf("Could not load font!\n");
-  // }
+  ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
+                            102); // Location and font size;
+  if(ctx->gFont == NULL){
+    printf("Could not load font!\n");
+  }
   // if (ctx->gFont != NULL) {
   //   SDL_Color fontCol = {0, 255, 122, 255};
   //   if (!Texture_loadFromRenderedText(&ctx->fontTexture, ctx->renderer,
@@ -231,8 +231,8 @@ void quit(context *ctx) {
   // Texture_free(&ctx->fontTexture);
   // Texture_free(&test);
   // Texture_free(&ctx->fpsTexture);
-  // TTF_CloseFont(ctx->gFont);
-  // ctx->gFont = NULL;
+  TTF_CloseFont(ctx->gFont);
+  ctx->gFont = NULL;
   // ctx->gamePad = NULL;
   // Mix_FreeChunk(ctx->soundEffect);
   // Mix_FreeMusic(ctx->gameMusic);
