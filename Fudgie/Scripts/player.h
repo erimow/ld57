@@ -4,7 +4,7 @@
 #include <SDL3/SDL_stdinc.h>
 #ifndef PLAYER_H
 #define PLAYER_H
-#define MAX_CARDS 10
+#define MAX_CARDS 8
 
 typedef struct {
   Card *hand[MAX_CARDS];
