@@ -8,7 +8,11 @@
 
 void Card_Render(Card *c, SDL_Renderer *renderer) {
   // printf("x: %f, y: %f\n", c->pos.x, c->pos.y);
+  if (c->isFront)
   Texture_render(c->CardSpritesheet, renderer, &c->clip, &c->pos, 0.0, NULL,
+                 SDL_FLIP_NONE);
+  else
+  Texture_render(c->CardSpritesheet, renderer, &(SDL_FRect){0,700,125,175}, &c->pos, 0.0, NULL,
                  SDL_FLIP_NONE);
 }
 void Card_HandleEvents(Card *c, SDL_Event *e, SDL_FPoint mousePos,

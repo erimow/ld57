@@ -22,7 +22,6 @@ static SDL_FPoint mousePos;
 //----------------------------------------------------------------------
 static Card *cardBeingHeld = NULL;
 static Card *cardSelected = NULL;
-static unsigned int numPlayas = 4;
 static unsigned int round = 8;
 static Phase currentPhase;
 static Deck deck;

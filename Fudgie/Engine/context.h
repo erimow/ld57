@@ -2,6 +2,7 @@
 // #include "Texture.h"
 // #include "Timer.h"
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_stdinc.h>
 #ifdef __linux__
 #include <SDL3_image//SDL_image.h>
 // #include <SDL2/SDL_mixer.h>
@@ -53,6 +54,7 @@ typedef struct context {
 
 
  Scenes currentScene; //Find scenes inside of context.h
+ Uint8 numPlayas;
 } context;
 
 

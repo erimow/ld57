@@ -11,6 +11,7 @@ typedef struct Card {
   SDL_FPoint whenHeldMousePos;
   bool isSelected;
   bool isHeld;
+  bool isFront;
   char suit;
   char val;
 } Card;
