@@ -1,6 +1,7 @@
 // #include "Button.h"
 // #include "Texture.h"
 // #include "Timer.h"
+#include "scenemanager.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_stdinc.h>
 #ifdef __linux__
@@ -19,7 +20,6 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-typedef enum Scenes { MAINMENU, GAME } Scenes;
 typedef struct context {
   /* Important stuff */
   int ticksPerFrame;
@@ -53,7 +53,7 @@ typedef struct context {
   bool quit;
 
 
- Scenes currentScene; //Find scenes inside of context.h
+ SceneManager sm; //Find scenes inside of context.h
  Uint8 numPlayas;
 } context;
 

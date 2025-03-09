@@ -25,14 +25,14 @@ static Card *cardSelected = NULL;
 static unsigned int round = 8;
 static Phase currentPhase;
 static Deck deck;
-static Player *players;
+static Player *players = NULL;
 static Button playbutt; // test
 static Button predictionButtons[9];
 static Texture roundText;
 
 static void maingamescene_loadAssets(
-    context *ctx) { //-------------------------------------------ASSET-LOADING
-
+    void *ct) { //-------------------------------------------ASSET-LOADING
+  context *ctx = (context*)ct;
   if (!Texture_loadFromFile(&deck.spriteSheet, ctx->renderer,
                             "Art/CardSpritesheet.png"))
     printf("Could not load CardSpritesheet\n"); // loading in the
@@ -60,12 +60,17 @@ static void maingamescene_loadAssets(
 }
 
 static void
-maingamescene_start() { //---------------------------------------------------START
+maingamescene_start(void *ct) { //---------------------------------------------------START
+  context *ctx = (context*)ct;
+
   Deck_init(&deck);
   Deck_scramble(&deck);
-  players = (Player *)malloc(sizeof(Player) * numPlayas);
-  Player_InitPlayers(players, numPlayas);
-  Deck_deal(&deck, players, numPlayas, round);
+  if (players!=NULL){
+    free(players);
+  }
+  players = (Player *)malloc(sizeof(Player) * ctx->numPlayas);
+  Player_InitPlayers(players, ctx->numPlayas);
+  Deck_deal(&deck, players, ctx->numPlayas, round);
   currentPhase = play;
 }
 static void maingamescene_update(
@@ -73,7 +78,7 @@ static void maingamescene_update(
   switch (currentPhase) {
   case deal:
     Deck_scramble(&deck);
-    Deck_deal(&deck, players, numPlayas, --round);
+    Deck_deal(&deck, players, ctx->numPlayas, --round);
     currentPhase = play;
     break;
   case play:

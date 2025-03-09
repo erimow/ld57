@@ -19,7 +19,8 @@ static const Uint16 buttonGap =
 static Texture titleText;
 static Button playerAmountButtons[BUTTONAMOUNT];
 
-static void mainmenuscene_loadAssets(context *ctx) {
+static void mainmenuscene_loadAssets(void *ct) {
+  context *ctx = (context*)ct;
   Texture_init_andLoadFromRenderedText(
       &titleText, ctx->renderer, ctx->gFont,
       (SDL_FRect){((float)SCREEN_WIDTH / 2) - (float)SCREEN_WIDTH / 4,
@@ -37,13 +38,14 @@ static void mainmenuscene_loadAssets(context *ctx) {
   }
 }
 
-static void mainmenuscene_start() {}
+static void mainmenuscene_start(void *ct) {}
 
 static void mainmenuscene_update(context *ctx) {
   for (int i = 0; i < BUTTONAMOUNT; i++) {
     if (playerAmountButtons[i].isButtPressed) {
       printf("player amount -> %d\n", i + 3);
-      ctx->currentScene = GAME;
+      ctx->numPlayas = i+3;
+      SceneManager_switchScene(&ctx->sm, GAME, ctx);
     }
   }
 }
