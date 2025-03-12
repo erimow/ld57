@@ -8,12 +8,13 @@ void Texture_init(Texture *texture) {
 bool Texture_init_andLoadFromRenderedText(
     Texture *texture, SDL_Renderer *renderer, TTF_Font *gFont, SDL_FRect loc,
     const char *textureText, unsigned int textSize, SDL_Color textColor) {
+  // Free any pre-existing texture
+  Texture_free(texture);
   texture->texture = NULL;
   texture->width = 0;
   texture->height = 0;
   texture->loc = loc;
-  // Free any pre-existing texture
-  Texture_free(texture);
+
 
   SDL_Surface *textSurface =
       TTF_RenderText_Solid(gFont, textureText, textSize, textColor);
