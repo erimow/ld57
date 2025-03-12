@@ -21,13 +21,11 @@ void Player_RenderHand(Player *p, SDL_Renderer *renderer,
           handLocation->x + (i * (cardPxWidth + spacingBetweenCards));
       p->hand[i]->pos.y =
           handLocation->y + ((float)(handLocation->h - cardPxHeight) / 2);
-    }
-    else if (p->hand[i]->isSelected){
-       p->hand[i]->pos.x =
-          playLocation->x + (playLocation->w/2)-((float)cardPxWidth/2);
-      p->hand[i]->pos.y =
-          playLocation->y + ((float)(handLocation->h - cardPxHeight) / 2);
-    }
     Card_Render(p->hand[i], renderer);
+    }
+    else if(p->hand[i]->isHeld){
+      Card_Render(p->hand[i], renderer);
+    }
+
   }
 }

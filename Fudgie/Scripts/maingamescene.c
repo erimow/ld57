@@ -24,7 +24,8 @@ static SDL_FRect playLocation = {
 static SDL_FPoint mousePos;
 //----------------------------------------------------------------------
 static Card *cardBeingHeld = NULL; //user playing stuff
-static Card *cardSelected = NULL; //user playing stuff
+static Card **cardSelected = NULL; //user playing stuff
+static Uint8 selectedCount = 0;
 static Uint8 round = 8; //round, cards dealt
 static Uint8 userPlaying = 0; //the player the user is playing
 static Uint8 playerCount;
@@ -84,10 +85,13 @@ maingamescene_start(void *ct) { //----------------------------------------------
   if (players!=NULL){
     free(players);
   }
+  //mallocs
   players = (Player *)malloc(sizeof(Player) * ctx->numPlayas);
   Player_InitPlayers(players, ctx->numPlayas);
   playerText = (Texture *)malloc(sizeof(Texture)* ctx->numPlayas);
+  cardSelected = (Card **)malloc(sizeof(Card*)* ctx->numPlayas);
   for (int i = 0; i<ctx->numPlayas; i++){
+    cardSelected[i]=NULL;
     char t[50];
     snprintf(t, 50, "Player %d: -1",i+1);
     if (playerPlaying != i)
@@ -111,6 +115,9 @@ static void maingamescene_update(
       &roundText, ctx->renderer, ctx->gFont, (SDL_FRect){15, 15, 250, 60},
       j, 10, (SDL_Color){255, 255, 255, 255});
     currentPhase = play;
+           Texture_init_andLoadFromRenderedText(
+      &phaseOrTurnText, ctx->renderer, ctx->gFont, (SDL_FRect){((float)SCREEN_WIDTH/2)-125, 15, 250, 60},
+      "Play Phase", 10, (SDL_Color){255, 255, 255, 255});
     break;
   case predict:
     if (playerPlaying == userPlaying){
@@ -129,12 +136,18 @@ static void maingamescene_update(
           playerPlaying = (playerPlaying + 1 == playerCount) ? 0 :playerPlaying+1;
           snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
            Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 12, (SDL_Color){255,255,255,255});
-          if (playerPlaying == 0) currentPhase = play;
+          if (playerPlaying == 0) {
+            currentPhase = play;
+           Texture_init_andLoadFromRenderedText(
+      &phaseOrTurnText, ctx->renderer, ctx->gFont, (SDL_FRect){((float)SCREEN_WIDTH/2)-125, 15, 250, 60},
+      "Play Phase", 10, (SDL_Color){255, 255, 255, 255});
+          }
+
       }
     }
   }
     else {
-      if (ctx->frameCount %15000 == 0){
+      if (ctx->frameCount %10000 == 0){
         char t[22];
         players[playerPlaying].currentPrediction = rand() % round+1; //makes random prediction
         snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
@@ -150,11 +163,22 @@ static void maingamescene_update(
 
            Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 11, (SDL_Color){255,255,255,255});
           currentPhase = play;
+           Texture_init_andLoadFromRenderedText(
+      &phaseOrTurnText, ctx->renderer, ctx->gFont, (SDL_FRect){((float)SCREEN_WIDTH/2)-125, 15, 250, 60},
+      "Play Phase", 10, (SDL_Color){255, 255, 255, 255});
         }
       }
   }
     break;
   case play:
+    if (selectedCount==playerCount){ //breaks out and switches to scoring phase if in render, selectedCount counts to playerCount
+      currentPhase=scoring;
+      Texture_init_andLoadFromRenderedText(
+      &phaseOrTurnText, ctx->renderer, ctx->gFont, (SDL_FRect){((float)SCREEN_WIDTH/2)-125, 15, 250, 60},
+      "Scoring Phase", 13, (SDL_Color){255, 255, 255, 255});
+      break;
+    }
+    if (playerPlaying == userPlaying){
     for (int i = 0; i < players[userPlaying].numCardsInHand; i++) {
       Card *a = players[userPlaying].hand[i];
       if (a->isHeld) {
@@ -179,9 +203,37 @@ static void maingamescene_update(
         }
       }
     }
+    if (playbutt.isButtPressed){
+      char t[22];
+      snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
+        Texture_init_andLoadFromRenderedText(
+        &playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15, 75+(playerPlaying*30), 200, 30},
+        t, 11, (SDL_Color){255, 255, 255, 255});
+     playerPlaying = (playerPlaying + 1 == playerCount) ? 0 :playerPlaying+1;
+          snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
+           Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 11, (SDL_Color){255,255,255,255});
+  // phase switches to scoring in render func
+    }
+    }
+    else{
+if (ctx->frameCount %10000 == 0){
+  Uint8 ran = rand()%round;
+  players[playerPlaying].hand[ran]->isSelected=true;
+  cardSelected[playerPlaying] = players[playerPlaying].hand[ran];
+      char t[22];
+      snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
+        Texture_init_andLoadFromRenderedText(
+        &playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15, 75+(playerPlaying*30), 200, 30},
+        t, 11, (SDL_Color){255, 255, 255, 255});
+     playerPlaying = (playerPlaying + 1 == playerCount) ? 0 :playerPlaying+1;
+          snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
+           Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 11, (SDL_Color){255,255,255,255});
+           //phase switches to scoring in render func
+    }
+    }
     break;
   case scoring:
-
+    // playbutt.isButtPressed = false; //reset stuff
     break;
   }
 }
@@ -212,7 +264,19 @@ static void maingamescene_render(
     SDL_RenderRect(renderer, &handLocation);
     SDL_RenderRect(renderer, &playLocation);
     Player_RenderHand(&players[userPlaying], renderer, &handLocation, &playLocation);
-    if (cardSelected!=NULL)
+    selectedCount = 0; //terrible way to do this, but is what it is.
+    float gap = (playLocation.w-(CARDPXWIDTH*playerCount))/(playerCount+1);
+    for (int i = 0; i<playerCount; i++){
+      if (cardSelected[i]!=NULL){
+        cardSelected[i]->pos.x=(playLocation.x)+(gap*(i+1))+(selectedCount*CARDPXWIDTH);
+        cardSelected[i]->pos.y=playLocation.y;
+        Card_Render(cardSelected[i], renderer);
+        selectedCount++;
+      }
+    }
+
+      //UI STUFF
+    if (cardSelected[userPlaying]!=NULL && userPlaying == playerPlaying)
       Button_render(&playbutt, renderer);
 
     Texture_render(&phaseOrTurnText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
@@ -223,25 +287,23 @@ static void maingamescene_render(
     }
     break;
   case scoring:
+     SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
+    SDL_RenderRect(renderer, &handLocation);
+    SDL_RenderRect(renderer, &playLocation);
+    Player_RenderHand(&players[userPlaying], renderer, &handLocation, &playLocation);
+
+    for (int i = 0; i<playerCount; i++){
+      Card_Render(cardSelected[i], renderer);
+    }
+
+    Texture_render(&phaseOrTurnText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
+    // Texture_render(&currentPredictionText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
+    Texture_render(&roundText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
+    for (int i = 0; i<playerCount; i++){
+      Texture_render(&playerText[i], renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
+    }
     break;
   }
-}
-
-static void
-maingamescene_stop() { // --------------------------------------------STOP
-  Button_free(&playbutt);
-  for (int i = 0; i < round+1; i++) {
-    Button_free(&predictionButtons[i]);
-  }
-  for (int i = 0; i<playerCount; i++){
-    Texture_free(&playerText[i]);
-  }
-  free(playerText);
-  Texture_free(&phaseOrTurnText);
-  // Texture_free(&currentPredictionText);
-  Texture_free(&roundText);
-  Texture_free(&deck.spriteSheet);
-  free(players);
 }
 
 static void getMousePos(SDL_Event *e);
@@ -259,9 +321,9 @@ static void maingamescene_events(
     case play:
   for (int i = players[userPlaying].numCardsInHand - 1; i >= 0; i--) {
     Card_HandleEvents(players[userPlaying].hand[i], e, mousePos, &playLocation,
-                      &cardBeingHeld, &cardSelected);
+                      &cardBeingHeld, &cardSelected[userPlaying]);
   }
-    if (cardSelected != NULL)
+    if (cardSelected[userPlaying] != NULL && userPlaying==playerPlaying)
       Button_handleEvent(&playbutt, e);
   break;
 
@@ -269,6 +331,25 @@ static void maingamescene_events(
       break;
   }
 }
+
+static void
+maingamescene_stop() { // --------------------------------------------STOP
+  Button_free(&playbutt);
+  for (int i = 0; i < round+1; i++) {
+    Button_free(&predictionButtons[i]);
+  }
+  for (int i = 0; i<playerCount; i++){
+    Texture_free(&playerText[i]);
+  }
+  free(playerText);
+  free(cardSelected);
+  Texture_free(&phaseOrTurnText);
+  // Texture_free(&currentPredictionText);
+  Texture_free(&roundText);
+  Texture_free(&deck.spriteSheet);
+  free(players);
+}
+
 static void getMousePos(SDL_Event *e) {
   if (e->type == SDL_EVENT_MOUSE_MOTION) {
     // Get mouse position
