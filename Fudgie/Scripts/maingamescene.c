@@ -33,6 +33,8 @@ static Phase currentPhase; //phase of game
 static Deck deck;
 static Player *players = NULL;
 static Uint8 playerPlaying = 0; //keep track of player whos turn it is
+static Uint8 playerStartingRound = 0; //keep track of player who started round or other non prediction
+static Uint8 playerStartingPrediction = 0; //keep track of player who initiated prediction
 static Texture *playerText = NULL; //text displaying player stats and what not
 static Button playbutt; // play button to be displayed for userPlaying
 static Button predictionButtons[9]; //probably need to switch to a pointer for adjustability
@@ -114,10 +116,10 @@ static void maingamescene_update(
     Texture_init_andLoadFromRenderedText(
       &roundText, ctx->renderer, ctx->gFont, (SDL_FRect){15, 15, 250, 60},
       j, 10, (SDL_Color){255, 255, 255, 255});
-    currentPhase = play;
+    currentPhase = predict;
            Texture_init_andLoadFromRenderedText(
       &phaseOrTurnText, ctx->renderer, ctx->gFont, (SDL_FRect){((float)SCREEN_WIDTH/2)-125, 15, 250, 60},
-      "Play Phase", 10, (SDL_Color){255, 255, 255, 255});
+      "Predict Phase", 13, (SDL_Color){255, 255, 255, 255});
     break;
   case predict:
     if (playerPlaying == userPlaying){
@@ -135,14 +137,21 @@ static void maingamescene_update(
           // "Player 1's Turn", 15, (SDL_Color){255, 255, 255, 255});
           playerPlaying = (playerPlaying + 1 == playerCount) ? 0 :playerPlaying+1;
           snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
-           Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 12, (SDL_Color){255,255,255,255});
-          if (playerPlaying == 0) {
+          if (playerPlaying == playerStartingPrediction++) {
             currentPhase = play;
            Texture_init_andLoadFromRenderedText(
       &phaseOrTurnText, ctx->renderer, ctx->gFont, (SDL_FRect){((float)SCREEN_WIDTH/2)-125, 15, 250, 60},
       "Play Phase", 10, (SDL_Color){255, 255, 255, 255});
+           Uint8 highestPredictionByPlayer = 0;
+           for (int i = playerStartingPrediction+1; i<playerStartingPrediction+playerCount; i++){
+             if (players[i%playerCount].currentPrediction>players[(i%playerCount)-1].currentPrediction){
+               highestPredictionByPlayer = i%playerCount;
+            }
           }
-
+            playerPlaying = highestPredictionByPlayer;
+            playerStartingRound = playerPlaying;
+          }
+           Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 12, (SDL_Color){255,255,255,255});
       }
     }
   }
@@ -156,11 +165,18 @@ static void maingamescene_update(
         t, 11, (SDL_Color){255, 255, 255, 255});
         playerPlaying = (playerPlaying + 1 == playerCount) ? 0 :playerPlaying+1;
           snprintf(t, 22, "Player %d: %d", playerPlaying, players[playerPlaying].currentPrediction);
-        if (playerPlaying != 0){
+        if (playerPlaying != playerStartingRound){
 
            Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 12, (SDL_Color){255,255,255,255});
         } else{
-
+           Uint8 highestPredictionByPlayer = 0;
+           for (int i = playerStartingPrediction+1; i<playerStartingPrediction+playerCount; i++){
+             if (players[i%playerCount].currentPrediction>players[(i%playerCount)-1].currentPrediction){
+               highestPredictionByPlayer = i%playerCount;
+            }
+          }
+            playerPlaying = highestPredictionByPlayer;
+            playerStartingRound = playerPlaying;
            Texture_init_andLoadFromRenderedText(&playerText[playerPlaying], ctx->renderer, ctx->gFont, (SDL_FRect){15,75+(playerPlaying*30),230,35}, t, 11, (SDL_Color){255,255,255,255});
           currentPhase = play;
            Texture_init_andLoadFromRenderedText(
