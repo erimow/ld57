@@ -319,12 +319,12 @@ static void maingamescene_update(
             (SDL_Color){255, 255, 255, 255});
         playerPlaying =
             (playerPlaying + 1 == playerCount) ? 0 : playerPlaying + 1;
+        if (selectedCount != playerCount){
         snprintf(t, 40, "Player %d: %d", playerPlaying,
                  players[playerPlaying].currentPrediction);
            for (int i = 0; i<players[playerPlaying].currentRoundHandsWon;i++){
            sprintf(&t[11+(i*2)], " |");
           }
-        if (selectedCount != playerCount){
           Texture_init_andLoadFromRenderedText(
               &playerText[playerPlaying], ctx->renderer, ctx->gFont,
               (SDL_FRect){15, 75 + (playerPlaying * 30), 230, 35}, t, 11+(players[playerPlaying].currentRoundHandsWon*2),
@@ -334,7 +334,7 @@ static void maingamescene_update(
       }
     } else { //CPU PLAY PHASE
       if (ctx->frameCount % CPU_DELAY == 0) {
-        Uint8 ran = rand() % round;
+        Uint8 ran = rand() % players[playerPlaying].numCardsInHand;
         players[playerPlaying].hand[ran]->isSelected = true;
         cardSelected[playerPlaying] = players[playerPlaying].hand[ran];
         char t[40];
@@ -349,12 +349,12 @@ static void maingamescene_update(
             (SDL_Color){255, 255, 255, 255});
         playerPlaying =
             (playerPlaying + 1 == playerCount) ? 0 : playerPlaying + 1;
-        snprintf(t, 40, "Player %d: %d", playerPlaying,
+        if (selectedCount+1 != playerCount){
+          snprintf(t, 40, "Player %d: %d", playerPlaying,
                  players[playerPlaying].currentPrediction);
            for (int i = 0; i<players[playerPlaying].currentRoundHandsWon;i++){
            sprintf(&t[11+(i*2)], " |");
           }
-        if (selectedCount+1 != playerCount){
           Texture_init_andLoadFromRenderedText(
               &playerText[playerPlaying], ctx->renderer, ctx->gFont,
               (SDL_FRect){15, 75 + (playerPlaying * 30), 230, 35}, t, 11+(players[playerPlaying].currentRoundHandsWon*2),
@@ -409,7 +409,7 @@ static void maingamescene_render(
          i++) {
       if (cardSelected[i % playerCount] != NULL) {
         cardSelected[i % playerCount]->pos.x = (playLocation.x) +
-                                               (gap * ((i % playerCount) + 1)) +
+                                               (gap * ((i -playerStartingRound) + 1)) +
                                                (selectedCount * CARDPXWIDTH);
         cardSelected[i % playerCount]->pos.y = playLocation.y;
         Card_Render(cardSelected[i % playerCount], renderer);
