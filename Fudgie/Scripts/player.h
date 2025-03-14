@@ -10,6 +10,7 @@ typedef struct {
   Card *hand[MAX_CARDS];
   uint8_t numCardsInHand;
   int8_t currentPrediction;
+  Uint8 currentRoundHandsWon;
   uint8_t points;
 } Player;
 

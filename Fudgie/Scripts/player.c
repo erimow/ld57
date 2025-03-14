@@ -1,6 +1,6 @@
 #include "player.h"
 
-void Player_Init(Player *p) { p->numCardsInHand = 0; p->points=0; p->currentPrediction=-1;}
+void Player_Init(Player *p) { p->numCardsInHand = 0; p->points=0; p->currentPrediction=-1; p->currentRoundHandsWon = 0;}
 void Player_InitPlayers(Player *p, uint8_t numPlayers) {
   for (int i = 0; i < numPlayers; i++) {
     Player_Init(&p[i]);
