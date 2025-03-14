@@ -7,6 +7,34 @@ void Player_InitPlayers(Player *p, uint8_t numPlayers) {
   }
 }
 void Player_AddCard(Player *p, Card *c) { p->hand[p->numCardsInHand++] = c; }
+void Player_UpdateHand(Player *p, SDL_FPoint *mousePos, SDL_FRect *handLocation){
+   for (int i = 0; i < p->numCardsInHand; i++) {
+        Card *a = p->hand[i];
+        if (a->isHeld) {
+          a->pos.x = mousePos->x - a->whenHeldMousePos.x;
+          a->pos.y = mousePos->y - a->whenHeldMousePos.y;
+          if (p->numCardsInHand > 1 &&
+              (a->pos.y + ((float)CARDPXHEIGHT / 2)) > handLocation->y) {
+            if (i != 0) {
+              if (a->pos.x + ((float)CARDPXWIDTH / 2) <
+                  p->hand[i - 1]->pos.x +
+                      ((float)CARDPXWIDTH / 2)) {
+                p->hand[i] = p->hand[i - 1];
+                p->hand[i - 1] = a;
+              }
+            }
+            if (i != p->numCardsInHand - 1) {
+              if (a->pos.x + ((float)CARDPXWIDTH / 2) >
+                  p->hand[i + 1]->pos.x +
+                      ((float)CARDPXWIDTH / 2)) {
+                p->hand[i] = p->hand[i + 1];
+                p->hand[i + 1] = a;
+              }
+            }
+          }
+        }
+      }
+}
 void Player_RenderHand(Player *p, SDL_Renderer *renderer,
                        SDL_FRect *handLocation, SDL_FRect *playLocation) {
   Uint8 cardsInHand = p->numCardsInHand;

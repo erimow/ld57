@@ -18,6 +18,7 @@ void Player_Init(Player *p);
 void Player_InitPlayers(Player *p, uint8_t numPlayers);
 void Player_AddCard(Player *p, Card *c);
 void Player_PlayCard(Player *p);
+void Player_UpdateHand(Player *p, SDL_FPoint *mousePos, SDL_FRect *handLocation);
 void Player_RenderHand(Player *p, SDL_Renderer *renderer,
                        SDL_FRect *handLocation, SDL_FRect *playLocation);
 

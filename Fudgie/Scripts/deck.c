@@ -25,16 +25,16 @@ void Deck_init(Deck *d) {
     }
     switch (i % 13) {
     case 0:
-      val = 'A';
+      val = 14;
       break;
     case 10:
-      val = 'J';
+      val = 11;
       break;
     case 11:
-      val = 'Q';
+      val = 12;
       break;
     case 12:
-      val = 'K';
+      val = 13;
       break;
     default:
       val = (i % 13) + 1;
