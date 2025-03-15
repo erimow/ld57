@@ -57,3 +57,11 @@ void Player_RenderHand(Player *p, SDL_Renderer *renderer,
 
   }
 }
+
+
+void Player_PrintHand(Player *p){
+  for (int i = 0; i<p->numCardsInHand; i++){
+    SDL_Log("Card: %d: suit: %c, val %d\n",i, p->hand[i]->suit, p->hand[i]->val);
+  }
+  SDL_Log("\n");
+}

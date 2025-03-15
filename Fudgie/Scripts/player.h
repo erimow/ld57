@@ -21,5 +21,6 @@ void Player_PlayCard(Player *p);
 void Player_UpdateHand(Player *p, SDL_FPoint *mousePos, SDL_FRect *handLocation);
 void Player_RenderHand(Player *p, SDL_Renderer *renderer,
                        SDL_FRect *handLocation, SDL_FRect *playLocation);
+void Player_PrintHand(Player *p);
 
 #endif
