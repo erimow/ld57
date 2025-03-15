@@ -4,6 +4,7 @@
 #include "card.h"
 #include "deck.h"
 
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -14,6 +15,7 @@
 
 #define CPU_DELAY 15000
 #define PREDICTBUTTONAMOUNT 11
+#define TOTALROUNDS 3
 
 typedef enum Phase { deal, play, predict, scoring } Phase;
 const static Uint8 cardGap = 15;
@@ -44,7 +46,8 @@ static Texture phaseOrTurnText; // Text at top of screen
 static Card *cardBeingHeld = NULL; // user playing stuff
 static Card **cardSelected = NULL; // user playing stuff
 static Uint8 selectedCount = 0;
-static Uint8 round = 10;       // round, cards dealt
+static Uint8 round = TOTALROUNDS;       // round, cards dealt
+static bool roundsCountingUp = false;
 static Uint8 userPlaying = 0; // the player the user is playing
 static Uint8 playerPlaying = 0; // keep track of player whos turn it is
 static Uint8 playerStartingRound =
@@ -128,7 +131,7 @@ static void maingamescene_start(
     snprintf(t, 50, "Player %d: 0", i);
       Texture_init_andLoadFromRenderedText(
           &playerPointText[i], ctx->renderer, ctx->gFont,
-          (SDL_FRect){(SCREEN_WIDTH-170)-15, 15 + (i * 20), 170, 20}, t, 8,
+          (SDL_FRect){(SCREEN_WIDTH-170)-15, 15 + (i * 20), 170, 20}, t, 11,
           (SDL_Color){255, 200, 200, 255});
   }
   Deck_deal(&deck, players, ctx->numPlayas, round);
@@ -139,7 +142,21 @@ static void maingamescene_update(
   switch (currentPhase) {
   case deal:
     Deck_scramble(&deck);
-    Deck_deal(&deck, players, ctx->numPlayas, --round);
+    deck.cardsRemainingInDeck=52;
+    if (!roundsCountingUp){
+      round--;
+    }
+    else{
+      round++;
+    }
+    if (round==0){
+      round = 2;
+      roundsCountingUp = true;
+    }
+    if(round==TOTALROUNDS+1&&roundsCountingUp){
+      printf("GAME DONE\n");
+    }
+    Deck_deal(&deck, players, ctx->numPlayas, round);
     char j[11];
     snprintf(j, 11, "Round of %d", round);
     Texture_init_andLoadFromRenderedText(&roundText, ctx->renderer, ctx->gFont,
@@ -154,7 +171,7 @@ static void maingamescene_update(
   for (int i = 0; i < ctx->numPlayas; i++) {
     cardSelected[i] = NULL;
     char t[50];
-    snprintf(t, 50, "Player %d: -1", i + 1);
+    snprintf(t, 50, "Player %d: -1", i);
     if (playerPlaying != i)
       Texture_init_andLoadFromRenderedText(
           &playerText[i], ctx->renderer, ctx->gFont,
@@ -234,6 +251,9 @@ static void maingamescene_update(
             rand() % (round + 1); // makes random prediction
         }
         }
+        if (round == 1 && players[playerPlaying].currentPrediction!=1)
+          players[playerPlaying].currentPrediction=1;//SET PREDICTION TO 1 WHEN ROUND IS 1
+
         combinedRoundPredictions+=players[playerPlaying].currentPrediction;
         snprintf(t, 40, "Player %d: %d", playerPlaying,
                  players[playerPlaying].currentPrediction);
@@ -359,8 +379,8 @@ static void maingamescene_update(
       }
     } else { //---------------------------------CPU PLAY PHASE
       if (ctx->frameCount % CPU_DELAY == 0) {
-        SDL_Log("Player %d: ", playerPlaying);
-        Player_PrintHand(&players[playerPlaying]);
+        // SDL_Log("Player %d: ", playerPlaying);
+        // Player_PrintHand(&players[playerPlaying]);
         Uint8 ran = rand() % players[playerPlaying].numCardsInHand;
         players[playerPlaying].hand[ran]->isSelected = true;
         cardSelected[playerPlaying] = players[playerPlaying].hand[ran];
@@ -392,20 +412,28 @@ static void maingamescene_update(
     }
     break;
   case scoring:  //----------------------- UPDATE SCORING --------------------------
-    if (ctx->frameCount % CPU_DELAY == 0){
+    if (ctx->frameCount % CPU_DELAY*3 == 0){
     playbutt.isButtPressed = false; //reset stuff
+
 
     char t[50];
     for (int i = 0; i<playerCount; i++){
       if (players[i].currentPrediction == players[i].currentRoundHandsWon){
+        // SDL_Log("Player %d: earned %d points!\n",i, players[i].currentPrediction+round);
+        if (round != 5) //double points for round 5
         players[i].points += (round+players[i].currentPrediction);
+        else
+        players[i].points += ((round+players[i].currentPrediction)*2);
       }
+      players[i].currentRoundHandsWon = 0;
+      players[i].currentPrediction = -1;
     snprintf(t, 50, "Player %d: %d", i, players[i].points);
       Texture_init_andLoadFromRenderedText(
           &playerPointText[i], ctx->renderer, ctx->gFont,
-          (SDL_FRect){(SCREEN_WIDTH-170)-15, 15 + (i * 20), 170, 20}, t, 8+((players[i].points/10)),
+          (SDL_FRect){(SCREEN_WIDTH-170)-15, 15 + (i * 20), 170, 20}, t, 11+((players[i].points/10)),
           (SDL_Color){255, 200, 200, 255});
     }
+    currentPhase = deal;
     }
     break;
   }
@@ -435,8 +463,10 @@ static void maingamescene_render(
     Texture_render(&roundText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
     if (playerPlaying == userPlaying)
       for (int i = 0; i < round + 1; i++) {
-        if (!((playerPlaying+1)%playerCount==playerStartingPrediction&&combinedRoundPredictions + i == round)) //dont render button if user is the last predicting and it equals the round prediction total by all players
+        if (!((playerPlaying+1)%playerCount==playerStartingPrediction&&combinedRoundPredictions + i == round)) {//dont render button if user is the last predicting and it equals the round prediction total by all players
+          if (!(round == 1&&i==0))//dont render 0 when round is 1
         Button_render(&predictionButtons[i], renderer);
+        }
       }
     for (int i = 0; i < playerCount; i++) {
       Texture_render(&playerText[i], renderer, NULL, NULL, 0.0, NULL,
@@ -515,8 +545,10 @@ static void maingamescene_events(
   case predict:
     if (playerPlaying == userPlaying)
       for (int i = 0; i < round + 1; i++) {
-        if (!((playerPlaying+1)%playerCount==playerStartingPrediction&&combinedRoundPredictions + i == round)) //dont hand button events if user is the last predicting and it equals the round prediction total by all players
+        if (!((playerPlaying+1)%playerCount==playerStartingPrediction&&combinedRoundPredictions + i == round)){ //dont hand button events if user is the last predicting and it equals the round prediction total by all players
+          if (!(round == 1&&i==0))//dont render 0 when round is 1
         Button_handleEvent(&predictionButtons[i], e);
+        }
       }
       for (int i = players[userPlaying].numCardsInHand - 1; i >= 0; i--) {
       Card_HandleEvents(players[userPlaying].hand[i], e, mousePos,
