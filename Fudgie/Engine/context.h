@@ -3,14 +3,14 @@
 // #include "Timer.h"
 #include "scenemanager.h"
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3/SDL_stdinc.h>
 #ifdef __linux__
-#include <SDL3_image//SDL_image.h>
 // #include <SDL2/SDL_mixer.h>
 // #include <SDL2/SDL_pixels.h>
 // #include <SDL2/SDL_rect.h>
 // #include <SDL2/SDL_render.h>
-#include <SDL3_ttf/SDL_ttf.h>
 #elif defined __APPLE__
 // #include <SDL2_image/SDL_image.h>
 // #include <SDL2_mixer/SDL_mixer.h>

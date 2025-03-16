@@ -14,8 +14,7 @@
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #elif defined __APPLE__
-// #include <SDL2_image/SDL_image.h>
-// #include <SDL2_ttf/SDL_ttf.h>
+
 #endif
 #include <stdbool.h>
 #include <stdio.h>

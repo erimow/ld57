@@ -132,7 +132,7 @@ static void maingamescene_start(
       Texture_init_andLoadFromRenderedText(
           &playerPointText[i], ctx->renderer, ctx->gFont,
           (SDL_FRect){(SCREEN_WIDTH-170)-15, 15 + (i * 20), 170, 20}, t, 11,
-          (SDL_Color){255, 200, 200, 255});
+          (SDL_Color){255, 255, 255, 255});
   }
   Deck_deal(&deck, players, ctx->numPlayas, round);
   currentPhase = predict;

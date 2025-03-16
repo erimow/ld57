@@ -6,8 +6,6 @@
 //
 
 #include "Button.h"
-#include <SDL2/SDL_ttf.h>
-#include <SDL3/SDL_events.h>
 
 void Button_init(Button *button, float x, float y, float w, float h) {
   button->buttonInfo.x = x;

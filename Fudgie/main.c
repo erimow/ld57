@@ -17,14 +17,14 @@
 #include "Scripts/game.c"
 //#include <SDL2/SDL.h>
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <string.h>
 #ifdef __linux__
-#include <SDL3_image//SDL_image.h>
 //#include <SDL2/SDL_mixer.h>
 //#include <SDL2/SDL_pixels.h>
 //#include <SDL2/SDL_rect.h>
 //#include <SDL2/SDL_render.h>
-#include <SDL3_ttf/SDL_ttf.h>
 #elif defined __APPLE__
 // #include <SDL2_image/SDL_image.h>
 // #include <SDL2_mixer/SDL_mixer.h>
@@ -98,8 +98,8 @@ void gameLoop(void *arg) {
   while (SDL_PollEvent(&e)) {
     Game_Events(ctx, &e); // Calls the events function in the game file
 #ifdef __EMSCRIPTEN__
-    if (e.type == SDL_KEYDOWN) {
-      if (e.key.keysym.sym == SDLK_END) {
+    if (e.type == SDL_EVENT_KEY_DOWN) {
+      if (e.key.scancode == SDLK_END) {
         emscripten_cancel_main_loop();
       }
     }
