@@ -14,12 +14,12 @@
 #include <string.h>
 
 #ifdef __EMSCRIPTEN__
-#define CPU_DELAY 1000
+#define CPU_DELAY 500
 #else
 #define CPU_DELAY 15000
 #endif
 #define PREDICTBUTTONAMOUNT 11
-#define TOTALROUNDS 3
+#define TOTALROUNDS 10
 
 typedef enum Phase { deal, play, predict, scoring } Phase;
 const static Uint8 cardGap = 15;
