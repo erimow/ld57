@@ -13,7 +13,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef __EMSCRIPTEN__
+#define CPU_DELAY 1000
+#else
 #define CPU_DELAY 15000
+#endif
 #define PREDICTBUTTONAMOUNT 11
 #define TOTALROUNDS 3
 
