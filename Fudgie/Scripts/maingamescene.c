@@ -14,14 +14,14 @@
 #include <string.h>
 
 #ifdef __EMSCRIPTEN__
-#define CPU_DELAY 500
+#define CPU_DELAY 300
 #else
 #define CPU_DELAY 15000
 #endif
 #define PREDICTBUTTONAMOUNT 11
-#define TOTALROUNDS 10
+#define TOTALROUNDS 8
 
-typedef enum Phase { deal, play, predict, scoring } Phase;
+typedef enum Phase { deal, play, predict, scoring, finished} Phase;
 const static Uint8 cardGap = 15;
 static SDL_FRect handLocation = {
     (float)SCREEN_WIDTH / 8, SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4,
@@ -159,6 +159,33 @@ static void maingamescene_update(
     }
     if(round==TOTALROUNDS+1&&roundsCountingUp){
       printf("GAME DONE\n");
+
+      Uint8 winningPlayer = 0;
+      char t[50];
+      for (int i = 0; i<playerCount; i++){
+        if(i!=0){
+          if (players[i].points>players[winningPlayer].points)
+          {
+            winningPlayer = i;
+          }
+        }
+    snprintf(t, 50, "Player %d: %d", i, players[i].points);
+      Texture_init_andLoadFromRenderedText(
+          &playerPointText[i], ctx->renderer, ctx->gFont,
+          (SDL_FRect){((float)SCREEN_WIDTH/2)-200, (float)SCREEN_HEIGHT/4 + (i * 65), 400, 65}, t, 11+((players[i].points/10)),
+          (SDL_Color){255, 200, 200, 255});
+      }
+      snprintf(t, 50, "Player %d wins!", winningPlayer);
+        Texture_init_andLoadFromRenderedText(
+      &phaseOrTurnText, ctx->renderer, ctx->gFont,
+      (SDL_FRect){((float)SCREEN_WIDTH / 2) - 125, 15, 250, 60},
+      t, 13, (SDL_Color){255, 255, 255, 255});
+        Button_initAndLoad(&playbutt, ctx->renderer, ((float)SCREEN_WIDTH/2)-70,
+                     ((float)SCREEN_HEIGHT / 1.25) - 15, 140, 60,
+                     "Art/ButtonBackground.png", ctx->gFont, "Reset", 5,
+                     (SDL_Color){5, 5, 5, 255});
+      currentPhase = finished;
+      break;
     }
     Deck_deal(&deck, players, ctx->numPlayas, round);
     char j[11];
@@ -440,6 +467,28 @@ static void maingamescene_update(
     currentPhase = deal;
     }
     break;
+  case finished:
+    if (playbutt.isButtPressed){
+      playbutt.isButtPressed=false;
+      round=TOTALROUNDS+1;
+      roundsCountingUp=false;
+      playerStartingPrediction=0;
+      Player_InitPlayers(players, playerCount);
+      char t[50];
+      for (int i = 0; i<playerCount; i++){
+         snprintf(t, 50, "Player %d: 0", i);
+      Texture_init_andLoadFromRenderedText(
+          &playerPointText[i], ctx->renderer, ctx->gFont,
+          (SDL_FRect){(SCREEN_WIDTH-170)-15, 15 + (i * 20), 170, 20}, t, 11,
+          (SDL_Color){255, 255, 255, 255});
+      }
+      Button_initAndLoad(&playbutt, ctx->renderer, 15,
+                     ((float)SCREEN_WIDTH / 2) - 15, 120, 50,
+                     "Art/ButtonBackground.png", ctx->gFont, "Play", 4,
+                     (SDL_Color){5, 5, 5, 255});
+      currentPhase=deal;
+    }
+    break;
   }
 }
 
@@ -536,6 +585,14 @@ static void maingamescene_render(
       Texture_render(&playerPointText[i], renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
     }
     break;
+  case finished:
+    Texture_render(&phaseOrTurnText, renderer, NULL, NULL, 0.0, NULL,
+                   SDL_FLIP_NONE);
+    for (int i = 0; i < playerCount; i++) {
+      Texture_render(&playerPointText[i], renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
+    }
+      Button_render(&playbutt, renderer);
+    break;
   }
 }
 
@@ -572,6 +629,10 @@ static void maingamescene_events(
     break;
 
   case scoring:
+    break;
+
+  case finished:
+      Button_handleEvent(&playbutt, e);
     break;
   }
 }

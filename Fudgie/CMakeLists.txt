@@ -9,7 +9,7 @@ set(CMAKE_EXECUTABLE_SUFFIX ".html")
 file(GLOB_RECURSE SOURCES "main.c" "Engine/*.c" "Scripts/*.c")
 
 # Add executable
-add_executable(game ${SOURCES})
+add_executable(index ${SOURCES})
 
 
 
@@ -38,7 +38,7 @@ link_directories(
 
 # Link the libraries
 # target_link_libraries(game PRIVATE SDL3 ${SDL3_IMAGE_LIB} ${SDL3_TTF_LIB})
-target_link_libraries(game PRIVATE SDL3 SDL3_image SDL3_ttf freetype z)
+target_link_libraries(index PRIVATE SDL3 SDL3_image SDL3_ttf freetype z)
 
 # Enable WebAssembly and asset preloading
-set_target_properties(game PROPERTIES LINK_FLAGS "-s WASM=1 -sALLOW_MEMORY_GROWTH=1 --preload-file ../Art/ --preload-file ../Fonts/")
+set_target_properties(index PROPERTIES LINK_FLAGS "-s WASM=1 -sALLOW_MEMORY_GROWTH=1 --preload-file ../Art/ --preload-file ../Fonts/")

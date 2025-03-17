@@ -2,6 +2,7 @@ index.*
 vgcore*
 Fudgie/build/
 Fudgie/web-build/
+Fudgie/web-build.zip
 Fudgie/linux-build/
 Fudgie/apple-build/
 Fudgie/windows-build/
