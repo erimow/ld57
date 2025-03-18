@@ -19,7 +19,7 @@
 #define CPU_DELAY 15000
 #endif
 #define PREDICTBUTTONAMOUNT 11
-#define TOTALROUNDS 8
+#define TOTALROUNDS 3
 
 typedef enum Phase { deal, play, predict, scoring, finished} Phase;
 const static Uint8 cardGap = 15;

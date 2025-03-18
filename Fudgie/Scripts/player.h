@@ -12,6 +12,7 @@ typedef struct {
   int8_t currentPrediction;
   Uint8 currentRoundHandsWon;
   uint8_t points;
+  // PlayerStyle style;
 } Player;
 
 void Player_Init(Player *p);
