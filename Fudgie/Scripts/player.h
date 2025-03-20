@@ -1,3 +1,4 @@
+#include "../Engine/Button.h"
 #include "../Engine/constants.h"
 #include "../Engine/context.h"
 #include "card.h"
@@ -31,12 +32,22 @@ void Player_RenderHand(Player *p, SDL_Renderer *renderer,
                        SDL_FRect *handLocation, SDL_FRect *playLocation);
 void Player_PrintHand(Player *p);
 
+bool Player_UserPredict(context *ctx, Player *players, Uint8 *playerCount,
+                        Uint8 *playerPlaying, Uint8 *round,
+                        Uint8 *playerStartingPrediction,
+                        Uint8 *playerStartingRound,
+                        Uint8 *combinedRoundPredictions, Texture *playerText,
+                        Texture *phaseOrTurnText, Button *predictionButtons);
 bool Player_CPUPredict(context *ctx, Player *players, Uint8 *playerCount,
                        Uint8 *playerPlaying, Uint8 *round,
                        Uint8 *playerStartingPrediction,
                        Uint8 *playerStartingRound,
                        Uint8 *combinedRoundPredictions, Texture *playerText,
                        Texture *phaseOrTurnText);
-bool Player_CPUPlay(Player *players, Uint8 playerCount, Uint8 CPUPlaying);
+bool Player_CPUPlay(context *ctx, Player *players, Uint8 *playerCount,
+                    Uint8 *playerPlaying, Uint8 *round,
+                    Uint8 *playerStartingPrediction, Uint8 *playerStartingRound,
+                    Uint8 *combinedRoundPredictions, Texture *playerText,
+                    Texture *phaseOrTurnText);
 
 #endif

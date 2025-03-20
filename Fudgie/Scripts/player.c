@@ -67,6 +67,63 @@ void Player_PrintHand(Player *p) {
   }
   SDL_Log("\n");
 }
+bool Player_UserPredict(context *ctx, Player *players, Uint8 *playerCount,
+                        Uint8 *playerPlaying, Uint8 *round,
+                        Uint8 *playerStartingPrediction,
+                        Uint8 *playerStartingRound,
+                        Uint8 *combinedRoundPredictions, Texture *playerText,
+                        Texture *phaseOrTurnText, Button *predictionButtons) {
+  bool result = false;
+  for (int i = 0; i < *round + 1; i++) {
+    if (predictionButtons[i].isButtPressed) {
+      players[*playerPlaying].currentPrediction = i;
+      *combinedRoundPredictions += i;
+      predictionButtons[i].isButtPressed = false;
+      char t[22];
+      snprintf(t, 22, "Player %d: %d", *playerPlaying, i);
+      Texture_init_andLoadFromRenderedText(
+          &playerText[*playerPlaying], ctx->renderer, ctx->gFont,
+          (SDL_FRect){15, 75 + (*playerPlaying * 30), 200, 30}, t,
+          11 + (players[*playerPlaying].currentPrediction / 10),
+          (SDL_Color){255, 255, 255, 175});
+      // Texture_init_andLoadFromRenderedText(
+      // &phaseOrTurnText, ctx->renderer, ctx->gFont,
+      // (SDL_FRect){((float)SCREEN_WIDTH/2)-125, 15, 250, 60}, "Player 1's
+      // Turn", 15, (SDL_Color){255, 255, 255, 255});
+      *playerPlaying =
+          (*playerPlaying + 1 == *playerCount) ? 0 : *playerPlaying + 1;
+      if (*playerPlaying == *playerStartingPrediction) {
+        result = true;
+        Texture_init_andLoadFromRenderedText(
+            phaseOrTurnText, ctx->renderer, ctx->gFont,
+            (SDL_FRect){((float)SCREEN_WIDTH / 2) - 125, 15, 250, 60},
+            "Play Phase", 10 + (players[*playerPlaying].currentPrediction / 10),
+            (SDL_Color){255, 255, 255, 255});
+        Uint8 highestPredictionByPlayer = *playerStartingPrediction;
+        for (int i = *playerStartingPrediction + 1;
+             i < *playerStartingPrediction + *playerCount; i++) {
+          if (players[i % *playerCount].currentPrediction >
+              players[highestPredictionByPlayer].currentPrediction) {
+            highestPredictionByPlayer = i % *playerCount;
+          }
+        }
+        *playerStartingPrediction =
+            (*playerStartingPrediction + 1) % *playerCount;
+        *playerPlaying = highestPredictionByPlayer;
+        *playerStartingRound = *playerPlaying;
+      }
+      snprintf(t, 22, "Player %d: %d", *playerPlaying,
+               players[*playerPlaying].currentPrediction);
+      Texture_init_andLoadFromRenderedText(
+          &playerText[*playerPlaying], ctx->renderer, ctx->gFont,
+          (SDL_FRect){15, 75 + (*playerPlaying * 30), 230, 35}, t,
+          11 + (players[*playerPlaying].currentPrediction / 10),
+          (SDL_Color){255, 255, 255, 255});
+    }
+  }
+
+  return result;
+}
 
 bool Player_CPUPredict(context *ctx, Player *players, Uint8 *playerCount,
                        Uint8 *playerPlaying, Uint8 *round,
@@ -131,7 +188,13 @@ bool Player_CPUPredict(context *ctx, Player *players, Uint8 *playerCount,
 
   return result;
 }
-bool Player_CPUPlay(Player *players, Uint8 playerCount, Uint8 CPUPlaying) {
 
-  return false;
+bool Player_CPUPlay(context *ctx, Player *players, Uint8 *playerCount,
+                    Uint8 *playerPlaying, Uint8 *round,
+                    Uint8 *playerStartingPrediction, Uint8 *playerStartingRound,
+                    Uint8 *combinedRoundPredictions, Texture *playerText,
+                    Texture *phaseOrTurnText) {
+  bool result = false;
+
+  return result;
 }
