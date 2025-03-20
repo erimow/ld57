@@ -44,10 +44,16 @@ bool Player_CPUPredict(context *ctx, Player *players, Uint8 *playerCount,
                        Uint8 *playerStartingRound,
                        Uint8 *combinedRoundPredictions, Texture *playerText,
                        Texture *phaseOrTurnText);
+bool Player_UserPlay(context *ctx, Player *players, Uint8 *playerCount,
+                        Uint8 *playerPlaying, Uint8 *round,
+                        Uint8 *playerStartingPrediction,
+                        Uint8 *playerStartingRound,
+                        Uint8 *combinedRoundPredictions, Uint8 *selectedCount, Texture *playerText,
+                        Texture *phaseOrTurnText, Button *playbutt);
 bool Player_CPUPlay(context *ctx, Player *players, Uint8 *playerCount,
                     Uint8 *playerPlaying, Uint8 *round,
                     Uint8 *playerStartingPrediction, Uint8 *playerStartingRound,
-                    Uint8 *combinedRoundPredictions, Texture *playerText,
+                    Uint8 *combinedRoundPredictions, Uint8 *selectedCount, Card **cardSelected, Texture *playerText,
                     Texture *phaseOrTurnText);
 
 #endif
