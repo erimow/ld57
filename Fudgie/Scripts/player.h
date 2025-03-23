@@ -10,7 +10,7 @@
 #define PLAYER_H
 #define MAX_CARDS 10
 
-typedef enum { NONE, CALM, BALANCED, AGGRESIVE } STYLE;
+typedef enum { NONE, DEFENSIVE, BALANCED, AGGRESIVE } STYLE;
 typedef enum { NADA, EASY, NORMAL, HARD } DIFFICULTY;
 typedef struct {
   Card *hand[MAX_CARDS];

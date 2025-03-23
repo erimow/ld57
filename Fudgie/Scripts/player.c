@@ -5,6 +5,8 @@ void Player_Init(Player *p) {
   p->points = 0;
   p->currentPrediction = -1;
   p->currentRoundHandsWon = 0;
+  p->style = NONE;
+  p->difficulty = NADA;
 }
 void Player_InitPlayers(Player *p, uint8_t numPlayers) {
   for (int i = 0; i < numPlayers; i++) {
@@ -138,8 +140,28 @@ bool Player_CPUPredict(context *ctx, Player *players, Uint8 *playerCount,
                        Uint8 *combinedRoundPredictions, Texture *playerText,
                        Texture *phaseOrTurnText) {
   bool result = false;
-
   char t[40];
+  //Determine prediction
+  switch (players[*playerPlaying].style){
+    case NONE:
+      break;
+    case DEFENSIVE:
+      break;
+    case BALANCED:
+      break;
+    case AGGRESIVE:
+      break;
+  }
+  switch (players[*playerPlaying].difficulty){
+    case NADA:
+      break;
+    case EASY:
+      break;
+    case NORMAL:
+      break;
+    case HARD:
+      break;
+  }
   players[*playerPlaying].currentPrediction =
       rand() % (*round + 1); // makes random prediction
   if ((*playerPlaying + 1) % *playerCount == *playerStartingPrediction) {
@@ -153,6 +175,7 @@ bool Player_CPUPredict(context *ctx, Player *players, Uint8 *playerCount,
   if (*round == 1 && players[*playerPlaying].currentPrediction != 1)
     players[*playerPlaying].currentPrediction =
         1; // SET PREDICTION TO 1 WHEN ROUND IS 1
+        //End Prediction determine
 
   *combinedRoundPredictions += players[*playerPlaying].currentPrediction;
   snprintf(t, 40, "Player %d: %d", *playerPlaying,
