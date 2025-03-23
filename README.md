@@ -1,5 +1,6 @@
-MAKING A GAME ENGINE FROM SCRATCH IN C WITH SDL2
-Building alongside a starfish underwater metroidvania
+Game Engine files for SD3
+
+Scenemanager
 
 Tilemaps
 -Can create gridbased levels with a .txt file
