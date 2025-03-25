@@ -1,1 +1,1 @@
-Template project
+SDL3 template project
