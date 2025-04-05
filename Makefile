@@ -11,7 +11,7 @@ CC = gcc
 COMPILER_FLAGS = -w -Wall -Wextra -g -ggdb3 -O0
 
 #INCLUDES
-INCLUDES = -I./Sounds -I./Art -I./Engine -I./Fonts
+INCLUDES = -I./Sounds -I./Art -I./Engine -I./Fonts -I./
 
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lSDL3 -lSDL3_image -lm -lSDL3_ttf #-lSDL2_mixer -lSDL2_ttf -lm

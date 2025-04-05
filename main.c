@@ -175,7 +175,7 @@ bool init(context *ctx) {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
   } else {
-    if(!SDL_CreateWindowAndRenderer("Fudgie", ctx->width, ctx->height, 0, &ctx->window, &ctx->renderer)){
+    if(!SDL_CreateWindowAndRenderer("Deep Pockets", ctx->width, ctx->height, 0, &ctx->window, &ctx->renderer)){
       SDL_Log("Could not make window and renderer: %s", SDL_GetError());
     }
    } //else {

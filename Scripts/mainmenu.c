@@ -21,7 +21,7 @@ static void mainmenuscene_loadAssets(void *ct) {
       (SDL_FRect){((float)SCREEN_WIDTH / 2) - (float)SCREEN_WIDTH / 4,
                   (float)SCREEN_HEIGHT / 6, (float)SCREEN_WIDTH / 2,
                   (float)SCREEN_WIDTH / 4},
-      "Game!", 5, (SDL_Color){255, 255, 255, 255});
+      "Deep Pockets", 12, (SDL_Color){255, 255, 255, 255});
     Button_initAndLoad(
         &playButton, ctx->renderer,
         (SCREEN_WIDTH/2)-200, (float)SCREEN_HEIGHT / 1.5,
