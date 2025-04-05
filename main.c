@@ -11,7 +11,7 @@
 // #include "Engine/Entity.h"
 // #include "Engine/Texture.h"
 // #include "Engine/Tilemap.h"
-//#include "Engine/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/constants.h"
 #include "Engine/context.h"
 #include "Scripts/game.c"
@@ -43,14 +43,14 @@ bool loadMedia(context *ctx) {
 
   // Texture_init(&ctx->fontTexture);
   // Texture_init(&ctx->fpsTexture);
-  // Timer_init(&ctx->fps);
-  // Timer_init(&ctx->capTimer);
+  Timer_init(&ctx->fps);
+  Timer_init(&ctx->capTimer);
   // Button_init(&ctx->butt, 10, 10, 25, 25);
   // Entity_init(&player, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 100, 100, 10);
   // //Normal entity init
 
   ctx->gFont = TTF_OpenFont("Fonts/tuffy_regular.ttf",
-                            102); // Location and font size;
+                            256); // Location and font size;
   if(ctx->gFont == NULL){
     printf("Could not load font!\n");
   }
@@ -93,7 +93,7 @@ void startGameloop(context *ctx) {
 
 void gameLoop(void *arg) {
   context *ctx = SDL_static_cast(context *, arg);
-  // Timer_start(&ctx->capTimer);
+  Timer_start(&ctx->capTimer);
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     Game_Events(ctx, &e); // Calls the events function in the game file
@@ -129,7 +129,7 @@ void gameLoop(void *arg) {
   // ACTUAL GAME STUFF
 
   // FPS Stuff
-  // Uint32 avgFps = ctx->frameCount / (Timer_getTicks(&ctx->fps) / 1000.f);
+  Uint32 avgFps = ctx->frameCount / (Timer_getTicks(&ctx->fps) / 1000.f);
   // char fpsText[50] = "";
   // snprintf(fpsText, sizeof(fpsText), "fps: %d",
   //  avgFps); // Feeds int into char buffer
@@ -161,11 +161,11 @@ void gameLoop(void *arg) {
   SDL_RenderPresent(ctx->renderer);
   ctx->frameCount++;
 
-  // FPS CAP
-  // int frameTicks = Timer_getTicks(&ctx->capTimer);
-  // if (frameTicks < ctx->ticksPerFrame) {
-  //   SDL_Delay(ctx->ticksPerFrame - frameTicks);
-  // }
+  //FPS CAP
+  int frameTicks = Timer_getTicks(&ctx->capTimer);
+  if (frameTicks < ctx->ticksPerFrame) {
+    SDL_Delay(ctx->ticksPerFrame - frameTicks);
+  }
 }
 /*---------------------------------- END GAME LOOP
  * ----------------------------------*/
@@ -288,7 +288,7 @@ int main(int argc, char *argv[]) {
   else {
     startGameloop(&ctx);
 #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop_arg(gameLoop, &ctx, -1, 1);
+    emscripten_set_main_loop_arg(gameLoop, &ctx, 0, 1);
 #else
     while (!ctx.quit)
       gameLoop(&ctx);

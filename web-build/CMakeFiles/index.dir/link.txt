@@ -1,0 +1,1 @@
+emcc -s WASM=1 -sALLOW_MEMORY_GROWTH=1 --preload-file ../Art/ --preload-file ../Fonts/ @CMakeFiles/index.dir/objects1.rsp -o index.html @CMakeFiles/index.dir/linkLibs.rsp

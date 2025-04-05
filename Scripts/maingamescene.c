@@ -28,10 +28,13 @@ static Camera cam;
 static void maingamescene_loadAssets(
     void *ct) { //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ASSET-LOADING AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   context *ctx = (context *)ct;
-  Entity_initPhysics(&player, 0, 0, 32, 32, 32, 32, (SDL_FPoint){0,0}, 1, 1, 1, .5f, 10, 1);
+  Entity_initPhysics(&player, 0, 0, 64, 64, 64, 64, (SDL_FPoint){0,0}, 2, 1.5, .4f, .8f, 30, 1);
+  if(!Entity_setTexture(&player, ctx->renderer, "Art/PlayerSpritesheet.png")){SDL_Log("couldnt load play texture\n");}
   Texture_init(&tmSpriteSheet);
-  Texture_loadFromFile(&tmSpriteSheet, ctx->renderer, "../Art/TileSpritesheet.png");
-  Tilemap_init(&tm, &tmSpriteSheet, true, 1, 64, "../level1.txt", "X", 1, "", 0, NULL, 0);
+  if(!Texture_loadFromFile(&tmSpriteSheet, ctx->renderer, "Art/TileSpritesheet.png")){
+    SDL_Log("Unable to load tilespritesheet!\n");
+  }
+  Tilemap_init(&tm, &tmSpriteSheet, true, 1, 64, "level1.txt", "X", 1, "", 0, NULL, 0);
   Camera_init(&cam);
 }
 
@@ -40,22 +43,27 @@ static void maingamescene_loadAssets(
 static void maingamescene_start(
     void *ct) { //SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS START SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
   context *ctx = (context *)ct;
-  Camera_setPosition(&cam, 0, 0);
 }
 
 
 
 static void maingamescene_update(
     context *ctx) { //UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU UPDATE UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
+      Uint8 colliderAmount = 0;
+      SDL_FRect **colliderAroundPlayer = Tilemap_getCollidersAroundEntity(&tm, &player, &colliderAmount);
+      Entity_move(&player, colliderAroundPlayer, colliderAmount);
+      Camera_setPosition(&cam, player.xPos+(player.collider.w/2), player.yPos+(player.collider.h/2));
+      Camera_setBounds(&cam, (SDL_FRect){0,0,Tilemap_getMapWidthPixels(&tm),Tilemap_getMapHeightPixels(&tm)});
 }
 
 
 
 static void maingamescene_render(
     SDL_Renderer *renderer) { // RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR RENDER RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-    SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 180, 59, 59, 255);
     SDL_RenderClear(renderer);
     Tilemap_render(&tm, renderer, &cam);
+    Entity_render(&player, renderer, &(SDL_FRect){0,0,32,32}, 0, NULL, SDL_FLIP_NONE, &cam, 1);
 }
 
 
@@ -63,6 +71,7 @@ static void maingamescene_render(
 static void getMousePos(SDL_Event *e);
 static void maingamescene_events(
     SDL_Event *e) { // EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE  EVENTS EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+      Entity_handleEvent(&player, e);
 }
 
 static void

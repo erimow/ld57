@@ -11,22 +11,18 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-static Texture titleText;
+static Texture titleImage;
 static Button playButton;
 
 static void mainmenuscene_loadAssets(void *ct) {
   context *ctx = (context*)ct;
-  Texture_init_andLoadFromRenderedText(
-      &titleText, ctx->renderer, ctx->gFont,
-      (SDL_FRect){((float)SCREEN_WIDTH / 2) - (float)SCREEN_WIDTH / 4,
-                  (float)SCREEN_HEIGHT / 6, (float)SCREEN_WIDTH / 2,
-                  (float)SCREEN_WIDTH / 4},
-      "Deep Pockets", 12, (SDL_Color){255, 255, 255, 255});
-    Button_initAndLoad(
+  Texture_init(&titleImage);
+  Texture_loadFromFile(&titleImage, ctx->renderer, "Art/titleimage.png");
+  Button_initAndLoad(
         &playButton, ctx->renderer,
-        (SCREEN_WIDTH/2)-200, (float)SCREEN_HEIGHT / 1.5,
-        400, (float)SCREEN_HEIGHT / 7, "Art/ButtonBackground.png",
-        ctx->gFont, "Play", 4, (SDL_Color){255, 255, 255, 255});
+        (SCREEN_WIDTH/6)-100, (float)SCREEN_HEIGHT / 5,
+        200, (float)SCREEN_HEIGHT / 7, "Art/ButtonBackground.png",
+        ctx->gFont, "Play", 4, (SDL_Color){10, 90, 255, 255});
 }
 
 static void mainmenuscene_start(void *ct) {}
@@ -41,12 +37,12 @@ static void mainmenuscene_update(context *ctx) {
 static void mainmenuscene_render(SDL_Renderer *renderer) {
   // SDL_SetRenderDrawColor(renderer, );
   // SDL_RenderClear(renderer);
-  Texture_render(&titleText, renderer, NULL, NULL, 0.0, NULL, SDL_FLIP_NONE);
+  Texture_render(&titleImage, renderer, NULL, &(SDL_FRect){0,0,SCREEN_WIDTH, SCREEN_HEIGHT}, 0.0, NULL, SDL_FLIP_NONE);
     Button_render(&playButton, renderer);
 }
 
 static void mainmenuscene_stop() {
-  Texture_free(&titleText);
+  Texture_free(&titleImage);
   Button_free(&playButton);
 }
 

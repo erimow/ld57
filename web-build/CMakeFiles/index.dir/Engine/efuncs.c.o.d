@@ -1,0 +1,21 @@
+CMakeFiles/index.dir/Engine/efuncs.c.o: \
+  /home/erik/Projects/ld57/Engine/efuncs.c \
+  /home/erik/Projects/ld57/Engine/efuncs.h \
+  /home/erik/.cache/emscripten/sysroot/include/compat/math.h \
+  /home/erik/.cache/emscripten/sysroot/include/math.h \
+  /home/erik/.cache/emscripten/sysroot/include/features.h \
+  /home/erik/.cache/emscripten/sysroot/include/bits/alltypes.h \
+  /home/erik/.cache/emscripten/sysroot/include/stdio.h \
+  /home/erik/.cache/emscripten/sysroot/include/wasi/api.h \
+  /opt/emscripten-llvm/lib/clang/21/include/stddef.h \
+  /home/erik/.cache/emscripten/sysroot/include/stddef.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stddef_header_macro.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stddef_ptrdiff_t.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stddef_size_t.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stddef_wchar_t.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stddef_null.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stddef_max_align_t.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stddef_offsetof.h \
+  /opt/emscripten-llvm/lib/clang/21/include/stdint.h \
+  /home/erik/.cache/emscripten/sysroot/include/stdint.h \
+  /home/erik/.cache/emscripten/sysroot/include/bits/stdint.h

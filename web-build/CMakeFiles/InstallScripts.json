@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/erik/Projects/ld57/web-build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

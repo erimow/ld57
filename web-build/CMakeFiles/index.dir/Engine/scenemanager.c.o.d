@@ -1,0 +1,32 @@
+CMakeFiles/index.dir/Engine/scenemanager.c.o: \
+  /home/erik/Projects/ld57/Engine/scenemanager.c \
+  /home/erik/Projects/ld57/Engine/scenemanager.h \
+  /home/erik/.cache/emscripten/sysroot/include/SDL3/SDL_stdinc.h \
+  /home/erik/.cache/emscripten/sysroot/include/SDL3/SDL_platform_defines.h \
+  /home/erik/.cache/emscripten/sysroot/include/compat/stdarg.h \
+  /opt/emscripten-llvm/lib/clang/21/include/stdarg.h \
+  /home/erik/.cache/emscripten/sysroot/include/stdarg.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stdarg_header_macro.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stdarg___gnuc_va_list.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stdarg_va_list.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stdarg_va_arg.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stdarg___va_copy.h \
+  /opt/emscripten-llvm/lib/clang/21/include/__stdarg_va_copy.h \
+  /opt/emscripten-llvm/lib/clang/21/include/stdint.h \
+  /home/erik/.cache/emscripten/sysroot/include/stdint.h \
+  /home/erik/.cache/emscripten/sysroot/include/bits/alltypes.h \
+  /home/erik/.cache/emscripten/sysroot/include/bits/stdint.h \
+  /home/erik/.cache/emscripten/sysroot/include/compat/string.h \
+  /home/erik/.cache/emscripten/sysroot/include/string.h \
+  /home/erik/.cache/emscripten/sysroot/include/features.h \
+  /home/erik/.cache/emscripten/sysroot/include/strings.h \
+  /home/erik/.cache/emscripten/sysroot/include/wchar.h \
+  /opt/emscripten-llvm/lib/clang/21/include/inttypes.h \
+  /home/erik/.cache/emscripten/sysroot/include/inttypes.h \
+  /opt/emscripten-llvm/lib/clang/21/include/stdbool.h \
+  /home/erik/.cache/emscripten/sysroot/include/stdbool.h \
+  /home/erik/.cache/emscripten/sysroot/include/SDL3/SDL_begin_code.h \
+  /home/erik/.cache/emscripten/sysroot/include/SDL3/SDL_close_code.h \
+  /home/erik/.cache/emscripten/sysroot/include/compat/stdlib.h \
+  /home/erik/.cache/emscripten/sysroot/include/stdlib.h \
+  /home/erik/.cache/emscripten/sysroot/include/alloca.h

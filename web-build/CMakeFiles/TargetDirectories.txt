@@ -1,0 +1,3 @@
+/home/erik/Projects/ld57/web-build/CMakeFiles/index.dir
+/home/erik/Projects/ld57/web-build/CMakeFiles/edit_cache.dir
+/home/erik/Projects/ld57/web-build/CMakeFiles/rebuild_cache.dir
