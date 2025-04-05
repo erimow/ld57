@@ -41,4 +41,4 @@ link_directories(
 target_link_libraries(index PRIVATE SDL3 SDL3_image SDL3_ttf freetype z)
 
 # Enable WebAssembly and asset preloading
-set_target_properties(index PROPERTIES LINK_FLAGS "-s WASM=1 -sALLOW_MEMORY_GROWTH=1 --preload-file ../Art/ --preload-file ../Fonts/")
+set_target_properties(index PROPERTIES LINK_FLAGS "-s WASM=1 -sALLOW_MEMORY_GROWTH=1 --preload-file ../Art/ --preload-file ../Fonts/ --preload-file ../Resources/")

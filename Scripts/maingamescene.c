@@ -22,20 +22,26 @@ static Entity player;
 static Tilemap tm;
 static Texture tmSpriteSheet;
 static Camera cam;
+static Entity money;
+static BackgroundEntity bgMoney;
 // ==============================================================================================================================
 
 
 static void maingamescene_loadAssets(
     void *ct) { //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ASSET-LOADING AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   context *ctx = (context *)ct;
-  Entity_initPhysics(&player, 0, 0, 64, 64, 64, 64, (SDL_FPoint){0,0}, 2, 1.5, .4f, .8f, 30, 1);
+  Entity_initPhysics(&player, 64, 100, 64, 64, 64, 64, (SDL_FPoint){0,0}, 2, 1.5, .4f, .8f, 30, 1);
   if(!Entity_setTexture(&player, ctx->renderer, "Art/PlayerSpritesheet.png")){SDL_Log("couldnt load play texture\n");}
   Texture_init(&tmSpriteSheet);
   if(!Texture_loadFromFile(&tmSpriteSheet, ctx->renderer, "Art/TileSpritesheet.png")){
     SDL_Log("Unable to load tilespritesheet!\n");
   }
-  Tilemap_init(&tm, &tmSpriteSheet, true, 1, 64, "level1.txt", "X", 1, "", 0, NULL, 0);
+  Tilemap_init(&tm, &tmSpriteSheet, true, 1, 64, "Resources/level1.txt", "X", 1, "", 0, NULL, 0);
   Camera_init(&cam);
+
+  Entity_init(&money, 0, 0, 32, 32, 32, 32, (SDL_FPoint){0,0}, 1, 2);
+  Entity_setTexture(&money, ctx->renderer, "Art/backgroundmoneyspritesheet.png");
+  BackgroundEntity_init(&bgMoney, &money, 15);
 }
 
 
@@ -54,6 +60,8 @@ static void maingamescene_update(
       Entity_move(&player, colliderAroundPlayer, colliderAmount);
       Camera_setPosition(&cam, player.xPos+(player.collider.w/2), player.yPos+(player.collider.h/2));
       Camera_setBounds(&cam, (SDL_FRect){0,0,Tilemap_getMapWidthPixels(&tm),Tilemap_getMapHeightPixels(&tm)});
+
+      BackgroundEntity_update(&bgMoney,ctx->renderer,&cam,ctx->frameCount,1);
 }
 
 
@@ -62,8 +70,9 @@ static void maingamescene_render(
     SDL_Renderer *renderer) { // RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR RENDER RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
     SDL_SetRenderDrawColor(renderer, 180, 59, 59, 255);
     SDL_RenderClear(renderer);
+    BackgroundEntity_render(&bgMoney, renderer, &cam);
     Tilemap_render(&tm, renderer, &cam);
-    Entity_render(&player, renderer, &(SDL_FRect){0,0,32,32}, 0, NULL, SDL_FLIP_NONE, &cam, 1);
+    Entity_render(&player, renderer, NULL, 0, NULL, SDL_FLIP_NONE, &cam, 1);
 }
 
 
@@ -78,8 +87,10 @@ static void
 maingamescene_stop() { // SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS STOP SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
   Texture_free(&tmSpriteSheet);
   Tilemap_free(&tm);
-  Entity_free(&player, false);
+  Entity_free(&player, true);
   Camera_free(&cam);
+  BackgroundEntity_free(&bgMoney);
+  Entity_free(&money, true);
 }
 
 // static void getMousePos(SDL_Event *e) {
